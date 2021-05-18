@@ -1,25 +1,22 @@
-import cv2
+import os
+import subprocess
 
-# Webカメラ
-DEVICE_ID = 1 
+fileName = "out1.mkv"
+FRAMERATE = 60
+VIDEOSIZE = "1280x720"
+DURATION = 5
 
-WIDTH = 1280
-HEIGHT = 720
-FPS = 60
+if os.path.exists(fileName):
+    raise
 
-cap = cv2.VideoCapture (DEVICE_ID)
-cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('Y','U','Y','V'))
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, WIDTH)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, HEIGHT)
-cap.set(cv2.CAP_PROP_FPS, FPS)
+command = "ffmpeg -f v4l2 -framerate " + str(FRAMERATE) + " -video_size " + VIDEOSIZE + " -input_format mjpeg -t " + str(DURATION) + " -i /dev/video2 -t " + str(DURATION) + " -c copy " + fileName
+print(command)
+# os.
+# 
 
-def decode_fourcc(v):
-    v = int(v)
-    return "".join([chr((v >> 8 * i) & 0xFF) for i in range(4)])
-
-# フォーマット・解像度・FPSの取得
-fourcc = decode_fourcc(cap.get(cv2.CAP_PROP_FOURCC))
-width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
-height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
-fps = cap.get(cv2.CAP_PROP_FPS)
-print("fourcc:{} fps:{}　width:{}　height:{}".format(fourcc, fps, width, height))
+child1 = subprocess.Popen([command], stdout=subprocess.PIPE)
+child1.wait()
+print(child1.returncode)
+# print(child1.stdin)
+print(child1.stdout.readlines())
+# print(child1.stderr)

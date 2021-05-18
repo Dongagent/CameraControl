@@ -6,11 +6,13 @@ import socket
 import time
 import copy
 import cv2
-import subprocess
+import os, subprocess
+
 SPACE = ' '
 
+
 class robot:
-	def __init__(self):
+	def __init__(self, duration=3, fps=60):
 		# Return to normal state first
 		# Example: robotParams = {'1': 64, '2': 64, '3': 128, ...}
 		self.connection = True
@@ -32,8 +34,38 @@ class robot:
 		self.initialize_robotParams()
 		self.return_to_stable_state()
 
+		# Camera Parameters
+		self.DEVICE_ID = 1
+		self.WIDTH = 1280
+		self.HEIGHT = 720
+		self.FPS = fps
+		self.FRAMERATE = fps
+		self.counter = 0 # used in the fileName
+		self.fileName =  ""
+		self.VIDEOSIZE = "1280x720"
+		self.DURATION = duration
+
 		self.client = ""
-		
+
+	def take_picture(self):
+		# C Program
+		pass
+
+	def take_video(self):
+# 			process.wait()
+# 			if process.returncode != 0:
+# 				print(process.stdout.readlines())
+# 				raise "The subprocess does NOT end."
+		self.counter += 1
+		self.fileName = time.strftime("%Y_%m_%d_%H_%M_%S_No", time.localtime()) + str(self.counter) + ".mkv"
+		if os.path.exists(self.fileName):
+			raise Exception("Same File!")
+    	
+		# command = "ffmpeg -i /dev/video2"
+		command = "ffmpeg -f v4l2 -framerate " + str(self.FRAMERATE) + " -video_size " + self.VIDEOSIZE + " -input_format mjpeg -t " + str(self.DURATION) + " -i /dev/video2 -t " + str(self.DURATION) + " -c copy " + self.fileName
+
+		return subprocess.Popen([command], stdout=subprocess.PIPE, shell=True)
+            
 	def initialize_robotParams(self):
 		# initialize robotParams like {"1":0, "2":0, ... , "35": 0}
 		print("initialize_robotParams")
@@ -66,8 +98,8 @@ class robot:
 			self.robotParams[str(i)] = stableState[i - 1]
 		
 		self.__check_robotParams()
-		# Drive the robot to the 
-		self.connect_socket(True)	
+        # Drive the robot to the 
+		self.connect_socket(True)
 		print("return_to_stable_state, self.robotParams are all set")
 
 	def switch_to_defaultPose(self, pose):
@@ -120,7 +152,7 @@ class robot:
 				self.__send()
 				time.sleep(0.2)
 
-	def connect_socket(self, isSmoothly=False):
+	def connect_socket(self, isSmoothly=False, isRecording=False):
 		self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)				# create socket object
 		
 		# Please use ipconfig on the server to check the ip first. It may change every time we open the server.
@@ -135,16 +167,23 @@ class robot:
 			self.connection = False
 
 		if self.connection:
-			# Smoothly execute
+			# Smoothly execute # TODO 回去重新整理这部分code
+			if isRecording:
+				process = self.take_video()
 			if isSmoothly:
 				print("Smoothly execution activated")
+				time.sleep(1)
 				self.smooth_execution_mode()
 			# Otherwise
 			else:
-				self.generate_execution_code(self.robotParams)	
+				self.generate_execution_code(self.robotParams)
 				self.__send()
-
 			self.client.close()
+			if isRecording:
+				process.wait()
+				if process.returncode != 0:
+					print(process.stdout.readlines())
+					raise "The subprocess does NOT end."
 		else:
 			raise Exception("Connection Failed")
 
@@ -178,47 +217,30 @@ class robot:
 	def feedback(self):
 		pass
 
-class camera(object):
-	"""docstring for camera"""
-	def __init__(self):
-		super(camera, self).__init__()
-		self.DEVICE_ID = 1
-		self.WIDTH = 1280
-		self.HEIGHT = 720
-		self.FPS = 60
-
-		self.cap = self.connect_camera()
-		
-	def connect_camera(self):
-		return cv2.VideoCapture(self.DEVICE_ID)
-
-	def take_picture(self):
-		# C Program
-		pass
-
-	def take_video(self):
-		pass
-
+    
 def main():
 	rb = robot()
 	assert rb.connection == True
 	
 	rb.return_to_stable_state() # Return to the stable state (標準Pose)
 
-	for j in range(2):
-		for i in [1,2,3,4,5,6,8,9,10,12,13,14,15,16]:
-			rb.switch_to_defaultPose(i) # Switch to default pose 2 笑顔
-			rb.connect_socket(True)	 # connect server and send the command to change facial expression smoothly
-			time.sleep(3)
+# 	for j in range(2):
+# 		for i in [1,2,3,4,5,6,8,9,10,12,13,14,15,16]:
+# 			rb.switch_to_defaultPose(i) # Switch to default pose 2 笑顔
+# 			rb.connect_socket(True)	 # connect server and send the command to change facial expression smoothly
+# 			time.sleep(3)
 
-	rb.switch_to_defaultPose(1) # Switch to default pose 1 標準
-	rb.connect_socket()			# # connect server and send the command, but change facial expression quickly	
+# 	rb.switch_to_defaultPose(1) # Switch to default pose 1 標準
+# 	rb.connect_socket()			# # connect server and send the command, but change facial expression quickly	
+# 	time.sleep(3)
+
+
+
+	rb.switch_to_defaultPose(2) # Switch to default pose 2 笑顔
+	rb.connect_socket(True, True)	 # connect server and send the command to change facial expression smoothly
 	time.sleep(3)
 
-
-	# rb.switch_to_defaultPose(2) # Switch to default pose 2 笑顔
-	# rb.connect_socket(True)	 # connect server and send the command to change facial expression smoothly
-	# time.sleep(3)
+	rb.return_to_stable_state() # Return to the stable state (標準Pose)    
 
 	# rb.switch_to_defaultPose(1) # Switch to default pose 1 標準
 	# rb.connect_socket()			# # connect server and send the command, but change facial expression quickly	
