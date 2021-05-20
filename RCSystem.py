@@ -1,15 +1,31 @@
-#! /usr/bin/python
-# -*- coding:utf-8 -*-
+# -*- coding: utf-8 -*-
+# @Author: Dongsheng Yang
+# @Email:  yang.dongsheng.46w@st.kyoto-u.ac.jp
+# @Copyright = Copyright 2021, The Riken Robotics Project
+# @Date:   2021-05-20 18:19:38
+# @Last Modified by:   dongshengyang
+# @Last Modified time: 2021-05-20 18:21:38
+
+__author__ = "Dongsheng Yang"
+__copyright__ = "Copyright 2021, The Riken Robotics Project"
+__version__ = "1.0.0"
+__maintainer__ = "Dongsheng Yang"
+__email__ = "yang.dongsheng.46w@st.kyoto-u.ac.jp"
+__status__ = "Developing"
+
+
 import random
 import defaultPose
 import socket
 import time
 import copy
-import cv2
+# import cv2
 import os, subprocess
 import platform
 
 SPACE = ' '
+
+DEBUG = 2 # 0 - Run; 1 - Debuging with robot; 2 - Debug WITHOUT robot 
 
 
 class robot:
@@ -31,9 +47,7 @@ class robot:
         # initialization of lastParams
         self.lastParams = self.robotParams
         self.defaultPose = defaultPose.defaultPose
-
-        self.initialize_robotParams()
-        self.return_to_stable_state()
+        self.AUPose = defaultPose.actionUnitParams
 
         # Camera Parameters
         self.DEVICE_ID = 1
@@ -45,20 +59,38 @@ class robot:
         self.fileName =  ""
         self.VIDEOSIZE = "1280x720"
         self.DURATION = duration
-
         self.client = ""
+
+        # Final initialization
+        self.initialize_robotParams()
+        self.return_to_stable_state()
 
     def take_picture(self):
         # C Program
         pass
 
-    def take_video(self):
+    def take_video(self, isUsingCounter=True, apendix=''):
 #             process.wait()
 #             if process.returncode != 0:
 #                 print(process.stdout.readlines())
 #                 raise "The subprocess does NOT end."
         self.counter += 1
-        self.fileName = time.strftime("%Y_%m_%d_%H_%M_%S_No", time.localtime()) + str(self.counter) + ".mkv"
+        if isUsingCounter:
+            self.fileName = time.strftime("%Y_%m_%d_%H_%M_%S_No", time.localtime()) + str(self.counter)
+            if apendix:
+                self.fileName += "_" + apendix + ".mkv"
+            else:
+                self.fileName += ".mkv"
+        else:
+            self.fileName = time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime()) 
+            if apendix:
+                self.fileName += "_" + apendix + ".mkv"
+            else:
+                self.fileName += ".mkv"
+        if DEBUG == 2:
+            print("Filename is {}".format(self.fileName))
+            return
+
         if os.path.exists(self.fileName):
             raise Exception("Same File!")
         if "Linux" in platform.platform():
@@ -124,6 +156,14 @@ class robot:
         poseNum = pose - 1
         self.change_robotParams(self.defaultPose[poseNum])
 
+    def switch_to_customizedPose(self, customizedPose):
+        # Notice: customizedPose should clarify 35 axes
+        # E.g. [1, 2, 3, 0, ... , 255]
+        assert len(customizedPose) == 35, "ERROR! The customizedPose don't have 35 axes."
+        self.change_robotParams(customizedPose)
+        if DEBUG >= 1:
+            print(self.robotParams)
+
     def change_robotParams(self, params):
         # change robot params
         assert isinstance(params, list), isinstance(params, list)
@@ -168,13 +208,19 @@ class robot:
         self.generate_execution_code(self.robotParams)
         self.__sendExecutionCode()
 
-    def connect_socket(self, isSmoothly=False, isRecording=False):
+    def connect_socket(self, isSmoothly=False, isRecording=False, apendix=""):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)                # create socket object
         
         # Please use ipconfig on the server to check the ip first. It may change every time we open the server.
         host = '172.27.174.142'                                                      # set server address
         port = 12000                                                                 # set port
 
+        if DEBUG == 2:
+            print("function connect_socket:", self.robotParams)
+            # Test fileName
+            if isRecording:
+                self.take_video(False, apendix)
+            return
         try:
             self.client.connect((host, port))
             self.client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -185,7 +231,7 @@ class robot:
         if self.connection:
             # Start Record if isRecording
             if isRecording:
-                process = self.take_video()
+                process = self.take_video(apendix)
             # Smoothly execute
             if isSmoothly:
                 print("Smoothly execution activated")
@@ -242,6 +288,72 @@ def main():
     rb = robot()
     assert rb.connection == True
     
+    
+
+    # print(rb.AUPose.keys())
+    # print(rb.AUPose)
+    for k,v in rb.AUPose.items():
+        print("\n\n")
+        if k == "StandardPose":
+            print("skip StandardPose")
+            continue
+        # Return to Standard Pose
+        rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+        rb.connect_socket(True, False)
+
+        # Go to the AU
+        print("Switch to {}".format(k))
+        rb.switch_to_customizedPose(v)
+        rb.connect_socket(True, True, "{}".format(k))
+        
+
+
+
+
+    # StandardPose
+    # print("Switch to StandardPose")
+    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+
+    # AU1
+    # print("Switch to AU1")
+    # rb.switch_to_customizedPose(rb.AUPose['AU1'])
+
+    # AU2
+
+    # AU4
+
+    # AU5 
+
+    # AU6 
+    
+    # AU7
+    
+    # AU10
+    
+    # AU12
+    
+    # LAU12
+    
+    # AU14
+    
+    # AU15
+    
+    # AU16
+    
+    # AU18
+    
+    # AU20
+    
+    # AU22
+    
+    # AU25
+    
+    # AU26
+    
+    # AU43
+
+
+    '''
     rb.return_to_stable_state() # Return to the stable state (標準Pose)
 
     rb.switch_to_defaultPose(2) # Switch to default pose 2 笑顔
@@ -249,28 +361,32 @@ def main():
     time.sleep(3)
 
     rb.return_to_stable_state() # Return to the stable state (標準Pose)    
+    '''
+
 
     # rb.switch_to_defaultPose(1) # Switch to default pose 1 標準
     # rb.connect_socket()            # # connect server and send the command, but change facial expression quickly    
     # time.sleep(3)
 
-    '''
-    # 
-    # A loop execution for defaultPose 1~3
-    for i in range(1, 4):
-        rb.switch_to_defaultPose(i)
-        rb.connect_socket(True)
-        time.sleep(4)        
-
-
-    rb.switch_to_defaultPose(1)
-    rb.connect_socket(True)
-
-    '''
+    
 
 if __name__ == '__main__':
     main()
 
+
+'''
+# Usage Example:
+# A loop execution for defaultPose 1~3
+for i in range(1, 4):
+    rb.switch_to_defaultPose(i)
+    rb.connect_socket(True)
+    time.sleep(4)        
+
+
+rb.switch_to_defaultPose(1)
+rb.connect_socket(True)
+
+'''
 
 # Reference
 
