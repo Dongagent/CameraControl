@@ -25,7 +25,7 @@ import platform
 
 SPACE = ' '
 
-DEBUG = 2 # 0 - Run; 1 - Debuging with robot; 2 - Debug WITHOUT robot 
+DEBUG = 0 # 0 - Run; 1 - Debuging with robot; 2 - Debug WITHOUT robot 
 
 
 class robot:
@@ -219,7 +219,7 @@ class robot:
             print("function connect_socket:", self.robotParams)
             # Test fileName
             if isRecording:
-                self.take_video(False, apendix)
+                self.take_video(isUsingCounter=False, apendix=apendix)
             return
         try:
             self.client.connect((host, port))
@@ -231,11 +231,12 @@ class robot:
         if self.connection:
             # Start Record if isRecording
             if isRecording:
-                process = self.take_video(apendix)
+                process = self.take_video(isUsingCounter=False, apendix=apendix)
+                # time.sleep(1)
             # Smoothly execute
             if isSmoothly:
                 print("Smoothly execution activated")
-                time.sleep(1) # Sleep 1second to wait for the start of the video 
+                time.sleep(10) # Sleep 1second to wait for the start of the video 
                 self.smooth_execution_mode()
             # Otherwise
             else:
@@ -285,11 +286,11 @@ class robot:
 
     
 def main():
-    rb = robot()
+    rb = robot(duration=15)
     assert rb.connection == True
     
     
-
+    temp_counter = 0
     # print(rb.AUPose.keys())
     # print(rb.AUPose)
     for k,v in rb.AUPose.items():
@@ -304,10 +305,12 @@ def main():
         # Go to the AU
         print("Switch to {}".format(k))
         rb.switch_to_customizedPose(v)
-        rb.connect_socket(True, True, "{}".format(k))
-        
+        rb.connect_socket(True, True, "{}".format(k)) # isSmoothly = True ,isUsingCounter = False
+        temp_counter += 1
+        if temp_counter > 2:
+            break
 
-
+    rb.return_to_stable_state() # Return to the stable state (標準Pose)
 
 
     # StandardPose
