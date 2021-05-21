@@ -94,7 +94,7 @@ class robot:
         if os.path.exists(self.fileName):
             raise Exception("Same File!")
         if "Linux" in platform.platform():
-            videoPath = "/dev/video2"
+            videoPath = "/dev/video0"
             fParam = "v4l2"
             videoTypeParm = "-input_format"
         elif "Windows" in platform.platform():
@@ -208,7 +208,7 @@ class robot:
         self.generate_execution_code(self.robotParams)
         self.__sendExecutionCode()
 
-    def connect_socket(self, isSmoothly=False, isRecording=False, apendix=""):
+    def connect_socket(self, isSmoothly=False, isRecording=False, apendix="", steps = 10):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)                # create socket object
         
         # Please use ipconfig on the server to check the ip first. It may change every time we open the server.
@@ -236,7 +236,7 @@ class robot:
             # Smoothly execute
             if isSmoothly:
                 print("Smoothly execution activated")
-                time.sleep(10) # Sleep 1second to wait for the start of the video 
+                time.sleep(1) # Sleep 1second to wait for the start of the video 
                 self.smooth_execution_mode()
             # Otherwise
             else:
@@ -284,12 +284,119 @@ class robot:
     def feedback(self):
         pass
 
+def basicRunningCell(robotObject, commandSet, isRecordingFlag=False):
     
+    rb = robotObject
+
+    for k,v in commandSet.items():
+        print("\n\n")
+        # Return to Standard Pose
+        rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+        rb.connect_socket(True, False)
+
+        # Go to the facial expressions
+        print("Switch to {}".format(k))
+        rb.switch_to_customizedPose(v)
+        rb.connect_socket(isSmoothly=True, isRecording=isRecordingFlag, apendix="{}".format(k)) # isSmoothly = True ,isRecording = True
+
+
+    # Return to Standard Pose
+    rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    rb.connect_socket(True, False)
+
+
 def main():
-    rb = robot(duration=15)
+    rb = robot(duration=3)
     assert rb.connection == True
     
-    
+
+
+    # Hot Expression set
+    hE = defaultPose.hotExpressions
+    basicRunningCell(rb, hE, True)
+
+    '''
+    # Compare Two Happyness
+
+    # Return to Standard Pose
+    rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    rb.connect_socket(True, False)
+
+    # Go to the facial expressions
+    print("Switch to {}".format("happyness"))
+    rb.switch_to_customizedPose(defaultPose.prototypeFacialExpressions['happyness'])
+    rb.connect_socket(isSmoothly=True, isRecording=True) # isSmoothly = True ,isRecording = True
+
+    # Return to Standard Pose
+    rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    rb.connect_socket(True, False)
+
+    # Go to the facial expressions
+    print("Switch to {}".format("happynessResultFixed"))
+    rb.switch_to_customizedPose(defaultPose.fixedprototypeFacialExpressions['happynessResultFixed'])
+    rb.connect_socket(isSmoothly=True, isRecording=True ) # isSmoothly = True ,isRecording = True
+
+    # Return to Standard Pose
+    rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    rb.connect_socket(True, False)
+    '''
+
+
+    '''
+    # Recording fixed protoFacialExpressions
+    fpFE = defaultPose.fixedprototypeFacialExpressions
+
+    for k,v in fpFE.items():
+        print("\n\n")
+        # Return to Standard Pose
+        rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+        rb.connect_socket(True, False)
+
+        # Go to the facial expressions
+        print("Switch to {}".format(k))
+        rb.switch_to_customizedPose(v)
+        rb.connect_socket(isSmoothly=True, isRecording=True, apendix="{}".format(k)) # isSmoothly = True ,isRecording = True
+
+
+    # Return to Standard Pose
+    rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    rb.connect_socket(True, False)
+    '''
+
+
+    '''
+    # Recording protoFacialExpressions
+    pFE = defaultPose.prototypeFacialExpressions
+    print(pFE)
+
+    for k,v in pFE.items():
+        print("\n\n")
+        # Return to Standard Pose
+        rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+        rb.connect_socket(True, False)
+
+        # Go to the facial expressions
+        print("Switch to {}".format(k))
+        rb.switch_to_customizedPose(v)
+        rb.connect_socket(isSmoothly=True, isRecording=True, apendix="{}".format(k)) # isSmoothly = True ,isRecording = True
+
+
+    # Return to Standard Pose
+    rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    rb.connect_socket(True, False)
+    '''
+
+
+
+
+
+
+
+
+
+
+    # 20210521 Recording AU videos
+    '''
     temp_counter = 0
     # print(rb.AUPose.keys())
     # print(rb.AUPose)
@@ -305,17 +412,21 @@ def main():
         # Go to the AU
         print("Switch to {}".format(k))
         rb.switch_to_customizedPose(v)
-        rb.connect_socket(True, True, "{}".format(k)) # isSmoothly = True ,isUsingCounter = False
+        rb.connect_socket(True, True, "{}".format(k)) # isSmoothly = True ,isRecording = False
         temp_counter += 1
-        if temp_counter > 2:
-            break
+        # if temp_counter > 2:
+        #     break
 
     rb.return_to_stable_state() # Return to the stable state (標準Pose)
+
+    '''
+
 
 
     # StandardPose
     # print("Switch to StandardPose")
     # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    # rb.connect_socket(True, False)
 
     # AU1
     # print("Switch to AU1")
@@ -339,8 +450,11 @@ def main():
     
     # AU14
     
-    # AU15
-    
+    # AU15 (Use 4 second to generate this facial expression), 19, 23
+    # print("Switch to AU15")
+    # rb.switch_to_customizedPose(rb.AUPose['AU15'])
+    # rb.connect_socket(True, False, steps = 40) 
+    # time.sleep(5)
     # AU16
     
     # AU18
@@ -355,6 +469,9 @@ def main():
     
     # AU43
 
+    # print("Switch to StandardPose")
+    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    # rb.connect_socket(True, False)
 
     '''
     rb.return_to_stable_state() # Return to the stable state (標準Pose)
