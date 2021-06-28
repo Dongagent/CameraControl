@@ -11,3 +11,6 @@ nodejs
 > conda install nodejs
 
 sudo apt-get install v4l-utils
+
+Change the path of Webcam everytime.
+use ```v4l2-ctl --list-devices```

@@ -94,7 +94,8 @@ class robot:
         if os.path.exists(self.fileName):
             raise Exception("Same File!")
         if "Linux" in platform.platform():
-            videoPath = "/dev/video0"
+            # Remember to check the path everytime.
+            videoPath = "/dev/video2"
             fParam = "v4l2"
             videoTypeParm = "-input_format"
         elif "Windows" in platform.platform():
@@ -187,7 +188,7 @@ class robot:
             print("generate_execution_code ERROR")
             print(e)
 
-    def smooth_execution_mode(self, steps = 10):
+    def smooth_execution_mode(self, steps = 20):
         # steps: the middle steps between two robot expressions, default value is 5
         if self.robotParams:
             stepNum = steps
@@ -202,13 +203,13 @@ class robot:
 
                 self.generate_execution_code(currentParams)
                 self.__sendExecutionCode()
-                time.sleep(0.1)
+                time.sleep(0.05)
 
     def normal_execution_mode(self):
         self.generate_execution_code(self.robotParams)
         self.__sendExecutionCode()
 
-    def connect_socket(self, isSmoothly=False, isRecording=False, apendix="", steps = 10):
+    def connect_socket(self, isSmoothly=False, isRecording=False, apendix="", steps = 20):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)                # create socket object
         
         # Please use ipconfig on the server to check the ip first. It may change every time we open the server.
@@ -237,7 +238,7 @@ class robot:
             if isSmoothly:
                 print("Smoothly execution activated")
                 time.sleep(1) # Sleep 1second to wait for the start of the video 
-                self.smooth_execution_mode()
+                self.smooth_execution_mode(steps)
             # Otherwise
             else:
                 self.normal_execution_mode()
@@ -284,7 +285,7 @@ class robot:
     def feedback(self):
         pass
 
-def basicRunningCell(robotObject, commandSet, isRecordingFlag=False):
+def basicRunningCell(robotObject, commandSet, isRecordingFlag=False, steps=20):
     
     rb = robotObject
 
@@ -297,7 +298,7 @@ def basicRunningCell(robotObject, commandSet, isRecordingFlag=False):
         # Go to the facial expressions
         print("Switch to {}".format(k))
         rb.switch_to_customizedPose(v)
-        rb.connect_socket(isSmoothly=True, isRecording=isRecordingFlag, apendix="{}".format(k)) # isSmoothly = True ,isRecording = True
+        rb.connect_socket(isSmoothly=True, isRecording=isRecordingFlag, apendix="{}".format(k), steps=steps) # isSmoothly = True ,isRecording = True
 
 
     # Return to Standard Pose
@@ -309,11 +310,81 @@ def main():
     rb = robot(duration=3)
     assert rb.connection == True
     
+    # 2021.06.23
 
+    # LookDown first
+
+    lD = defaultPose.experiment1['lookDown']
+    cE = defaultPose.experiment1['closeEye']
+
+    for j in range(2):
+        for i in ['anger', 'happyness']:
+            rb.switch_to_customizedPose(lD)
+            rb.connect_socket(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+            time.sleep(3)
+
+            rb.switch_to_customizedPose(cE)
+            rb.connect_socket(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+            time.sleep(1)
+
+            rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+            rb.connect_socket(True, False)
+            time.sleep(1)
+
+            rb.switch_to_customizedPose(defaultPose.prototypeFacialExpressions[i])
+            rb.connect_socket(isSmoothly=True, isRecording=False ) # isSmoothly = True ,isRecording = True
+            time.sleep(1)
+
+            rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+            rb.connect_socket(True, False)
+            time.sleep(1)
+
+    rb.switch_to_customizedPose(lD)
+    rb.connect_socket(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+    time.sleep(3)
+
+    rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    rb.connect_socket(True, False)
+
+    # 250ms
+    # rb.DURATION = 2.25
+    # steps = 5
+
+    # 500ms
+    # rb.DURATION = 2.5
+    # steps = 10
+
+    # 2000ms
+    # rb.DURATION = 4
+    # steps = 40
 
     # Hot Expression set
-    hE = defaultPose.hotExpressions
-    basicRunningCell(rb, hE, True)
+    # hE = defaultPose.hotExpressions
+    # basicRunningCell(rb, hE, True, steps)
+
+    # Recording protoFacialExpressions
+    # pFE = defaultPose.prototypeFacialExpressions
+    # basicRunningCell(rb, pFE, True, steps)
+
+
+
+
+    # 1000ms
+    # Hot Expression set
+    # hE = defaultPose.hotExpressions
+    # basicRunningCell(rb, hE, True)
+
+    # Recording protoFacialExpressions
+    # pFE = defaultPose.prototypeFacialExpressions
+    # basicRunningCell(rb, pFE, True)
+
+    # # Recording actionUnit
+    # aUP = defaultPose.actionUnitParams
+    # basicRunningCell(rb, aUP, True)
+
+
+
+    # 20210521
 
     '''
     # Compare Two Happyness
