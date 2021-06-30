@@ -8,8 +8,12 @@ if ! [[ $workdir =~ OpenFace/build$ ]]; then
     exit
 fi
 
-read -p "Enter your video path/folder path:" input_path
-read -p "Enter your output path(default is ./temp_path_processed):" output_path
+
+# read -p "Enter your video path/folder path:" input_path
+# read -p "Enter your output path(default is ./temp_path_processed):" output_path
+input_path=$1
+output_path=$2
+
 output_path=${output_path:-temp_path_processed}
 files=`ls -d $input_path/*`
 for i in ${files[@]}; 

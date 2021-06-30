@@ -66,14 +66,10 @@ class robot:
         self.return_to_stable_state()
 
     def take_picture(self):
-        # C Program
+        # we don't need this
         pass
 
     def take_video(self, isUsingCounter=True, apendix=''):
-#             process.wait()
-#             if process.returncode != 0:
-#                 print(process.stdout.readlines())
-#                 raise "The subprocess does NOT end."
         self.counter += 1
         if isUsingCounter:
             self.fileName = time.strftime("%Y_%m_%d_%H_%M_%S_No", time.localtime()) + str(self.counter)
@@ -145,7 +141,7 @@ class robot:
         
         self.__check_robotParams()
         # Drive the robot to the 
-        self.connect_socket(True)
+        self.connect_socket(isSmoothly=True)
         print("return_to_stable_state, self.robotParams are all set")
 
     def switch_to_defaultPose(self, pose):
@@ -209,19 +205,24 @@ class robot:
         self.generate_execution_code(self.robotParams)
         self.__sendExecutionCode()
 
-    def connect_socket(self, isSmoothly=False, isRecording=False, apendix="", steps = 20):
+    def connect_socket(self, isSmoothly=False, isRecording=False, apendix="", steps=20, timeIntervalBeforeExp=1):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)                # create socket object
         
         # Please use ipconfig on the server to check the ip first. It may change every time we open the server.
         host = '172.27.174.142'                                                      # set server address
         port = 12000                                                                 # set port
 
+        # --------- DEBUG -------------
         if DEBUG == 2:
             print("function connect_socket:", self.robotParams)
             # Test fileName
             if isRecording:
                 self.take_video(isUsingCounter=False, apendix=apendix)
             return
+        
+        # --------- DEBUG END -------------
+        
+        
         try:
             self.client.connect((host, port))
             self.client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -237,13 +238,11 @@ class robot:
             # Smoothly execute
             if isSmoothly:
                 print("Smoothly execution activated")
-                time.sleep(1) # Sleep 1second to wait for the start of the video 
+                time.sleep(timeIntervalBeforeExp) # Sleep 1 second by default to wait for the start of the video 
                 self.smooth_execution_mode(steps)
             # Otherwise
             else:
                 self.normal_execution_mode()
-                # self.generate_execution_code(self.robotParams)
-                # self.__sendExecutionCode()
             self.client.close()
             
             # Close Record
@@ -269,7 +268,19 @@ class robot:
         # print('recv:', data.decode()) # print the data I received
         if "OK" not in data.decode():
             raise Exception("ERROR! Did NOT receive 'OK'")
+            
+    def robotChecker(self):
+        assert self.connection == True # make sure the connection is good
+        
+        self.return_to_stable_state() # Return to the stable state (標準Pose)
 
+        self.switch_to_defaultPose(2) # Switch to default pose 2 笑顔
+        self.connect_socket(isSmoothly=True, isRecording=False)     # connect server and send the command to change facial expression smoothly
+        time.sleep(1)
+
+        self.return_to_stable_state() # Return to the stable state (標準Pose)  
+
+        
     def perform_openface(self, figure):
         # send figure to openface and get result
         # TODO: Do something with openface
@@ -300,7 +311,6 @@ def basicRunningCell(robotObject, commandSet, isRecordingFlag=False, steps=20):
         rb.switch_to_customizedPose(v)
         rb.connect_socket(isSmoothly=True, isRecording=isRecordingFlag, apendix="{}".format(k), steps=steps) # isSmoothly = True ,isRecording = True
 
-
     # Return to Standard Pose
     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
     rb.connect_socket(True, False)
@@ -310,19 +320,81 @@ def main():
     rb = robot(duration=3)
     assert rb.connection == True
     
+
+
+
+    # 2021.06.30
+    
+    lD = defaultPose.experiment1['lookDown']
+    cE = defaultPose.experiment1['closeEye']
+    neuExp = defaultPose.experiment1['netural']
+    angExp = defaultPose.experiment1['anger']
+    hapExp = defaultPose.experiment1['happyness']
+
+    print(len(angExp))
+
+
+    # 6 trails
+    # subtle
+    # middle
+    # strong
+
+    title = ["subtle1", "middle1", "strong1", "subtle2", "middle2", "strong2"]
+
+    counter = 0
+    
+
+    for j in range(2):
+        for i in [angExp, hapExp, angExp]:
+            
+            # look Down and close eyes
+            rb.switch_to_customizedPose(lD)
+            rb.connect_socket(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+            time.sleep(3)
+
+            # look ahead but still close eyes
+            rb.switch_to_customizedPose(cE)
+            rb.connect_socket(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+            time.sleep(1)
+
+            rb.switch_to_customizedPose(neuExp)
+            rb.connect_socket(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+            time.sleep(1)
+
+            rb.switch_to_customizedPose(i)
+            rb.connect_socket(isSmoothly=True, isRecording=True, apendix="{}".format(title[counter] + "_1")) # isSmoothly = True ,isRecording = True
+
+            rb.switch_to_customizedPose(neuExp)
+            rb.connect_socket(isSmoothly=True, isRecording=True, apendix="{}".format(title[counter] + "_2")) # isSmoothly = True ,isRecording = True
+            time.sleep(1)
+
+            counter += 1
+            
+    rb.switch_to_customizedPose(lD)
+    rb.connect_socket(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+    time.sleep(3)
+
+    rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    rb.connect_socket(True, False)
+    
+    
     # 2021.06.23
 
     # LookDown first
-
+    # Real trials
+    
+    '''
     lD = defaultPose.experiment1['lookDown']
     cE = defaultPose.experiment1['closeEye']
 
     for j in range(2):
         for i in ['anger', 'happyness']:
+            # look Down and close eyes
             rb.switch_to_customizedPose(lD)
             rb.connect_socket(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
             time.sleep(3)
 
+            # look ahead but still close eyes
             rb.switch_to_customizedPose(cE)
             rb.connect_socket(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
             time.sleep(1)
@@ -346,6 +418,9 @@ def main():
     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
     rb.connect_socket(True, False)
 
+    '''
+    
+    
     # 250ms
     # rb.DURATION = 2.25
     # steps = 5
@@ -354,6 +429,8 @@ def main():
     # rb.DURATION = 2.5
     # steps = 10
 
+    # 1000ms
+    
     # 2000ms
     # rb.DURATION = 4
     # steps = 40
@@ -456,13 +533,6 @@ def main():
     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
     rb.connect_socket(True, False)
     '''
-
-
-
-
-
-
-
 
 
 
