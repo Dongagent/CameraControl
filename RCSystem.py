@@ -209,7 +209,7 @@ class robot:
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)                # create socket object
         
         # Please use ipconfig on the server to check the ip first. It may change every time we open the server.
-        host = '172.27.174.142'                                                      # set server address
+        host = '172.27.174.125'                                                      # set server address
         port = 12000                                                                 # set port
 
         # --------- DEBUG -------------
@@ -362,10 +362,10 @@ def main():
             time.sleep(1)
 
             rb.switch_to_customizedPose(i)
-            rb.connect_socket(isSmoothly=True, isRecording=True, apendix="{}".format(title[counter] + "_1")) # isSmoothly = True ,isRecording = True
+            rb.connect_socket(isSmoothly=True, isRecording=False, apendix="{}".format(title[counter] + "_1")) # isSmoothly = True ,isRecording = True
 
             rb.switch_to_customizedPose(neuExp)
-            rb.connect_socket(isSmoothly=True, isRecording=True, apendix="{}".format(title[counter] + "_2")) # isSmoothly = True ,isRecording = True
+            rb.connect_socket(isSmoothly=True, isRecording=False, apendix="{}".format(title[counter] + "_2")) # isSmoothly = True ,isRecording = True
             time.sleep(1)
 
             counter += 1
