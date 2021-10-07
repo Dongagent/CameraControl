@@ -23,6 +23,16 @@ import copy
 import os, subprocess
 import platform
 
+# -----for ros------
+import rospy
+from rospy.core import deprecated
+from std_msgs.msg import String
+import json
+import base64
+import time
+import struct
+# -----for ros END------
+
 SPACE = ' '
 
 DEBUG = 0 # 0 - Run; 1 - Debuging with robot; 2 - Debug WITHOUT robot 
@@ -171,6 +181,7 @@ class robot:
             self.robotParams[str(i)] = params[i - 1]
         self.__check_robotParams()
 
+    @deprecated
     def generate_execution_code(self, params):
         """Construct the action code as 'moveaxis [axis] [pos] [priority]' """
         # Generate execution code with given params
@@ -198,14 +209,47 @@ class robot:
                     #     print(self.lastParams[k], self.robotParams[k], interval, currentParams[k])
 
                 self.generate_execution_code(currentParams)
-                self.__sendExecutionCode()
+                
+                # self.__sendExecutionCode() # Use socket
+                self.ros_talker()# Use ROS
+
                 time.sleep(0.05)
 
     def normal_execution_mode(self):
         self.generate_execution_code(self.robotParams)
-        self.__sendExecutionCode()
+        # self.__sendExecutionCode() # Use socket
+        self.ros_talker()# Use ROS
+
+    def ros_talker():
+        pub = rospy.Publisher('rc/command', String, queue_size=10)
+        sub = rospy.Subscriber('rc/return', String, sub_callback)
+
+    def sub_callback(data):
+        recv_dict = json.loads(data.data)
+        if recv_dict['Message'] == "PotentioValsBase64":
+            potval_bin = base64.b64decode(recv_dict['ValsBase64'])
+            potval = struct.unpack('%sB' % len(potval_bin), potval_bin)
+            potentio = list(potval)
+            print(potentio)
+
+        if recv_dict['Message'] == "PotentioVals":
+            potvalstr = recv_dict['Vals'].split(',')
+            potentio = map((lambda x: int(x)), potvalstr)
+            print(potentio)
+
+        if recv_dict['Message'] == "PotentioAxes":
+            potaxisstr = recv_dict['Axes'].split(',')
+            axiswithpotentio = map((lambda x: int(x)), potaxisstr)
+            print(axiswithpotentio)
 
     def connect_socket(self, isSmoothly=False, isRecording=False, apendix="", steps=20, timeIntervalBeforeExp=1):
+        try:
+            ros_talker()
+        except rospy.ROSInterruptException: 
+            pass
+        
+        
+        
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)                # create socket object
         
         # Please use ipconfig on the server to check the ip first. It may change every time we open the server.
@@ -258,6 +302,8 @@ class robot:
         # This function cannot be called outside
         assert len(self.robotParams) == 35, "len(robotParams) != 35"
 
+    # Now use ROS instead
+    @deprecated
     def __sendExecutionCode(self):
         # This function cannot be called outside
         assert "move" in self.executionCode
@@ -295,6 +341,16 @@ class robot:
 
     def feedback(self):
         pass
+
+
+
+
+def list2string(data):
+    strtmp = ""
+    for val in data:
+        strtmp += str(val) + ","
+    retstr = strtmp.rstrip(',')
+    return retstr
 
 def basicRunningCell(robotObject, commandSet, isRecordingFlag=False, steps=20):
     

@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/dongagent/ros_dongagent_ws/install/setup.sh

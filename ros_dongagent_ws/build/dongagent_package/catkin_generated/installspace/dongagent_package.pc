@@ -1,0 +1,8 @@
+prefix=/home/dongagent/ros_dongagent_ws/install
+
+Name: dongagent_package
+Description: Description of dongagent_package
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

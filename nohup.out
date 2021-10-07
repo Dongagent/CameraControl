@@ -1,0 +1,29 @@
+[I 2021-10-07 13:55:27.260 ServerApp] jupyterlab | extension was successfully linked.
+[I 2021-10-07 13:55:27.452 ServerApp] jupyter_nbextensions_configurator | extension was found and enabled by nbclassic. Consider moving the extension to Jupyter Server's extension paths.
+[I 2021-10-07 13:55:27.452 ServerApp] jupyter_nbextensions_configurator | extension was successfully linked.
+[I 2021-10-07 13:55:27.452 ServerApp] nbclassic | extension was successfully linked.
+[I 2021-10-07 13:55:27.487 ServerApp] nbclassic | extension was successfully loaded.
+[I 2021-10-07 13:55:27.487 ServerApp] [jupyter_nbextensions_configurator] enabled 0.4.1
+[I 2021-10-07 13:55:27.487 ServerApp] jupyter_nbextensions_configurator | extension was successfully loaded.
+[I 2021-10-07 13:55:27.488 LabApp] JupyterLab extension loaded from /home/dongagent/anaconda3/lib/python3.8/site-packages/jupyterlab
+[I 2021-10-07 13:55:27.488 LabApp] JupyterLab application directory is /home/dongagent/anaconda3/share/jupyter/lab
+[I 2021-10-07 13:55:27.490 ServerApp] jupyterlab | extension was successfully loaded.
+[I 2021-10-07 13:55:27.490 ServerApp] Serving notebooks from local directory: /home/dongagent/github/CameraControl
+[I 2021-10-07 13:55:27.490 ServerApp] Jupyter Server 1.8.0 is running at:
+[I 2021-10-07 13:55:27.490 ServerApp] http://localhost:8888/lab?token=709b0f002d1046ea5d89bb6b153471037efb6f835f19fbe4
+[I 2021-10-07 13:55:27.490 ServerApp]     http://127.0.0.1:8888/lab?token=709b0f002d1046ea5d89bb6b153471037efb6f835f19fbe4
+[I 2021-10-07 13:55:27.490 ServerApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[C 2021-10-07 13:55:27.505 ServerApp] 
+    
+    To access the server, open this file in a browser:
+        file:///home/dongagent/.local/share/jupyter/runtime/jpserver-6451-open.html
+    Or copy and paste one of these URLs:
+        http://localhost:8888/lab?token=709b0f002d1046ea5d89bb6b153471037efb6f835f19fbe4
+        http://127.0.0.1:8888/lab?token=709b0f002d1046ea5d89bb6b153471037efb6f835f19fbe4
+[I 2021-10-07 13:55:31.312 LabApp] Build is up to date
+[I 2021-10-07 13:55:32.350 ServerApp] Kernel started: 88aa61af-74a5-4a9e-b02a-36bc6bf13cea
+-\|/-\|/-\|/-\|/-\|/[W 2021-10-07 13:55:35.171 ServerApp] 403 GET /static/components/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML-full,Safe&delayStartupUntil=configured (127.0.0.1): components/MathJax/MathJax.js is not in root static directory
+[W 2021-10-07 13:55:35.182 ServerApp] 403 GET /static/components/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML-full,Safe&delayStartupUntil=configured (127.0.0.1) 12.09ms referer=http://localhost:8888/notebooks/Untitled.ipynb?kernel_name=python3
+[W 2021-10-07 13:55:35.205 ServerApp] 404 GET /static/notebook/js/main.min.js?v=7af39fe9ec3585e958e8637ace5e96fe0bf3ced51a8b8b5875c571f941299779fe746bf74f02bab0f3c6e08281d6ecadafcb5b08120e98f081c9c7dd824bdfdc (127.0.0.1) 1.99ms referer=http://localhost:8888/notebooks/Untitled.ipynb?kernel_name=python3
+[W 2021-10-07 13:55:37.890 ServerApp] 404 GET /nbextensions/nbextensions_configurator/list?_=1633582535269 (127.0.0.1) 0.88ms referer=http://localhost:8888/tree
+[I 2021-10-07 15:51:22.179 ServerApp] Starting buffering for 88aa61af-74a5-4a9e-b02a-36bc6bf13cea:35e56d01-ec65-4713-9833-cf57d92b9e2c
