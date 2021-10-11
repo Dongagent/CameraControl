@@ -1,6 +1,6 @@
 # CMake generated Testfile for 
 # Source directory: /usr/src/googletest/googlemock
-# Build directory: /home/dongagent/ros_dongagent_ws/build/gtest/googlemock
+# Build directory: /home/dongagent/github/CameraControl/ros_dongagent_ws/build/gtest/googlemock
 # 
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.

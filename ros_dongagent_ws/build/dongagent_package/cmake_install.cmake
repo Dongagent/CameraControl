@@ -1,8 +1,8 @@
-# Install script for directory: /home/dongagent/ros_dongagent_ws/src/dongagent_package
+# Install script for directory: /home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/dongagent/ros_dongagent_ws/install")
+  set(CMAKE_INSTALL_PREFIX "/home/dongagent/github/CameraControl/ros_dongagent_ws/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -38,17 +38,17 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/dongagent/ros_dongagent_ws/build/dongagent_package/catkin_generated/installspace/dongagent_package.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/dongagent/github/CameraControl/ros_dongagent_ws/build/dongagent_package/catkin_generated/installspace/dongagent_package.pc")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/dongagent_package/cmake" TYPE FILE FILES
-    "/home/dongagent/ros_dongagent_ws/build/dongagent_package/catkin_generated/installspace/dongagent_packageConfig.cmake"
-    "/home/dongagent/ros_dongagent_ws/build/dongagent_package/catkin_generated/installspace/dongagent_packageConfig-version.cmake"
+    "/home/dongagent/github/CameraControl/ros_dongagent_ws/build/dongagent_package/catkin_generated/installspace/dongagent_packageConfig.cmake"
+    "/home/dongagent/github/CameraControl/ros_dongagent_ws/build/dongagent_package/catkin_generated/installspace/dongagent_packageConfig-version.cmake"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/dongagent_package" TYPE FILE FILES "/home/dongagent/ros_dongagent_ws/src/dongagent_package/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/dongagent_package" TYPE FILE FILES "/home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package/package.xml")
 endif()
 

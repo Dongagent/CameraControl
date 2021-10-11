@@ -17,6 +17,8 @@ def list2string(data):
 
 def sub_callback(data):
     recv_dict = json.loads(data.data)
+    rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
+
     if recv_dict['Message'] == "PotentioValsBase64":
         potval_bin = base64.b64decode(recv_dict['ValsBase64'])
         potval = struct.unpack('%sB' % len(potval_bin), potval_bin)
@@ -34,10 +36,11 @@ def sub_callback(data):
         print(axiswithpotentio)
 
 def talker():
+    
     pub = rospy.Publisher('rc/command', String, queue_size=10)
     sub = rospy.Subscriber('rc/return', String, sub_callback)
     rospy.init_node('rctest', anonymous=True)
-
+    
     r = rospy.Rate(1) # speed
 
     target = [64,64,128,128,128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,128,128,122]
@@ -68,8 +71,8 @@ def talker():
     while not rospy.is_shutdown():
 
         if eyeflag == 1:
-            target[0] = 255
-            target[1] = 255
+            target[0] = 254
+            target[1] = 254
             # target_bin = struct.pack('%sB' % len(target), *target)
             # dictdata['ValsBase64'] = base64.b64encode(bytes(target_bin)).decode('utf-8')
             eyelids_vals[0] = 255
@@ -86,12 +89,14 @@ def talker():
             dictdata3['Vals'] = list2string(eyelids_vals)
             eyeflag = 1
 
-        strdata = json.dumps(dictdata3)
-        # print(strdata)
+        strdata = json.dumps(dictdata2)
+        # rospy.loginfo(strdata)
 
-        # pub.publish(strdata)
+        pub.publish(strdata)
 
         r.sleep()
+
+        # print(pub.get_num_connections())
 
 if __name__ == '__main__':
     try:

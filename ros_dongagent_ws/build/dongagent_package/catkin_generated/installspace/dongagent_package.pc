@@ -1,4 +1,4 @@
-prefix=/home/dongagent/ros_dongagent_ws/install
+prefix=/home/dongagent/github/CameraControl/ros_dongagent_ws/install
 
 Name: dongagent_package
 Description: Description of dongagent_package

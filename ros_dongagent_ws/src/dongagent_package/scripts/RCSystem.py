@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Author: Dongsheng Yang
 # @Email:  yang.dongsheng.46w@st.kyoto-u.ac.jp
@@ -5,14 +6,14 @@
 # @Date:   2021-05-20 18:19:38
 # @Last Modified by:   dongshengyang
 # @Last Modified time: 2021-05-20 18:21:38
-
+'''
 __author__ = "Dongsheng Yang"
 __copyright__ = "Copyright 2021, The Riken Robotics Project"
 __version__ = "1.0.0"
 __maintainer__ = "Dongsheng Yang"
 __email__ = "yang.dongsheng.46w@st.kyoto-u.ac.jp"
 __status__ = "Developing"
-
+'''
 
 import random
 import defaultPose
@@ -23,15 +24,21 @@ import copy
 import os, subprocess
 import platform
 
-# -----for ros------
+# ----- for ros------
 import rospy
-from rospy.core import deprecated
 from std_msgs.msg import String
 import json
 import base64
 import time
 import struct
-# -----for ros END------
+# ----- for ros END------
+
+# ----- for py-feat ------
+
+
+
+# ----- for py-feat END ------
+
 
 SPACE = ' '
 
@@ -54,6 +61,11 @@ class robot:
             0, 0, 0, 0, 0,
             0, 32, 128, 128, 128
         ]
+
+        # initialization of States, like [0, 0, 0, ... , 0]
+        self.lastState = self.stableState # initialization
+        self.nextState = self.stableState # initialization
+
         # initialization of lastParams
         self.lastParams = self.robotParams
         self.defaultPose = defaultPose.defaultPose
@@ -154,6 +166,12 @@ class robot:
         self.connect_socket(isSmoothly=True)
         print("return_to_stable_state, self.robotParams are all set")
 
+    def transfer_robotParams_to_states(self, params):
+        states = [0 for x in range(36)]
+        for i in range(1, 36):
+            states[i - 1] = params[str(i)]
+        return states
+
     def switch_to_defaultPose(self, pose):
         # pose number is [1,2,3,4,5,6, ,8,9,10, ,12,13,14,15,16] 
         # 1 標準 2 笑顔 3 怒り 4 悲しみ 5 驚き 6 微笑 
@@ -167,6 +185,13 @@ class robot:
         # Notice: customizedPose should clarify 35 axes
         # E.g. [1, 2, 3, 0, ... , 255]
         assert len(customizedPose) == 35, "ERROR! The customizedPose don't have 35 axes."
+        # States
+        self.lastState = self.nextState
+        self.nextState = customizedPose
+        print("self.lastState", self.lastState)
+        print("self.nextState", self.nextState)
+
+        # params
         self.change_robotParams(customizedPose)
         if DEBUG >= 1:
             print(self.robotParams)
@@ -181,7 +206,7 @@ class robot:
             self.robotParams[str(i)] = params[i - 1]
         self.__check_robotParams()
 
-    @deprecated
+    # @deprecated
     def generate_execution_code(self, params):
         """Construct the action code as 'moveaxis [axis] [pos] [priority]' """
         # Generate execution code with given params
@@ -199,6 +224,7 @@ class robot:
         # steps: the middle steps between two robot expressions, default value is 5
         if self.robotParams:
             stepNum = steps
+
             for i in range(0, stepNum):
                 frab = (i + 1) / float(stepNum)
                 currentParams = {}
@@ -209,7 +235,7 @@ class robot:
                     #     print(self.lastParams[k], self.robotParams[k], interval, currentParams[k])
 
                 self.generate_execution_code(currentParams)
-                
+                self.nextState = self.transfer_robotParams_to_states(currentParams)
                 # self.__sendExecutionCode() # Use socket
                 self.ros_talker()# Use ROS
 
@@ -220,11 +246,43 @@ class robot:
         # self.__sendExecutionCode() # Use socket
         self.ros_talker()# Use ROS
 
-    def ros_talker():
+    def ros_talker(self):
         pub = rospy.Publisher('rc/command', String, queue_size=10)
-        sub = rospy.Subscriber('rc/return', String, sub_callback)
+        sub = rospy.Subscriber('rc/return', String, self.sub_callback)
+        rospy.init_node('rctest', anonymous=True)
 
-    def sub_callback(data):
+        r = rospy.Rate(10) # speed
+
+        target = self.nextState
+
+        # if you wan to use MoveAllAxes
+        dictdata = {
+            "Command": "MoveAllAxes",
+            "Vals": list2string(target)
+        }
+
+        if not rospy.is_shutdown():
+            strdata = json.dumps(dictdata)
+            print("strdata", strdata)
+
+            pub.publish(strdata)
+
+            # r.sleep()
+        
+        # Now use ROS instead
+    # @deprecated
+    def __sendExecutionCode(self):
+        # This function cannot be called outside
+        assert "move" in self.executionCode
+        msg = self.executionCode # message
+
+        self.client.send(msg.encode('utf-8')) # send a message to server, python3 only receive byte data
+        data = self.client.recv(1024) # receive a message, the maximum length is 1024 bytes
+        # print('recv:', data.decode()) # print the data I received
+        if "OK" not in data.decode():
+            raise Exception("ERROR! Did NOT receive 'OK'")
+
+    def sub_callback(self, data):
         recv_dict = json.loads(data.data)
         if recv_dict['Message'] == "PotentioValsBase64":
             potval_bin = base64.b64decode(recv_dict['ValsBase64'])
@@ -243,14 +301,13 @@ class robot:
             print(axiswithpotentio)
 
     def connect_socket(self, isSmoothly=False, isRecording=False, apendix="", steps=20, timeIntervalBeforeExp=1):
-        try:
-            ros_talker()
-        except rospy.ROSInterruptException: 
-            pass
+
         
+        '''
+        # socket method
+        # @deprecated
         
-        
-        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)                # create socket object
+        # self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)                # create socket object
         
         # Please use ipconfig on the server to check the ip first. It may change every time we open the server.
         host = '172.27.174.125'                                                      # set server address
@@ -273,47 +330,46 @@ class robot:
         except Exception as e:
             print("Connection Failed, ERROR code is: ", e)
             self.connection = False
+        '''
 
-        if self.connection:
-            # Start Record if isRecording
-            if isRecording:
-                process = self.take_video(isUsingCounter=False, apendix=apendix)
-                # time.sleep(1)
-            # Smoothly execute
-            if isSmoothly:
-                print("Smoothly execution activated")
-                time.sleep(timeIntervalBeforeExp) # Sleep 1 second by default to wait for the start of the video 
-                self.smooth_execution_mode(steps)
-            # Otherwise
+        try:
+            # self.ros_talker()
+            if self.connection:
+                # Start Record if isRecording
+                if isRecording:
+                    process = self.take_video(isUsingCounter=False, apendix=apendix)
+                    # time.sleep(1)
+                # Smoothly execute
+                if isSmoothly:
+                    print("Smoothly execution activated")
+                    time.sleep(timeIntervalBeforeExp) # Sleep 1 second by default to wait for the start of the video 
+                    self.smooth_execution_mode(steps)
+                # Otherwise
+                else:
+                    self.normal_execution_mode()
+                # self.client.close() # use ros now
+                
+                # Close Record
+                if isRecording:
+                    process.wait()
+                    if process.returncode != 0:
+                        print(process.stdout.readlines())
+                        raise Exception("The subprocess does NOT end.")
             else:
-                self.normal_execution_mode()
-            self.client.close()
-            
-            # Close Record
-            if isRecording:
-                process.wait()
-                if process.returncode != 0:
-                    print(process.stdout.readlines())
-                    raise Exception("The subprocess does NOT end.")
-        else:
-            raise Exception("Connection Failed")
+                raise Exception("Connection Failed")
+        except rospy.ROSInterruptException: 
+            print(rospy.ROSInterruptException)
+
+
+        
+        # '''
+
 
     def __check_robotParams(self):
         # This function cannot be called outside
         assert len(self.robotParams) == 35, "len(robotParams) != 35"
 
-    # Now use ROS instead
-    @deprecated
-    def __sendExecutionCode(self):
-        # This function cannot be called outside
-        assert "move" in self.executionCode
-        msg = self.executionCode # message
 
-        self.client.send(msg.encode('utf-8')) # send a message to server, python3 only receive byte data
-        data = self.client.recv(1024) # receive a message, the maximum length is 1024 bytes
-        # print('recv:', data.decode()) # print the data I received
-        if "OK" not in data.decode():
-            raise Exception("ERROR! Did NOT receive 'OK'")
             
     def robotChecker(self):
         assert self.connection == True # make sure the connection is good
@@ -337,13 +393,10 @@ class robot:
         return openfacePath
 
     def analysis(self):
-        pass
+        py_feat_analysis()
 
     def feedback(self):
         pass
-
-
-
 
 def list2string(data):
     strtmp = ""
@@ -371,16 +424,32 @@ def basicRunningCell(robotObject, commandSet, isRecordingFlag=False, steps=20):
     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
     rb.connect_socket(True, False)
 
+def py_feat_analysis():
+    pass
+
 
 def main():
     rb = robot(duration=3)
     assert rb.connection == True
-    
+    # rb.transfer_robotParams_to_states(rb.lastParams, [x for x in range(36)])
 
+    print("rb.lastParams", rb.lastParams)
+
+
+    # 2021.10.11
+    print('\n{}\n'.format("lookDown"))
+    lD = defaultPose.experiment1['lookDown']
+
+    rb.switch_to_customizedPose(lD)
+    rb.connect_socket(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+    time.sleep(3)
+
+    rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    rb.connect_socket(True, False)
 
 
     # 2021.06.30
-    
+    '''
     lD = defaultPose.experiment1['lookDown']
     cE = defaultPose.experiment1['closeEye']
     neuExp = defaultPose.experiment1['netural']
@@ -433,7 +502,7 @@ def main():
     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
     rb.connect_socket(True, False)
     
-    
+    '''
     # 2021.06.23
 
     # LookDown first
