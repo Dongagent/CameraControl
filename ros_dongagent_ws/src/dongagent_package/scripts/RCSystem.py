@@ -87,22 +87,64 @@ class robot:
         self.initialize_robotParams()
         self.return_to_stable_state()
 
-    def take_picture(self):
+    def take_picture(self, isUsingCounter=True, appendix=''):
         # we don't need this
-        pass
-
-    def take_video(self, isUsingCounter=True, apendix=''):
+        # Allright, we need this 
         self.counter += 1
         if isUsingCounter:
             self.fileName = time.strftime("%Y_%m_%d_%H_%M_%S_No", time.localtime()) + str(self.counter)
-            if apendix:
-                self.fileName += "_" + apendix + ".mkv"
+            if appendix:
+                self.fileName += "_" + appendix + ".png"
+            else:
+                self.fileName += ".png"
+        else:
+            self.fileName = time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime()) 
+            if appendix:
+                self.fileName += "_" + appendix + ".png"
+            else:
+                self.fileName += ".png"
+        if DEBUG == 2:
+            print("Filename is {}".format(self.fileName))
+            return
+        self.fileName = "/home/dongagent/github/CameraControl/algorithm/tempimg/" + self.fileName
+        if os.path.exists(self.fileName):
+            raise Exception("Same File!")
+        if "Linux" in platform.platform():
+            # Remember to check the path everytime.
+            videoPath = "/dev/video2"
+            fParam = "v4l2"
+            videoTypeParm = "-input_format"
+        elif "Windows" in platform.platform():
+            videoPath = "video='C922 Pro Stream Webcam'"
+            fParam = "dshow" 
+            videoTypeParm = "-vcodec"
+
+        # only the command is different from take_video
+        command = "ffmpeg -f {} -i {} -vframes 1 {}".format(
+            fParam, 
+            videoPath, 
+            self.fileName)
+        # ffmpeg -f v4l2 -i /dev/video2 -vframes 1 /home/dongagent/github/CameraControl/algorithm/test.png
+
+        if "Linux" in platform.platform():
+            # Linux
+            return subprocess.Popen([command], stdout=subprocess.PIPE, shell=True)
+        elif "Windows" in platform.platform():
+            # Windows
+            return subprocess.Popen(["pwsh", "-Command", command], stdout=subprocess.PIPE)
+
+    def take_video(self, isUsingCounter=True, appendix=''):
+        self.counter += 1
+        if isUsingCounter:
+            self.fileName = time.strftime("%Y_%m_%d_%H_%M_%S_No", time.localtime()) + str(self.counter)
+            if appendix:
+                self.fileName += "_" + appendix + ".mkv"
             else:
                 self.fileName += ".mkv"
         else:
             self.fileName = time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime()) 
-            if apendix:
-                self.fileName += "_" + apendix + ".mkv"
+            if appendix:
+                self.fileName += "_" + appendix + ".mkv"
             else:
                 self.fileName += ".mkv"
         if DEBUG == 2:
@@ -121,7 +163,17 @@ class robot:
             fParam = "dshow" 
             videoTypeParm = "-vcodec"
         
-        command = "ffmpeg -f {} -framerate {} -video_size {} {} mjpeg -t {} -i {} -t {} -c copy {}".format(fParam, str(self.FRAMERATE), self.VIDEOSIZE, videoTypeParm, str(self.DURATION), videoPath, str(self.DURATION), self.fileName)
+        command = "ffmpeg -f {} -framerate {} -video_size {} {} mjpeg -t {} -i {} -t {} -c copy {}".format(
+            fParam, 
+            str(self.FRAMERATE), 
+            self.VIDEOSIZE, 
+            videoTypeParm, 
+            str(self.DURATION), 
+            videoPath, 
+            str(self.DURATION), 
+            self.fileName
+        )
+        # ffmpeg -f v4l2 -framerate 60 -video_size 1280x720 -input_format mjpeg -i /dev/video2 -vf vflip -c copy 1.mkv
         
         if "Linux" in platform.platform():
             # Linux
@@ -163,7 +215,7 @@ class robot:
         
         self.__check_robotParams()
         # Drive the robot to the 
-        self.connect_socket(isSmoothly=True)
+        self.connect_ros(isSmoothly=True)
         print("return_to_stable_state, self.robotParams are all set")
 
     def transfer_robotParams_to_states(self, params):
@@ -263,13 +315,13 @@ class robot:
 
         if not rospy.is_shutdown():
             strdata = json.dumps(dictdata)
-            print("strdata", strdata)
+            # print("strdata", strdata)
 
             pub.publish(strdata)
-
             # r.sleep()
         
         # Now use ROS instead
+
     # @deprecated
     def __sendExecutionCode(self):
         # This function cannot be called outside
@@ -300,9 +352,8 @@ class robot:
             axiswithpotentio = map((lambda x: int(x)), potaxisstr)
             print(axiswithpotentio)
 
-    def connect_socket(self, isSmoothly=False, isRecording=False, apendix="", steps=20, timeIntervalBeforeExp=1):
+    def connect_ros(self, isSmoothly=False, isRecording=False, appendix="", steps=20, timeIntervalBeforeExp=1):
 
-        
         '''
         # socket method
         # @deprecated
@@ -315,10 +366,10 @@ class robot:
 
         # --------- DEBUG -------------
         if DEBUG == 2:
-            print("function connect_socket:", self.robotParams)
+            print("function connect_ros:", self.robotParams)
             # Test fileName
             if isRecording:
-                self.take_video(isUsingCounter=False, apendix=apendix)
+                self.take_video(isUsingCounter=False, appendix=appendix)
             return
         
         # --------- DEBUG END -------------
@@ -337,7 +388,10 @@ class robot:
             if self.connection:
                 # Start Record if isRecording
                 if isRecording:
-                    process = self.take_video(isUsingCounter=False, apendix=apendix)
+                    # Please set which recording system you want to use. Video or image.
+                    # For image, we need to take photos after conneect_socket
+                    process = self.take_video(isUsingCounter=False, appendix=appendix)
+                    # process = self.take_picture(isUsingCounter=False, appendix=appendix)
                     # time.sleep(1)
                 # Smoothly execute
                 if isSmoothly:
@@ -368,7 +422,7 @@ class robot:
     def __check_robotParams(self):
         # This function cannot be called outside
         assert len(self.robotParams) == 35, "len(robotParams) != 35"
-
+        # give some restriction here
 
             
     def robotChecker(self):
@@ -377,7 +431,7 @@ class robot:
         self.return_to_stable_state() # Return to the stable state (標準Pose)
 
         self.switch_to_defaultPose(2) # Switch to default pose 2 笑顔
-        self.connect_socket(isSmoothly=True, isRecording=False)     # connect server and send the command to change facial expression smoothly
+        self.connect_ros(isSmoothly=True, isRecording=False)     # connect server and send the command to change facial expression smoothly
         time.sleep(1)
 
         self.return_to_stable_state() # Return to the stable state (標準Pose)  
@@ -413,20 +467,56 @@ def basicRunningCell(robotObject, commandSet, isRecordingFlag=False, steps=20):
         print("\n\n")
         # Return to Standard Pose
         rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-        rb.connect_socket(True, False)
+        rb.connect_ros(True, False)
 
         # Go to the facial expressions
         print("Switch to {}".format(k))
         rb.switch_to_customizedPose(v)
-        rb.connect_socket(isSmoothly=True, isRecording=isRecordingFlag, apendix="{}".format(k), steps=steps) # isSmoothly = True ,isRecording = True
+        rb.connect_ros(isSmoothly=True, isRecording=isRecordingFlag, appendix="{}".format(k), steps=steps) # isSmoothly = True ,isRecording = True
 
     # Return to Standard Pose
     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-    rb.connect_socket(True, False)
+    rb.connect_ros(True, False)
 
-def py_feat_analysis():
-    pass
+def get_target(emotion_name):
+    if emotion_name == "Anger":
+        return 0
+    elif emotion_name == "Disgust":
+        return 1
+    elif emotion_name == "Fear":
+        return 2
+    elif emotion_name == "Happiness":
+        return 3
+    elif emotion_name == "Sadness":
+        return 4
+    elif emotion_name == "Surprise":
+        return 5
 
+
+def py_feat_analysis(img, target_emotion):
+    '''
+        @img: file name 
+        @target_emotion: Anger, Disgust, Fear, Happiness, Sadness, Surprise
+    '''
+    from feat import Detector
+    face_model = "retinaface"
+    landmark_model = "mobilenet"
+    au_model = "rf"
+    # au_model = "JAANET"
+    # emotion_model = "resmasknet"
+    emotion_model = "rf"
+
+    detector = Detector(au_model = au_model, emotion_model = emotion_model)
+
+    image_prediction = detector.detect_image(img)
+    df = image_prediction.head()
+    print(df.iloc[:, -8:])
+    csv_name = img[:-4]+".csv"
+    csv_emotion_name = img[:-4]+"emotion.csv"
+    df.to_csv(csv_name)
+    df.iloc[:, -8:].to_csv(csv_emotion_name)
+    targetID = get_target(target_emotion)
+    return df.iloc[:, -8:].iloc[0,targetID]
 
 def main():
     rb = robot(duration=3)
@@ -435,8 +525,27 @@ def main():
 
     print("rb.lastParams", rb.lastParams)
 
+    # defaultPose.prototypeFacialExpressions
 
+    # 2021.11.20
+    print('\n{}\n'.format("happyness"))
+    for k,v in defaultPose.prototypeFacialExpressions.items():
+        print("switch to: ",k)
+        # print(v)
+        rb.switch_to_customizedPose(v)
+        rb.connect_ros(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+        rb.take_picture(isUsingCounter=False, appendix=k+'_test')
+        time.sleep(3)
+        print("py_feat_analysis result is: ", py_feat_analysis(rb.fileName, 'Surprise'))
+
+    rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    rb.connect_ros(True, False)
+
+
+
+    '''
     # 2021.10.11
+
     print('\n{}\n'.format("lookDown"))
     lD = defaultPose.experiment1['lookDown']
 
@@ -449,7 +558,7 @@ def main():
 
 
     # 2021.06.30
-    '''
+    
     lD = defaultPose.experiment1['lookDown']
     cE = defaultPose.experiment1['closeEye']
     neuExp = defaultPose.experiment1['netural']
@@ -474,33 +583,33 @@ def main():
             
             # look Down and close eyes
             rb.switch_to_customizedPose(lD)
-            rb.connect_socket(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+            rb.connect_ros(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
             time.sleep(3)
 
             # look ahead but still close eyes
             rb.switch_to_customizedPose(cE)
-            rb.connect_socket(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+            rb.connect_ros(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
             time.sleep(1)
 
             rb.switch_to_customizedPose(neuExp)
-            rb.connect_socket(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+            rb.connect_ros(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
             time.sleep(1)
 
             rb.switch_to_customizedPose(i)
-            rb.connect_socket(isSmoothly=True, isRecording=False, apendix="{}".format(title[counter] + "_1")) # isSmoothly = True ,isRecording = True
+            rb.connect_ros(isSmoothly=True, isRecording=False, appendix="{}".format(title[counter] + "_1")) # isSmoothly = True ,isRecording = True
 
             rb.switch_to_customizedPose(neuExp)
-            rb.connect_socket(isSmoothly=True, isRecording=False, apendix="{}".format(title[counter] + "_2")) # isSmoothly = True ,isRecording = True
+            rb.connect_ros(isSmoothly=True, isRecording=False, appendix="{}".format(title[counter] + "_2")) # isSmoothly = True ,isRecording = True
             time.sleep(1)
 
             counter += 1
             
     rb.switch_to_customizedPose(lD)
-    rb.connect_socket(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+    rb.connect_ros(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
     time.sleep(3)
 
     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-    rb.connect_socket(True, False)
+    rb.connect_ros(True, False)
     
     '''
     # 2021.06.23
@@ -516,32 +625,32 @@ def main():
         for i in ['anger', 'happyness']:
             # look Down and close eyes
             rb.switch_to_customizedPose(lD)
-            rb.connect_socket(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+            rb.connect_ros(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
             time.sleep(3)
 
             # look ahead but still close eyes
             rb.switch_to_customizedPose(cE)
-            rb.connect_socket(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+            rb.connect_ros(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
             time.sleep(1)
 
             rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-            rb.connect_socket(True, False)
+            rb.connect_ros(True, False)
             time.sleep(1)
 
             rb.switch_to_customizedPose(defaultPose.prototypeFacialExpressions[i])
-            rb.connect_socket(isSmoothly=True, isRecording=False ) # isSmoothly = True ,isRecording = True
+            rb.connect_ros(isSmoothly=True, isRecording=False ) # isSmoothly = True ,isRecording = True
             time.sleep(1)
 
             rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-            rb.connect_socket(True, False)
+            rb.connect_ros(True, False)
             time.sleep(1)
 
     rb.switch_to_customizedPose(lD)
-    rb.connect_socket(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+    rb.connect_ros(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
     time.sleep(3)
 
     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-    rb.connect_socket(True, False)
+    rb.connect_ros(True, False)
 
     '''
     
@@ -593,25 +702,25 @@ def main():
 
     # Return to Standard Pose
     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-    rb.connect_socket(True, False)
+    rb.connect_ros(True, False)
 
     # Go to the facial expressions
     print("Switch to {}".format("happyness"))
     rb.switch_to_customizedPose(defaultPose.prototypeFacialExpressions['happyness'])
-    rb.connect_socket(isSmoothly=True, isRecording=True) # isSmoothly = True ,isRecording = True
+    rb.connect_ros(isSmoothly=True, isRecording=True) # isSmoothly = True ,isRecording = True
 
     # Return to Standard Pose
     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-    rb.connect_socket(True, False)
+    rb.connect_ros(True, False)
 
     # Go to the facial expressions
     print("Switch to {}".format("happynessResultFixed"))
     rb.switch_to_customizedPose(defaultPose.fixedprototypeFacialExpressions['happynessResultFixed'])
-    rb.connect_socket(isSmoothly=True, isRecording=True ) # isSmoothly = True ,isRecording = True
+    rb.connect_ros(isSmoothly=True, isRecording=True ) # isSmoothly = True ,isRecording = True
 
     # Return to Standard Pose
     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-    rb.connect_socket(True, False)
+    rb.connect_ros(True, False)
     '''
 
 
@@ -623,17 +732,17 @@ def main():
         print("\n\n")
         # Return to Standard Pose
         rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-        rb.connect_socket(True, False)
+        rb.connect_ros(True, False)
 
         # Go to the facial expressions
         print("Switch to {}".format(k))
         rb.switch_to_customizedPose(v)
-        rb.connect_socket(isSmoothly=True, isRecording=True, apendix="{}".format(k)) # isSmoothly = True ,isRecording = True
+        rb.connect_ros(isSmoothly=True, isRecording=True, appendix="{}".format(k)) # isSmoothly = True ,isRecording = True
 
 
     # Return to Standard Pose
     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-    rb.connect_socket(True, False)
+    rb.connect_ros(True, False)
     '''
 
 
@@ -646,17 +755,17 @@ def main():
         print("\n\n")
         # Return to Standard Pose
         rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-        rb.connect_socket(True, False)
+        rb.connect_ros(True, False)
 
         # Go to the facial expressions
         print("Switch to {}".format(k))
         rb.switch_to_customizedPose(v)
-        rb.connect_socket(isSmoothly=True, isRecording=True, apendix="{}".format(k)) # isSmoothly = True ,isRecording = True
+        rb.connect_ros(isSmoothly=True, isRecording=True, appendix="{}".format(k)) # isSmoothly = True ,isRecording = True
 
 
     # Return to Standard Pose
     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-    rb.connect_socket(True, False)
+    rb.connect_ros(True, False)
     '''
 
 
@@ -673,12 +782,12 @@ def main():
             continue
         # Return to Standard Pose
         rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-        rb.connect_socket(True, False)
+        rb.connect_ros(True, False)
 
         # Go to the AU
         print("Switch to {}".format(k))
         rb.switch_to_customizedPose(v)
-        rb.connect_socket(True, True, "{}".format(k)) # isSmoothly = True ,isRecording = False
+        rb.connect_ros(True, True, "{}".format(k)) # isSmoothly = True ,isRecording = False
         temp_counter += 1
         # if temp_counter > 2:
         #     break
@@ -692,7 +801,7 @@ def main():
     # StandardPose
     # print("Switch to StandardPose")
     # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-    # rb.connect_socket(True, False)
+    # rb.connect_ros(True, False)
 
     # AU1
     # print("Switch to AU1")
@@ -719,7 +828,7 @@ def main():
     # AU15 (Use 4 second to generate this facial expression), 19, 23
     # print("Switch to AU15")
     # rb.switch_to_customizedPose(rb.AUPose['AU15'])
-    # rb.connect_socket(True, False, steps = 40) 
+    # rb.connect_ros(True, False, steps = 40) 
     # time.sleep(5)
     # AU16
     
@@ -737,13 +846,13 @@ def main():
 
     # print("Switch to StandardPose")
     # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-    # rb.connect_socket(True, False)
+    # rb.connect_ros(True, False)
 
     '''
     rb.return_to_stable_state() # Return to the stable state (標準Pose)
 
     rb.switch_to_defaultPose(2) # Switch to default pose 2 笑顔
-    rb.connect_socket(True, False)     # connect server and send the command to change facial expression smoothly
+    rb.connect_ros(True, False)     # connect server and send the command to change facial expression smoothly
     time.sleep(3)
 
     rb.return_to_stable_state() # Return to the stable state (標準Pose)    
@@ -751,7 +860,7 @@ def main():
 
 
     # rb.switch_to_defaultPose(1) # Switch to default pose 1 標準
-    # rb.connect_socket()            # # connect server and send the command, but change facial expression quickly    
+    # rb.connect_ros()            # # connect server and send the command, but change facial expression quickly    
     # time.sleep(3)
 
     
@@ -765,12 +874,12 @@ if __name__ == '__main__':
 # A loop execution for defaultPose 1~3
 for i in range(1, 4):
     rb.switch_to_defaultPose(i)
-    rb.connect_socket(True)
+    rb.connect_ros(True)
     time.sleep(4)        
 
 
 rb.switch_to_defaultPose(1)
-rb.connect_socket(True)
+rb.connect_ros(True)
 
 '''
 
@@ -780,11 +889,11 @@ rb.connect_socket(True)
 #     for j in range(2):
 #         for i in [1,2,3,4,5,6,8,9,10,12,13,14,15,16]:
 #             rb.switch_to_defaultPose(i) # Switch to default pose 2 笑顔
-#             rb.connect_socket(True)     # connect server and send the command to change facial expression smoothly
+#             rb.connect_ros(True)     # connect server and send the command to change facial expression smoothly
 #             time.sleep(3)
 
 #     rb.switch_to_defaultPose(1) # Switch to default pose 1 標準
-#     rb.connect_socket()            # # connect server and send the command, but change facial expression quickly    
+#     rb.connect_ros()            # # connect server and send the command, but change facial expression quickly    
 #     time.sleep(3)
 
 '''
