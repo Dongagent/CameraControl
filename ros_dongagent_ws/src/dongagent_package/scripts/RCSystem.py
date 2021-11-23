@@ -16,13 +16,17 @@ __status__ = "Developing"
 '''
 
 import random
+from typing import Counter
 import defaultPose
-import socket
+
+# import socket
 import time
 import copy
 # import cv2
 import os, subprocess
 import platform
+import numpy as np
+from bayes_opt import BayesianOptimization
 
 # ----- for ros------
 import rospy
@@ -87,7 +91,7 @@ class robot:
         self.initialize_robotParams()
         self.return_to_stable_state()
 
-    def take_picture(self, isUsingCounter=True, appendix=''):
+    def take_picture(self, isUsingCounter=True, appendix='', folder=''):
         # we don't need this
         # Allright, we need this 
         self.counter += 1
@@ -106,7 +110,19 @@ class robot:
         if DEBUG == 2:
             print("Filename is {}".format(self.fileName))
             return
-        self.fileName = "/home/dongagent/github/CameraControl/algorithm/tempimg/" + self.fileName
+        if folder:
+            folderPath = "/home/dongagent/github/CameraControl/algorithm/{}/".format(folder)
+            if not os.path.exists(folderPath):
+                try:
+                    os.mkdir(folderPath)
+                except Exception as e:
+                    print(e)
+
+        if not folder:
+            self.fileName = "/home/dongagent/github/CameraControl/algorithm/tempimg/{}".format(self.fileName)
+        else:
+            self.fileName = folderPath + self.fileName
+
         if os.path.exists(self.fileName):
             raise Exception("Same File!")
         if "Linux" in platform.platform():
@@ -183,10 +199,10 @@ class robot:
             return subprocess.Popen(["pwsh", "-Command", command], stdout=subprocess.PIPE)
             
     def initialize_robotParams(self):
-        # initialize robotParams like {"1":0, "2":0, ... , "35": 0}
+        # initialize robotParams like {"x1":0, "x2":0, ... , "x35": 0}
         print("initialize_robotParams")
         for i in range(1, 36):
-            codeNum = str(i)
+            codeNum = "x{}".format(i)
             self.robotParams[codeNum] = 0
 
     def randomize_robotParams(self):
@@ -211,8 +227,8 @@ class robot:
             0, 32, 128, 128, 128
         ]
         for i in range(1, 36):
-            self.robotParams[str(i)] = stableState[i - 1]
-        
+            self.robotParams["x{}".format(i)] = stableState[i - 1]
+        print("\n")
         self.__check_robotParams()
         # Drive the robot to the 
         self.connect_ros(isSmoothly=True)
@@ -221,7 +237,7 @@ class robot:
     def transfer_robotParams_to_states(self, params):
         states = [0 for x in range(36)]
         for i in range(1, 36):
-            states[i - 1] = params[str(i)]
+            states[i - 1] = params["x{}".format(i)]
         return states
 
     def switch_to_defaultPose(self, pose):
@@ -255,7 +271,7 @@ class robot:
         self.lastParams = copy.deepcopy(self.robotParams)
         # Construct current robotParams
         for i in range(1, 36):
-            self.robotParams[str(i)] = params[i - 1]
+            self.robotParams["x{}".format(i)] = params[i - 1]
         self.__check_robotParams()
 
     # @deprecated
@@ -265,7 +281,7 @@ class robot:
         actionStr = "moveaxes"
         try: 
             for i in range(1, 36):
-                actionStr = actionStr + SPACE + str(i) + SPACE + str(params[str(i)]) + " 5 200"
+                actionStr = actionStr + SPACE + str(i) + SPACE + str(params["x{}".format(i)]) + " 5 200"
             actionStr += '\n' 
             self.executionCode = actionStr
         except Exception as e:
@@ -396,7 +412,8 @@ class robot:
                 # Smoothly execute
                 if isSmoothly:
                     print("Smoothly execution activated")
-                    time.sleep(timeIntervalBeforeExp) # Sleep 1 second by default to wait for the start of the video 
+                    if isRecording:
+                        time.sleep(timeIntervalBeforeExp) # Sleep 1 second by default to wait for the start of the video 
                     self.smooth_execution_mode(steps)
                 # Otherwise
                 else:
@@ -421,12 +438,25 @@ class robot:
 
     def __check_robotParams(self):
         # This function cannot be called outside
-        assert len(self.robotParams) == 35, "len(robotParams) != 35"
+        assert len(self.robotParams) == 35, "len(robotParams) != 35, {}".format(self.robotParams)
         # give some restriction here
+        '''
+        ### Axis (8, 9), (12, 13), (18, 19), (22, 23), 
+        # we should use **a * b = 0 for each group. Which means, 
+        # take (8, 9) for example. When axis 8 has value, we should make sure axis 9 is set to 0.**
+        **a * b = 0**
+        '''
 
-            
+        assert self.robotParams["x8"] * self.robotParams["x9"] == 0 , print("x8:", self.robotParams["x8"], "\nx9:", self.robotParams["x9"])
+        assert self.robotParams["x12"] * self.robotParams["x13"] == 0, print("x12:", self.robotParams["x12"], "\nx13:", self.robotParams["x13"])
+        assert self.robotParams["x18"] * self.robotParams["x19"] == 0, print("x18:", self.robotParams["x18"], "\nx19:", self.robotParams["x19"])
+        assert self.robotParams["x22"] * self.robotParams["x23"] == 0, print("x22:", self.robotParams["x22"], "\nx23:", self.robotParams["x23"])
+
     def robotChecker(self):
-        assert self.connection == True # make sure the connection is good
+        '''
+            check the robot with a neutral -> smile -> neutral procedure
+        '''
+        assert self.connection == True, "Connection is bad" # make sure the connection is good
         
         self.return_to_stable_state() # Return to the stable state (標準Pose)
 
@@ -436,18 +466,18 @@ class robot:
 
         self.return_to_stable_state() # Return to the stable state (標準Pose)  
 
-        
+
     def perform_openface(self, figure):
         # send figure to openface and get result
         # TODO: Do something with openface
         # Subprocess
         openfacePath = ""
         figurePath = ""
-
         return openfacePath
 
-    def analysis(self):
-        py_feat_analysis()
+    def analysis(self, target_emotion_name):
+        assert target_emotion_name in ["Anger", "Disgust", "Fear", "Happiness", "Sadness", "Surprise"], "You are not using the predefine name"
+        py_feat_analysis(self.fileName, target_emotion_name)
 
     def feedback(self):
         pass
@@ -479,17 +509,21 @@ def basicRunningCell(robotObject, commandSet, isRecordingFlag=False, steps=20):
     rb.connect_ros(True, False)
 
 def get_target(emotion_name):
-    if emotion_name == "Anger":
+    '''
+    Anger, Disgust, Fear, Happiness, Sadness, Surprise
+    or lowercase
+    '''
+    if emotion_name in ["Anger", "anger"]:
         return 0
-    elif emotion_name == "Disgust":
+    elif emotion_name in ["Disgust", "disgust"]:
         return 1
-    elif emotion_name == "Fear":
+    elif emotion_name in ["Fear", "fear"]:
         return 2
-    elif emotion_name == "Happiness":
+    elif emotion_name in ["Happiness", "happiness"]:
         return 3
-    elif emotion_name == "Sadness":
+    elif emotion_name in ["Sadness", "sadness"]:
         return 4
-    elif emotion_name == "Surprise":
+    elif emotion_name in ["Surprise", "surprise"]:
         return 5
 
 
@@ -503,8 +537,8 @@ def py_feat_analysis(img, target_emotion):
     landmark_model = "mobilenet"
     au_model = "rf"
     # au_model = "JAANET"
-    # emotion_model = "resmasknet"
-    emotion_model = "rf"
+    emotion_model = "resmasknet"
+    # emotion_model = "rf"
 
     detector = Detector(au_model = au_model, emotion_model = emotion_model)
 
@@ -518,17 +552,252 @@ def py_feat_analysis(img, target_emotion):
     targetID = get_target(target_emotion)
     return df.iloc[:, -8:].iloc[0,targetID]
 
+def checkParameters(robotParams):
+    # Axis (8, 9), (12, 13), (18, 19), (22, 23), 
+    # we should use a * b = 0 for each group. 
+    # Which means, take (8, 9) for example. 
+    # When axis 8 has value, we should make sure axis 9 is set to 0. 
+    if robotParams[8-1] * robotParams[9-1] != 0:
+        robotParams[np.random.choice([8-1, 9-1])] = 0
+    if robotParams[12-1] * robotParams[13-1] != 0:
+        robotParams[np.random.choice([12-1, 13-1])] = 0
+    if robotParams[18-1] * robotParams[19-1] != 0:
+        robotParams[np.random.choice([18-1, 19-1])] = 0
+    if robotParams[22-1] * robotParams[23-1] != 0:
+        robotParams[np.random.choice([22-1, 23-1])] = 0
+        
+    assert robotParams[8-1] * robotParams[9-1] == 0
+    assert robotParams[12-1] * robotParams[13-1] == 0
+    assert robotParams[18-1] * robotParams[19-1] == 0
+    assert robotParams[22-1] * robotParams[23-1] == 0
+    return robotParams
+
+def target_function(**kwargs):
+    """Pyfeat evaluation object
+    
+    Target：
+        Maxmize the result of Pyfeat
+    """
+    rb = kwargs['robot']
+    target_emotion = kwargs['target_emotion']
+    kwargs = kwargs["kwargs"]
+    
+
+    # Get robot parameters
+    neutral = [86, 86, 128, 128, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 128, 122]
+    fixedrobotcode = copy.copy(neutral)
+    
+    # dict = {}
+    for k,v in kwargs.items():
+        # print(k,v)
+        if "x" in k:
+            fixedrobotcode[int(k[1:])-1] = round(v)
+
+    # x2 = x1, use one axis for eyes upper lid
+    fixedrobotcode[0] = 0
+    fixedrobotcode[1] = fixedrobotcode[0]
+
+    # x7 = x6, use one axis for eyes lower lid
+    fixedrobotcode[6] = fixedrobotcode[5]
+
+    # x13 = x9
+    fixedrobotcode[12] = fixedrobotcode[8]
+
+    # x17 = x16
+    fixedrobotcode[16] = fixedrobotcode[15]
+
+    # x22 = x18
+    fixedrobotcode[21] = fixedrobotcode[17]
+
+
+    # check parameters
+    fixedrobotcode = checkParameters(fixedrobotcode)
+    
+    # control robot 
+    print("fixedrobotcode is", fixedrobotcode)
+    rb.switch_to_customizedPose(fixedrobotcode)
+    rb.connect_ros(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+    time.sleep(1.5)
+    # Take photo
+    global COUNTER
+    rb.take_picture(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, COUNTER), folder=target_emotion)
+    COUNTER += 1
+
+    # Py-feat Analysis
+    # Temp: analyze Anger
+    return py_feat_analysis(img=rb.fileName, target_emotion=target_emotion)    
+
+def bayesian_optimization(baseline, target_emotion, robot):
+
+    def middle_function(**kwargs):
+        # parameter
+        return target_function(robot=robot, target_emotion=target_emotion, kwargs=kwargs)
+
+
+    optimizer = BayesianOptimization(
+        f=middle_function,
+        # Define HyperParameter Space
+
+        # Anger 
+        pbounds={
+            # "x1": (0, 255), 
+            # "x2": (0, 255),
+            # "x3": (0, 255), 
+            # "x4": (0, 255), 
+            # "x5": (0, 255), 
+            "x6": (0, 255), 
+            # "x7": (0, 255), 
+            # "x8": (0, 255), 
+            # "x9": (0, 255), 
+            # "x10": (0, 255),
+            "x11": (0, 255), 
+            # "x12": (0, 255), 
+            # "x13": (0, 255), 
+            # "x14": (0, 255), 
+            "x15": (0, 255), 
+            # "x16": (0, 255), 
+            # "x17": (0, 255), 
+            # "x18": (0, 255), 
+            # "x19": (0, 255), 
+            # "x20": (0, 255), 
+            # "x21": (0, 255), 
+            # "x22": (0, 255), 
+            # "x23": (0, 255), 
+            # "x24": (0, 255), "x25": (0, 255), 
+            # "x26": (0, 255), "x27": (0, 255), 
+            # "x28": (0, 255), "x29": (0, 255), # hot
+            # "x30": (0, 255), 
+            # "x31": (0, 255), 
+            # "x32": (0, 200),  #hot
+            # "x33": (0, 255), "x34": (0, 255), "x35": (0, 255)
+        },
+        
+
+        # # happiness 
+        # pbounds={
+        #     # "x1": (0, 255), 
+        #     # "x2": (0, 255),
+        #     # "x3": (0, 255), 
+        #     # "x4": (0, 255), 
+        #     # "x5": (0, 255), 
+        #     "x6": (0, 255), 
+        #     # "x7": (0, 255), 
+        #     # "x8": (0, 255), 
+        #     "x9": (0, 255), 
+        #     # "x10": (0, 255),
+        #     # "x11": (0, 255), 
+        #     # "x12": (0, 255), 
+        #     # "x13": (0, 255), 
+        #     # "x14": (0, 255), 
+        #     # "x15": (0, 255), 
+        #     "x16": (0, 255), 
+        #     # "x17": (0, 255), 
+        #     "x18": (0, 255), 
+        #     # "x19": (0, 255), 
+        #     # "x20": (0, 255), 
+        #     # "x21": (0, 255), 
+        #     # "x22": (0, 255), 
+        #     # "x23": (0, 255), 
+        #     # "x24": (0, 255), "x25": (0, 255), 
+        #     # "x26": (0, 255), "x27": (0, 255), 
+        #     "x28": (0, 255), "x29": (0, 255), # hot
+        #     # "x30": (0, 255), 
+        #     # "x31": (0, 255), 
+        #     "x32": (0, 200),  #hot
+        #     # "x33": (0, 255), "x34": (0, 255), "x35": (0, 255)
+        # },
+
+        random_state=42,
+        verbose=2)
+    # 2个初始化点和10轮优化，共12轮
+    # initialization of pre-define facial expression
+    neutral_baseline = defaultPose.prototypeFacialExpressions["netural"]
+
+    neutral_baseline = defaultPose.prototypeFacialExpressions["netural"]
+    subtract = abs(np.array(neutral_baseline) - np.array(baseline))
+    probe_param = {}
+    for i in range(len(subtract)):
+        if subtract[i] != 0:
+            probe_param["x{}".format(i+1)] = subtract[i]
+    # print(probe_param)
+
+    # # Happiness
+    # optimizer.probe(
+    #     params={
+    #         'x6': 255, 'x9': 255, 'x16': 255, 'x18': 255, 'x28': 255, 'x29': 255, 'x32': 255},
+    #     lazy=False,
+    # )
+    # optimizer.probe(
+    #     params={
+    #         'x16': 221, 'x18': 153, 'x28': 180, 'x29': 5, 'x32': 247, 'x6': 212, 'x9': 54},
+    #     lazy=False,
+    # )
+
+    # Anger
+    # optimizer.probe(
+    #     params={"x1": 0, "x6": 255, "x11": 255, "x15": 255},
+    #     lazy=False,
+    # )
+
+    optimizer.probe(
+        params={"x6": 255, "x11": 255, "x15": 255},
+        lazy=False,
+    )
+
+    
+
+    # optimizer.maximize(init_points=2, n_iter=10)
+    optimizer.maximize(alpha=1e-1)
+
+    print("Final result:", optimizer.max)
+    return optimizer
+
+
+
 def main():
-    rb = robot(duration=3)
+    # global rb
+    rb = robot(duration=2)
     assert rb.connection == True
     # rb.transfer_robotParams_to_states(rb.lastParams, [x for x in range(36)])
-
-    print("rb.lastParams", rb.lastParams)
-
+    # print("rb.lastParams", rb.lastParams)
     # defaultPose.prototypeFacialExpressions
 
+    # 2021.11.22
+    # Happiness Experiment
+    # print('\n{}\n'.format("happiness"))
+    # target_emotion = "happiness"
+    # global COUNTER
+    # COUNTER = 0
+    # optimizer = bayesian_optimization(
+    #     baseline=defaultPose.prototypeFacialExpressions[target_emotion], 
+    #     target_emotion=target_emotion,
+    #     robot=rb)
+    # print(optimizer.res)
+    # # Return to normal
+    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    # rb.connect_ros(True, False)
+
+
+
+    # Anger Experiment
+    print('\n{}\n'.format("anger"))
+    target_emotion = "anger"
+    global COUNTER
+    COUNTER = 0
+    optimizer = bayesian_optimization(
+        baseline=defaultPose.prototypeFacialExpressions[target_emotion], 
+        target_emotion=target_emotion,
+        robot=rb)
+    print(optimizer.res)
+    # Return to normal
+    rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    rb.connect_ros(True, False)
+
+
     # 2021.11.20
-    print('\n{}\n'.format("happyness"))
+    # Switch post -> Take photo -> py-feat evaluation.
+    '''
+    print('\n{}\n'.format("happiness"))
     for k,v in defaultPose.prototypeFacialExpressions.items():
         print("switch to: ",k)
         # print(v)
@@ -541,7 +810,7 @@ def main():
     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
     rb.connect_ros(True, False)
 
-
+    '''
 
     '''
     # 2021.10.11
@@ -563,7 +832,7 @@ def main():
     cE = defaultPose.experiment1['closeEye']
     neuExp = defaultPose.experiment1['netural']
     angExp = defaultPose.experiment1['anger']
-    hapExp = defaultPose.experiment1['happyness']
+    hapExp = defaultPose.experiment1['happiness']
 
     print(len(angExp))
 
@@ -622,7 +891,7 @@ def main():
     cE = defaultPose.experiment1['closeEye']
 
     for j in range(2):
-        for i in ['anger', 'happyness']:
+        for i in ['anger', 'happiness']:
             # look Down and close eyes
             rb.switch_to_customizedPose(lD)
             rb.connect_ros(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
@@ -698,15 +967,15 @@ def main():
     # 20210521
 
     '''
-    # Compare Two Happyness
+    # Compare Two happiness
 
     # Return to Standard Pose
     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
     rb.connect_ros(True, False)
 
     # Go to the facial expressions
-    print("Switch to {}".format("happyness"))
-    rb.switch_to_customizedPose(defaultPose.prototypeFacialExpressions['happyness'])
+    print("Switch to {}".format("happiness"))
+    rb.switch_to_customizedPose(defaultPose.prototypeFacialExpressions['happiness'])
     rb.connect_ros(isSmoothly=True, isRecording=True) # isSmoothly = True ,isRecording = True
 
     # Return to Standard Pose
@@ -714,8 +983,8 @@ def main():
     rb.connect_ros(True, False)
 
     # Go to the facial expressions
-    print("Switch to {}".format("happynessResultFixed"))
-    rb.switch_to_customizedPose(defaultPose.fixedprototypeFacialExpressions['happynessResultFixed'])
+    print("Switch to {}".format("happinessResultFixed"))
+    rb.switch_to_customizedPose(defaultPose.fixedprototypeFacialExpressions['happinessResultFixed'])
     rb.connect_ros(isSmoothly=True, isRecording=True ) # isSmoothly = True ,isRecording = True
 
     # Return to Standard Pose

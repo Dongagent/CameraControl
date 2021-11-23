@@ -27,4 +27,6 @@ Thumbs.db
 __pycache__
 *.mkv
 .vscode
-tempimg
+algorithm/tempimg
+algorithm/anger
+algorithm/happiness
