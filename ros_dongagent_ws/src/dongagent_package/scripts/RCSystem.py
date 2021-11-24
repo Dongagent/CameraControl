@@ -43,11 +43,9 @@ import struct
 
 # ----- for py-feat END ------
 
-
 SPACE = ' '
 
 DEBUG = 0 # 0 - Run; 1 - Debuging with robot; 2 - Debug WITHOUT robot 
-
 
 class robot:
     def __init__(self, duration=3, fps=60):
@@ -90,7 +88,6 @@ class robot:
         # Final initialization
         self.initialize_robotParams()
         self.return_to_stable_state()
-
     def take_picture(self, isUsingCounter=True, appendix='', folder=''):
         # we don't need this
         # Allright, we need this 
@@ -148,7 +145,6 @@ class robot:
         elif "Windows" in platform.platform():
             # Windows
             return subprocess.Popen(["pwsh", "-Command", command], stdout=subprocess.PIPE)
-
     def take_video(self, isUsingCounter=True, appendix=''):
         self.counter += 1
         if isUsingCounter:
@@ -197,14 +193,12 @@ class robot:
         elif "Windows" in platform.platform():
             # Windows
             return subprocess.Popen(["pwsh", "-Command", command], stdout=subprocess.PIPE)
-            
     def initialize_robotParams(self):
         # initialize robotParams like {"x1":0, "x2":0, ... , "x35": 0}
         print("initialize_robotParams")
         for i in range(1, 36):
             codeNum = "x{}".format(i)
             self.robotParams[codeNum] = 0
-
     def randomize_robotParams(self):
         # ALERT!!
         # DO NOT USE IT UNLESS YOU KNOW WHAT YOU ARE DOING
@@ -214,7 +208,6 @@ class robot:
             self.robotParams[j] = random.randint(0, 10)
         self.__check_robotParams()
         """
-
     def return_to_stable_state(self):
         # set all params in robotParams to 0
         stableState = [
@@ -233,13 +226,11 @@ class robot:
         # Drive the robot to the 
         self.connect_ros(isSmoothly=True)
         print("return_to_stable_state, self.robotParams are all set")
-
     def transfer_robotParams_to_states(self, params):
         states = [0 for x in range(36)]
         for i in range(1, 36):
             states[i - 1] = params["x{}".format(i)]
         return states
-
     def switch_to_defaultPose(self, pose):
         # pose number is [1,2,3,4,5,6, ,8,9,10, ,12,13,14,15,16] 
         # 1 標準 2 笑顔 3 怒り 4 悲しみ 5 驚き 6 微笑 
@@ -248,7 +239,6 @@ class robot:
         assert pose in [1,2,3,4,5,6,8,9,10,12,13,14,15,16], "ERROR! The selected pose is not existed."
         poseNum = pose - 1
         self.change_robotParams(self.defaultPose[poseNum])
-
     def switch_to_customizedPose(self, customizedPose):
         # Notice: customizedPose should clarify 35 axes
         # E.g. [1, 2, 3, 0, ... , 255]
@@ -263,7 +253,6 @@ class robot:
         self.change_robotParams(customizedPose)
         if DEBUG >= 1:
             print(self.robotParams)
-
     def change_robotParams(self, params):
         # change robot params
         assert isinstance(params, list), isinstance(params, list)
@@ -273,7 +262,6 @@ class robot:
         for i in range(1, 36):
             self.robotParams["x{}".format(i)] = params[i - 1]
         self.__check_robotParams()
-
     # @deprecated
     def generate_execution_code(self, params):
         """Construct the action code as 'moveaxis [axis] [pos] [priority]' """
@@ -287,7 +275,6 @@ class robot:
         except Exception as e:
             print("generate_execution_code ERROR")
             print(e)
-
     def smooth_execution_mode(self, steps = 20):
         # steps: the middle steps between two robot expressions, default value is 5
         if self.robotParams:
@@ -308,12 +295,10 @@ class robot:
                 self.ros_talker()# Use ROS
 
                 time.sleep(0.05)
-
     def normal_execution_mode(self):
         self.generate_execution_code(self.robotParams)
         # self.__sendExecutionCode() # Use socket
         self.ros_talker()# Use ROS
-
     def ros_talker(self):
         pub = rospy.Publisher('rc/command', String, queue_size=10)
         sub = rospy.Subscriber('rc/return', String, self.sub_callback)
@@ -337,7 +322,6 @@ class robot:
             # r.sleep()
         
         # Now use ROS instead
-
     # @deprecated
     def __sendExecutionCode(self):
         # This function cannot be called outside
@@ -349,7 +333,6 @@ class robot:
         # print('recv:', data.decode()) # print the data I received
         if "OK" not in data.decode():
             raise Exception("ERROR! Did NOT receive 'OK'")
-
     def sub_callback(self, data):
         recv_dict = json.loads(data.data)
         if recv_dict['Message'] == "PotentioValsBase64":
@@ -367,7 +350,6 @@ class robot:
             potaxisstr = recv_dict['Axes'].split(',')
             axiswithpotentio = map((lambda x: int(x)), potaxisstr)
             print(axiswithpotentio)
-
     def connect_ros(self, isSmoothly=False, isRecording=False, appendix="", steps=20, timeIntervalBeforeExp=1):
 
         '''
@@ -434,8 +416,6 @@ class robot:
 
         
         # '''
-
-
     def __check_robotParams(self):
         # This function cannot be called outside
         assert len(self.robotParams) == 35, "len(robotParams) != 35, {}".format(self.robotParams)
@@ -451,7 +431,6 @@ class robot:
         assert self.robotParams["x12"] * self.robotParams["x13"] == 0, print("x12:", self.robotParams["x12"], "\nx13:", self.robotParams["x13"])
         assert self.robotParams["x18"] * self.robotParams["x19"] == 0, print("x18:", self.robotParams["x18"], "\nx19:", self.robotParams["x19"])
         assert self.robotParams["x22"] * self.robotParams["x23"] == 0, print("x22:", self.robotParams["x22"], "\nx23:", self.robotParams["x23"])
-
     def robotChecker(self):
         '''
             check the robot with a neutral -> smile -> neutral procedure
@@ -465,8 +444,6 @@ class robot:
         time.sleep(1)
 
         self.return_to_stable_state() # Return to the stable state (標準Pose)  
-
-
     def perform_openface(self, figure):
         # send figure to openface and get result
         # TODO: Do something with openface
@@ -474,21 +451,17 @@ class robot:
         openfacePath = ""
         figurePath = ""
         return openfacePath
-
     def analysis(self, target_emotion_name):
         assert target_emotion_name in ["Anger", "Disgust", "Fear", "Happiness", "Sadness", "Surprise"], "You are not using the predefine name"
         py_feat_analysis(self.fileName, target_emotion_name)
-
     def feedback(self):
         pass
-
 def list2string(data):
     strtmp = ""
     for val in data:
         strtmp += str(val) + ","
     retstr = strtmp.rstrip(',')
     return retstr
-
 def basicRunningCell(robotObject, commandSet, isRecordingFlag=False, steps=20):
     
     rb = robotObject
@@ -507,34 +480,30 @@ def basicRunningCell(robotObject, commandSet, isRecordingFlag=False, steps=20):
     # Return to Standard Pose
     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
     rb.connect_ros(True, False)
-
-def get_target(emotion_name):
-    '''
-    Anger, Disgust, Fear, Happiness, Sadness, Surprise
-    or lowercase
-    '''
-    if emotion_name in ["Anger", "anger"]:
-        return 0
-    elif emotion_name in ["Disgust", "disgust"]:
-        return 1
-    elif emotion_name in ["Fear", "fear"]:
-        return 2
-    elif emotion_name in ["Happiness", "happiness"]:
-        return 3
-    elif emotion_name in ["Sadness", "sadness"]:
-        return 4
-    elif emotion_name in ["Surprise", "surprise"]:
-        return 5
-
-
-def py_feat_analysis(img, target_emotion):
+def py_feat_analysis(img, target_emotion, is_save_csv=True):
     '''
         @img: file name 
         @target_emotion: Anger, Disgust, Fear, Happiness, Sadness, Surprise
     '''
+    def get_target(emotion_name):
+        # Anger, Disgust, Fear, Happiness, Sadness, Surprise
+        # or lowercase
+        if emotion_name in ["Anger", "anger"]:
+            return 0
+        elif emotion_name in ["Disgust", "disgust"]:
+            return 1
+        elif emotion_name in ["Fear", "fear"]:
+            return 2
+        elif emotion_name in ["Happiness", "happiness"]:
+            return 3
+        elif emotion_name in ["Sadness", "sadness"]:
+            return 4
+        elif emotion_name in ["Surprise", "surprise"]:
+            return 5
+
     from feat import Detector
-    face_model = "retinaface"
-    landmark_model = "mobilenet"
+    # face_model = "retinaface"
+    # landmark_model = "mobilenet"
     au_model = "rf"
     # au_model = "JAANET"
     emotion_model = "resmasknet"
@@ -545,13 +514,13 @@ def py_feat_analysis(img, target_emotion):
     image_prediction = detector.detect_image(img)
     df = image_prediction.head()
     print(df.iloc[:, -8:])
-    csv_name = img[:-4]+".csv"
-    csv_emotion_name = img[:-4]+"emotion.csv"
-    df.to_csv(csv_name)
-    df.iloc[:, -8:].to_csv(csv_emotion_name)
+    if is_save_csv:
+        csv_name = img[:-4]+".csv"
+        csv_emotion_name = img[:-4]+"emotion.csv"
+        df.to_csv(csv_name)
+        df.iloc[:, -8:].to_csv(csv_emotion_name)
     targetID = get_target(target_emotion)
     return df.iloc[:, -8:].iloc[0,targetID]
-
 def checkParameters(robotParams):
     # Axis (8, 9), (12, 13), (18, 19), (22, 23), 
     # we should use a * b = 0 for each group. 
@@ -571,7 +540,6 @@ def checkParameters(robotParams):
     assert robotParams[18-1] * robotParams[19-1] == 0
     assert robotParams[22-1] * robotParams[23-1] == 0
     return robotParams
-
 def target_function(**kwargs):
     """Pyfeat evaluation object
     
@@ -594,7 +562,7 @@ def target_function(**kwargs):
             fixedrobotcode[int(k[1:])-1] = round(v)
 
     # x2 = x1, use one axis for eyes upper lid
-    fixedrobotcode[0] = 0
+    # fixedrobotcode[0] = 0
     fixedrobotcode[1] = fixedrobotcode[0]
 
     # x7 = x6, use one axis for eyes lower lid
@@ -626,7 +594,6 @@ def target_function(**kwargs):
     # Py-feat Analysis
     # Temp: analyze Anger
     return py_feat_analysis(img=rb.fileName, target_emotion=target_emotion)    
-
 def bayesian_optimization(baseline, target_emotion, robot):
 
     def middle_function(**kwargs):
@@ -751,9 +718,6 @@ def bayesian_optimization(baseline, target_emotion, robot):
 
     print("Final result:", optimizer.max)
     return optimizer
-
-
-
 def main():
     # global rb
     rb = robot(duration=2)
@@ -1131,9 +1095,7 @@ def main():
     # rb.switch_to_defaultPose(1) # Switch to default pose 1 標準
     # rb.connect_ros()            # # connect server and send the command, but change facial expression quickly    
     # time.sleep(3)
-
     
-
 if __name__ == '__main__':
     main()
 
