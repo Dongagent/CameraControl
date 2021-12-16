@@ -230,7 +230,7 @@ class robot:
         time.sleep(1)
         print("return_to_stable_state, self.robotParams are all set")
     def transfer_robotParams_to_states(self, params):
-        states = [0 for x in range(36)]
+        states = [0 for x in range(35)]
         for i in range(1, 36):
             states[i - 1] = params["x{}".format(i)]
         return states
@@ -245,6 +245,7 @@ class robot:
     def switch_to_customizedPose(self, customizedPose):
         # Notice: customizedPose should clarify 35 axes
         # E.g. [1, 2, 3, 0, ... , 255]
+        assert len(self.nextState) == 35, "ERROR! The customizedPose don't have 35 axes." + self.nextState
         assert len(customizedPose) == 35, "ERROR! The customizedPose don't have 35 axes."
         # States
         self.lastState = self.nextState
@@ -547,6 +548,7 @@ def py_feat_analysis(img, target_emotion, is_save_csv=True):
         df.iloc[:, -8:].to_csv(csv_emotion_name)
     targetID = get_target(target_emotion)
     return df.iloc[:, -8:].iloc[0,targetID]
+
 def checkParameters(robotParams):
     # Axis (8, 9), (12, 13), (18, 19), (22, 23), 
     # we should use a * b = 0 for each group. 
@@ -595,8 +597,15 @@ def target_function(**kwargs):
     # x7 = x6, use one axis for eyes lower lid
     fixedrobotcode[6] = fixedrobotcode[5]
 
+    # x12 = x8
+    fixedrobotcode[11] = fixedrobotcode[7]
+
     # x13 = x9
     fixedrobotcode[12] = fixedrobotcode[8]
+
+    # x14  = x10
+    fixedrobotcode[13] = fixedrobotcode[9]
+
 
     # x17 = x16
     fixedrobotcode[16] = fixedrobotcode[15]
@@ -604,25 +613,32 @@ def target_function(**kwargs):
     # x22 = x18
     fixedrobotcode[21] = fixedrobotcode[17]
 
-    # x14  = x10
-    fixedrobotcode[13] = fixedrobotcode[9]
-
     # x23 = x19
     fixedrobotcode[22] = fixedrobotcode[18]
 
     # x24 = x20
     fixedrobotcode[23] = fixedrobotcode[19]
 
-    # x12 = x8
-    fixedrobotcode[11] = fixedrobotcode[7]
+    # To open all axes
+    # x4 = x3
+    fixedrobotcode[3] = fixedrobotcode[2]
+
+    # x15 = x11
+    fixedrobotcode[14] = fixedrobotcode[10]
+
+    # ban x21 x25
+    # ban x26 x27 
+    # ban 31 34 33 35
 
     # check parameters
     fixedrobotcode = checkParameters(fixedrobotcode)
     
+
+
     # control robot 
     print("fixedrobotcode is", fixedrobotcode)
     rb.switch_to_customizedPose(fixedrobotcode)
-    returncode = rb.connect_ros(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+    returncode = rb.connect_ros(isSmoothly=True, isRecording=False, steps=10) # isSmoothly = True ,isRecording = True
     # the sleep inside rb is not working for outside.
 
     # -------------
@@ -631,42 +647,56 @@ def target_function(**kwargs):
     if returncode == 0:
         print('successfully return')
     
-    # Take photo
-    global COUNTER
-    process = rb.take_picture(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, COUNTER), folder=target_emotion)
-    process.wait()
-    if process.returncode != 0:
-        print(process.stdout.readlines())
-        raise Exception("The subprocess does NOT end.")
 
-    # delete useless figure
-    folderPath = "image_analysis/{}/".format(target_emotion)
-    for i in os.listdir(folderPath):
-        if '1.png' in i:
-            os.remove(folderPath + i)
+    loopFlag = 0 # 0 - py-feat, 1 - human
+    output = 0
 
-    COUNTER += 1
+    # pyfeat_in_loop_output case
+    if loopFlag == 0:
+        # Take photo
+        global COUNTER
+        process = rb.take_picture(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, COUNTER), folder=target_emotion)
+        process.wait()
+        if process.returncode != 0:
+            print(process.stdout.readlines())
+            raise Exception("The subprocess does NOT end.")
+
+        # delete useless figure
+        folderPath = "image_analysis/{}/".format(target_emotion)
+        for i in os.listdir(folderPath):
+            if '1.png' in i:
+                os.remove(folderPath + i)
+
+        COUNTER += 1
+        
+        # Py-feat Analysis
+        temp_pyfeat_result = py_feat_analysis(img=rb.readablefileName, target_emotion=target_emotion)
+        output = temp_pyfeat_result
+
+
+        # Save every parameters
+        # construct the DataFrame
+        df_dic = {}
+        df_dic[target_emotion] = [temp_pyfeat_result]
+        for k,v in kwargs.items():
+            df_dic[k] = [v]
+        print(df_dic)
+        df = pd.DataFrame(df_dic)
+        df_name = rb.readablefileName[:-4]+"_axes_data.csv"
+
+        df.to_csv(df_name, index=False, sep=',')
     
-    # Py-feat Analysis
-    temp_pyfeat_result = py_feat_analysis(img=rb.readablefileName, target_emotion=target_emotion)
+    # Human_in_loop_output case
+    elif loopFlag == 1:
+        rating = int(input('Input a number within 0-7 (0 is Lowest, 7 is Largest):\n'))
+        output = rating / 7.0
     
-    # Save every parameters
-    # construct the DataFrame
-    df_dic = {}
-    df_dic[target_emotion] = [temp_pyfeat_result]
-    for k,v in kwargs.items():
-        df_dic[k] = [v]
-    print(df_dic)
-    df = pd.DataFrame(df_dic)
-    df_name = rb.readablefileName[:-4]+"_axes_data.csv"
+    return output
 
-    df.to_csv(df_name, index=False, sep=',')
 
-    return temp_pyfeat_result
 def bayesian_optimization(baseline, target_emotion, robot):
 
     def middle_function(**kwargs):
-        # parameter
         return target_function(robot=robot, target_emotion=target_emotion, kwargs=kwargs)
 
     def generate_pbounds(axes):
@@ -685,6 +715,8 @@ def bayesian_optimization(baseline, target_emotion, robot):
     # x23 = x19
     # x12 = x8
     # x24 = x20
+
+    
     axes_for_emotions = [
         [1, 6, 11,15], # anger [1, 2, 6, 7, 11, 15]
         [30], # disgust [19, 23, 30]
@@ -693,9 +725,16 @@ def bayesian_optimization(baseline, target_emotion, robot):
         [10, 11, 15, 19], # sadness [10, 14, 11, 15, 19, 23]
         [10, 8, 1] # surprise [10, 14, 8, 12, 1, 2]
     ]
+    # ban x21 x25 x26 x27 31 34 33 35 
+    # This one open 27 axes, but DOF = 16
+    all_axes_for_emotions = [1, 3, 5, 6, 8, 9, 10, 11, 16, 18, 19, 20, 28, 29, 30, 32]
+    
     code = get_target(target_emotion)
     pbounds = generate_pbounds(axes_for_emotions[code])
     
+    # open all axes
+    pbounds = generate_pbounds(all_axes_for_emotions)
+
     # print(pbounds)
     optimizer = BayesianOptimization(
         f=middle_function,
@@ -767,30 +806,35 @@ def bayesian_optimization(baseline, target_emotion, robot):
     # initialization
     # bug!! Lazy make the expression become the expression of next folder. 
     # The NEXT time I called optimizer.max will process. Which means it will skip this time.
-    if target_emotion == 'anger':
-        # anger
-        optimizer.probe(params={'x1':0 , 'x6': 255, 'x11': 255, 'x15': 255}, lazy=True,)
-
-    if target_emotion == 'disgust':
-        # disgust
-        optimizer.probe(params={'x30': 255}, lazy=True,)
-
-    if target_emotion == 'fear':
-        # fear
-        optimizer.probe(params={'x1': 0, 'x8': 255, 'x10': 255, 'x11': 255, 'x15': 255, 'x20': 255}, lazy=True,)
-
-    if target_emotion == 'happiness':
-        # happiness
-        optimizer.probe(params={'x6': 255, 'x9': 255, 'x16': 255, 'x18': 255,}, lazy=True,)
-
-    if target_emotion == 'sadness':
-        # sadness
-        optimizer.probe(params={'x10': 255, 'x11': 255, 'x15': 255, 'x19': 255}, lazy=True,)
-
-    if target_emotion == 'surprise':
-        # surprise
-        optimizer.probe(params={'x1': 0, 'x8': 255, 'x10': 128,}, lazy=True,)
     
+    # --------------------------------------
+    # NO initialization
+    # if target_emotion == 'anger':
+    #     # anger
+    #     optimizer.probe(params={'x1':0 , 'x6': 255, 'x11': 255, 'x15': 255}, lazy=True,)
+
+    # if target_emotion == 'disgust':
+    #     # disgust
+    #     optimizer.probe(params={'x30': 255}, lazy=True,)
+
+    # if target_emotion == 'fear':
+    #     # fear
+    #     optimizer.probe(params={'x1': 0, 'x8': 255, 'x10': 255, 'x11': 255, 'x15': 255, 'x20': 255}, lazy=True,)
+
+    # if target_emotion == 'happiness':
+    #     # happiness
+    #     optimizer.probe(params={'x6': 255, 'x9': 255, 'x16': 255, 'x18': 255,}, lazy=True,)
+
+    # if target_emotion == 'sadness':
+    #     # sadness
+    #     optimizer.probe(params={'x10': 255, 'x11': 255, 'x15': 255, 'x19': 255}, lazy=True,)
+
+    # if target_emotion == 'surprise':
+    #     # surprise
+    #     optimizer.probe(params={'x1': 0, 'x8': 255, 'x10': 128,}, lazy=True,)
+    
+    # --------------------------------------
+
     # # Happiness
     # optimizer.probe(
     #     params={
@@ -812,6 +856,15 @@ def bayesian_optimization(baseline, target_emotion, robot):
 
     print(target_emotion, "Final result:", optimizer.max)
     return optimizer
+
+def check_folder(folderName):
+    folderPath = "image_analysis/{}/".format(folderName)
+    if not os.path.exists(folderPath):
+        try:
+            os.mkdir(folderPath)
+        except Exception as e:
+            print(e)
+
 # main
 def main():
     # global rb
@@ -821,8 +874,8 @@ def main():
     COUNTER = 0
     global init_points
     global n_iter
-    init_points = 3
-    n_iter = 27
+    init_points = 5
+    n_iter = 25
     # change workdir
     workdir = "/home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package/scripts"
     os.chdir(workdir)
@@ -837,12 +890,12 @@ def main():
     # anger, disgust, fear, happiness, sadness, surprise
     # defaultPose.prototypeFacialExpressions
 
-    # 2021.12.09
-    # Exp 2: All emotions without initialization
-
-    # for target_emotion in ['surprise']:
-    for target_emotion in 'anger, disgust, fear, happiness, sadness'.split(', '):
+    # 2021.12.16
+    # Exp 3: Open all axes
+    for target_emotion in ['anger']:
+    # for target_emotion in 'anger, disgust, fear, happiness, sadness'.split(', '):
     # for target_emotion in 'anger, disgust, fear, happiness, sadness, surprise'.split(', '):
+        check_folder(target_emotion)
         COUNTER = 0
         print(target_emotion)
         # target_emotion = "anger"
@@ -860,6 +913,31 @@ def main():
     # Return to normal
     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
     rb.connect_ros(True, False)
+
+    # 2021.12.09
+    # Exp 2: All emotions without initialization
+
+    # for target_emotion in ['anger']:
+    # # for target_emotion in 'anger, disgust, fear, happiness, sadness'.split(', '):
+    # # for target_emotion in 'anger, disgust, fear, happiness, sadness, surprise'.split(', '):
+    #     check_folder(target_emotion)
+    #     COUNTER = 0
+    #     print(target_emotion)
+    #     # target_emotion = "anger"
+    #     optimizer = bayesian_optimization(
+    #         baseline=defaultPose.prototypeFacialExpressions[target_emotion], 
+    #         target_emotion=target_emotion,
+    #         robot=rb)
+    #     print('\n')
+    #     print("Current target emotion is: ", target_emotion, optimizer.res)
+    #     print('\n')
+    #     # Return to normal
+    #     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    #     rb.connect_ros(True, False)
+    #     # time.sleep(1)
+    # # Return to normal
+    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    # rb.connect_ros(True, False)
 
 
     # 2021.11.26
