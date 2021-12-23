@@ -279,7 +279,7 @@ class robot:
         except Exception as e:
             print("generate_execution_code ERROR")
             print(e)
-    def smooth_execution_mode(self, steps = 5):
+    def smooth_execution_mode(self, steps = 20):
         # steps: the middle steps between two robot expressions, default value is 5
         if self.robotParams:
             stepNum = steps
@@ -298,7 +298,7 @@ class robot:
                 # self.__sendExecutionCode() # Use socket
                 self.ros_talker()# Use ROS
 
-                time.sleep(0.2)
+                time.sleep(0.05)
     def normal_execution_mode(self):
         self.generate_execution_code(self.robotParams)
         # self.__sendExecutionCode() # Use socket
@@ -356,7 +356,7 @@ class robot:
             potaxisstr = recv_dict['Axes'].split(',')
             axiswithpotentio = map((lambda x: int(x)), potaxisstr)
             print(axiswithpotentio)
-    def connect_ros(self, isSmoothly=False, isRecording=False, appendix="", steps=5, timeIntervalBeforeExp=1):
+    def connect_ros(self, isSmoothly=False, isRecording=False, appendix="", steps=20, timeIntervalBeforeExp=1):
 
         if DEBUG == 2:
             print('you are DEBUGING')
@@ -492,7 +492,7 @@ def basicRunningCell(robotObject, commandSet, isRecordingFlag=False, steps=20):
     rb.connect_ros(True, False)
 
 def get_target(emotion_name):
-    # Anger, Disgust, Fear, Happiness, Sadness, Surprise
+    # Anger, Disgust, Fear, Happiness, Sadness, Surprise, Neutral
     # or lowercase
     if emotion_name in ["Anger", "anger"]:
         return 0
@@ -506,28 +506,14 @@ def get_target(emotion_name):
         return 4
     elif emotion_name in ["Surprise", "surprise"]:
         return 5
+    elif emotion_name in ["Neutral", "neutral"]:
+        return 6
 
 def py_feat_analysis(img, target_emotion, is_save_csv=True):
     '''
         @img: file name 
         @target_emotion: Anger, Disgust, Fear, Happiness, Sadness, Surprise
     '''
-    def get_target(emotion_name):
-        # Anger, Disgust, Fear, Happiness, Sadness, Surprise
-        # or lowercase
-        if emotion_name in ["Anger", "anger"]:
-            return 0
-        elif emotion_name in ["Disgust", "disgust"]:
-            return 1
-        elif emotion_name in ["Fear", "fear"]:
-            return 2
-        elif emotion_name in ["Happiness", "happiness"]:
-            return 3
-        elif emotion_name in ["Sadness", "sadness"]:
-            return 4
-        elif emotion_name in ["Surprise", "surprise"]:
-            return 5
-
     from feat import Detector
     # face_model = "retinaface"
     # landmark_model = "mobilenet"
@@ -560,9 +546,16 @@ def checkParameters(robotParams):
         robotParams[np.random.choice([12-1, 13-1])] = 0
     if robotParams[18-1] * robotParams[19-1] != 0:
         robotParams[np.random.choice([18-1, 19-1])] = 0
-    if robotParams[22-1] * robotParams[23-1] != 0:
-        robotParams[np.random.choice([22-1, 23-1])] = 0
+
+    # This part might cause left not equal to right
+    # if robotParams[22-1] * robotParams[23-1] != 0:
+    #     robotParams[np.random.choice([22-1, 23-1])] = 0
         
+    # x22 = x18, x23 = x19
+    robotParams[21] = robotParams[17]
+    robotParams[22] = robotParams[18]
+
+
     assert robotParams[8-1] * robotParams[9-1] == 0
     assert robotParams[12-1] * robotParams[13-1] == 0
     assert robotParams[18-1] * robotParams[19-1] == 0
@@ -638,7 +631,7 @@ def target_function(**kwargs):
     # control robot 
     print("fixedrobotcode is", fixedrobotcode)
     rb.switch_to_customizedPose(fixedrobotcode)
-    returncode = rb.connect_ros(isSmoothly=True, isRecording=False, steps=10) # isSmoothly = True ,isRecording = True
+    returncode = rb.connect_ros(isSmoothly=True, isRecording=False, steps=20) # isSmoothly = True ,isRecording = True
     # the sleep inside rb is not working for outside.
 
     # -------------
@@ -648,7 +641,7 @@ def target_function(**kwargs):
         print('successfully return')
     
 
-    loopFlag = 0 # 0 - py-feat, 1 - human
+    loopFlag = 1 # 0 - py-feat, 1 - human
     output = 0
 
     # pyfeat_in_loop_output case
@@ -702,7 +695,10 @@ def bayesian_optimization(baseline, target_emotion, robot):
     def generate_pbounds(axes):
         pbounds_dic = {}
         for i in axes:
-            pbounds_dic['x{}'.format(i)] = (0, 255)
+            if i in [6, 7]:
+                pbounds_dic['x{}'.format(i)] = (0, 140)
+            else:
+                pbounds_dic['x{}'.format(i)] = (0, 255)
 
         return pbounds_dic
 
@@ -725,12 +721,15 @@ def bayesian_optimization(baseline, target_emotion, robot):
         [10, 11, 15, 19], # sadness [10, 14, 11, 15, 19, 23]
         [10, 8, 1] # surprise [10, 14, 8, 12, 1, 2]
     ]
-    # ban x21 x25 x26 x27 31 34 33 35 
-    # This one open 27 axes, but DOF = 16
-    all_axes_for_emotions = [1, 3, 5, 6, 8, 9, 10, 11, 16, 18, 19, 20, 28, 29, 30, 32]
-    
-    code = get_target(target_emotion)
-    pbounds = generate_pbounds(axes_for_emotions[code])
+    # ban x3, x4, x5, x21 x25 x26 x27 31 33 35 
+    # This one open 25 axes, but DOF = 15
+    # all_axes_for_emotions = [1, 6, 8, 9, 10, 11, 16, 18, 19, 20, 28, 29, 30, 32, 34]
+    # without head pitch
+    all_axes_for_emotions = [1, 6, 8, 9, 10, 11, 16, 18, 19, 20, 28, 29, 30, 32]
+
+    # Ekman FACS
+    # code = get_target(target_emotion)
+    # pbounds = generate_pbounds(axes_for_emotions[code])
     
     # open all axes
     pbounds = generate_pbounds(all_axes_for_emotions)
@@ -782,13 +781,15 @@ def bayesian_optimization(baseline, target_emotion, robot):
     # 2个初始化点和10轮优化，共12轮
 
     # initialization of pre-define facial expression
-    neutral_baseline = defaultPose.prototypeFacialExpressions["netural"]
+    neutral_baseline = defaultPose.prototypeFacialExpressions["neutral"]
     subtract = abs(np.array(neutral_baseline) - np.array(baseline))
-    probe_param = {}
-    for i in range(len(subtract)):
-        if subtract[i] != 0:
-            probe_param["x{}".format(i+1)] = subtract[i]
-    # print(probe_param)
+    # print(subtract)
+    if subtract != []:
+        probe_param = {}
+        for i in range(len(subtract)):
+            if subtract[i] != 0:
+                probe_param["x{}".format(i+1)] = subtract[i]
+        # print(probe_param)
 
     # Logger
     logger = JSONLogger(path="./image_analysis/"+ target_emotion + "/logs.json")
@@ -874,8 +875,8 @@ def main():
     COUNTER = 0
     global init_points
     global n_iter
-    init_points = 5
-    n_iter = 25
+    init_points = 10
+    n_iter = 90
     # change workdir
     workdir = "/home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package/scripts"
     os.chdir(workdir)
@@ -889,12 +890,20 @@ def main():
     # Anger, Disgust, Fear, Happiness, Sadness, Surprise
     # anger, disgust, fear, happiness, sadness, surprise
     # defaultPose.prototypeFacialExpressions
+    
+    # 2022 TODO
+    # Exp 8: Human judge result
 
-    # 2021.12.16
-    # Exp 3: Open all axes
-    for target_emotion in ['anger']:
-    # for target_emotion in 'anger, disgust, fear, happiness, sadness'.split(', '):
-    # for target_emotion in 'anger, disgust, fear, happiness, sadness, surprise'.split(', '):
+    # 2021.12.23
+    # Exp 6: Restrict search range of downward eye lid to avoid noise. # Seems OK!
+    # for target_emotion in ['anger']:
+    # Exp 7: All FEs: anger, disgust, fear, happiness, sadness, surprise, neutral
+    
+    # for target_emotion in ['anger']:
+    # for target_emotion in ['disgust', 'fear']:
+    # for target_emotion in ['happiness', 'sadness']:
+    # for target_emotion in ['surprise', 'neutral']:
+    for target_emotion in ['neutral']:
         check_folder(target_emotion)
         COUNTER = 0
         print(target_emotion)
@@ -913,6 +922,57 @@ def main():
     # Return to normal
     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
     rb.connect_ros(True, False)
+
+
+    # 2021.12.22
+    # Exp 4: Open all axes except eye gaze, increase head pitch # 30
+    # Exp 5: Open all axes except eye gaze, without head pitch # 30, 100 anger, 100 disgust
+    # # for target_emotion in ['anger']:
+    # for target_emotion in ['disgust']:
+    #     check_folder(target_emotion)
+    #     COUNTER = 0
+    #     print(target_emotion)
+    #     # target_emotion = "anger"
+    #     optimizer = bayesian_optimization(
+    #         baseline=defaultPose.prototypeFacialExpressions[target_emotion], 
+    #         target_emotion=target_emotion,
+    #         robot=rb)
+    #     print('\n')
+    #     print("Current target emotion is: ", target_emotion, optimizer.res)
+    #     print('\n')
+    #     # Return to normal
+    #     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    #     rb.connect_ros(True, False)
+    #     # time.sleep(1)
+    # # Return to normal
+    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    # rb.connect_ros(True, False)
+
+
+    # 2021.12.16
+    # Exp 3: Open all axes
+    
+    # for target_emotion in ['anger']:
+    # # for target_emotion in 'anger, disgust, fear, happiness, sadness'.split(', '):
+    # # for target_emotion in 'anger, disgust, fear, happiness, sadness, surprise'.split(', '):
+    #     check_folder(target_emotion)
+    #     COUNTER = 0
+    #     print(target_emotion)
+    #     # target_emotion = "anger"
+    #     optimizer = bayesian_optimization(
+    #         baseline=defaultPose.prototypeFacialExpressions[target_emotion], 
+    #         target_emotion=target_emotion,
+    #         robot=rb)
+    #     print('\n')
+    #     print("Current target emotion is: ", target_emotion, optimizer.res)
+    #     print('\n')
+    #     # Return to normal
+    #     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    #     rb.connect_ros(True, False)
+    #     # time.sleep(1)
+    # # Return to normal
+    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    # rb.connect_ros(True, False)
 
     # 2021.12.09
     # Exp 2: All emotions without initialization
@@ -1034,7 +1094,7 @@ def main():
     
     lD = defaultPose.experiment1['lookDown']
     cE = defaultPose.experiment1['closeEye']
-    neuExp = defaultPose.experiment1['netural']
+    neuExp = defaultPose.experiment1['neutral']
     angExp = defaultPose.experiment1['anger']
     hapExp = defaultPose.experiment1['happiness']
 
