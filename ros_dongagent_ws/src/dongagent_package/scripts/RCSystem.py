@@ -40,8 +40,10 @@ import struct
 # ----- for ros END------
 
 SPACE = ' '
-LINUXVIDEOPATH = '/dev/video2'
+LINUXVIDEOPATH = '/dev/video0' # ffplay
+loopFlag = 1 # 0 - py-feat, 1 - human
 DEBUG = 0 # 0 - Run; 1 - Debuging with robot; 2 - Debug WITHOUT robot 
+
 
 class robot:
     def __init__(self, duration=3, fps=60):
@@ -83,6 +85,9 @@ class robot:
         self.client = ""
         self.photoform = '%01d.png' # what we need is 2.png
 
+        # human experiment
+        self.bestImg = ""
+
         # Final initialization
         self.initialize_robotParams()
         self.return_to_stable_state()
@@ -112,7 +117,6 @@ class robot:
                     os.mkdir(folderPath)
                 except Exception as e:
                     print(e)
-
         if not folder:
             self.fileName = "image_analysis/temp/{}".format(self.fileName)
         else:
@@ -228,7 +232,7 @@ class robot:
         # Drive the robot to the 
         self.connect_ros(isSmoothly=True)
         time.sleep(1)
-        print("return_to_stable_state, self.robotParams are all set")
+        print("[INFO]return_to_stable_state, self.robotParams are all set")
     def transfer_robotParams_to_states(self, params):
         states = [0 for x in range(35)]
         for i in range(1, 36):
@@ -250,8 +254,8 @@ class robot:
         # States
         self.lastState = self.nextState
         self.nextState = customizedPose
-        print("self.lastState", self.lastState)
-        print("self.nextState", self.nextState)
+        print("[INFO]self.lastState", self.lastState)
+        print("[INFO]self.nextState", self.nextState)
 
         # params
         self.change_robotParams(customizedPose)
@@ -402,7 +406,7 @@ class robot:
                     # time.sleep(1)
                 # Smoothly execute
                 if isSmoothly:
-                    print("Smoothly execution activated")
+                    print("[INFO]Smoothly execution activated")
                     if isRecording:
                         time.sleep(timeIntervalBeforeExp) # Sleep 1 second by default to wait for the start of the video 
                     self.smooth_execution_mode(steps)
@@ -626,10 +630,8 @@ def target_function(**kwargs):
     # check parameters
     fixedrobotcode = checkParameters(fixedrobotcode)
     
-
-
     # control robot 
-    print("fixedrobotcode is", fixedrobotcode)
+    print("[INFO]fixedrobotcode is", fixedrobotcode)
     rb.switch_to_customizedPose(fixedrobotcode)
     returncode = rb.connect_ros(isSmoothly=True, isRecording=False, steps=20) # isSmoothly = True ,isRecording = True
     # the sleep inside rb is not working for outside.
@@ -638,16 +640,17 @@ def target_function(**kwargs):
     # I need a feedback here!!
     # -------------
     if returncode == 0:
-        print('successfully return')
+        print('[INFO]successfully return')
     
 
-    loopFlag = 1 # 0 - py-feat, 1 - human
+    
     output = 0
-
+    global loopFlag
+    global COUNTER
     # pyfeat_in_loop_output case
     if loopFlag == 0:
         # Take photo
-        global COUNTER
+        
         process = rb.take_picture(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, COUNTER), folder=target_emotion)
         process.wait()
         if process.returncode != 0:
@@ -679,11 +682,72 @@ def target_function(**kwargs):
 
         df.to_csv(df_name, index=False, sep=',')
     
-    # Human_in_loop_output case
+    # Human optimization output case
     elif loopFlag == 1:
-        rating = int(input('Input a number within 0-7 (0 is Lowest, 7 is Largest):\n'))
-        output = rating / 7.0
-    
+        # type 1, 1-7 rating
+        # Human rating part
+
+        instructionSentence = '\n\nThe {}/100 trails for {}.\nPlease watch the robot face directly and type an integer number within 1-7 (1 is Lowest, 7 is Largest) and Enter:\n'.format(COUNTER + 1, target_emotion)
+        errorSentence = 'Input ERROR. Please try again.\nType an integer number within 1-7 (1 is Lowest, 7 is Largest) and Enter:\n'
+        rating = input(instructionSentence)
+        while True:
+            if rating.isdigit():
+                if int(rating) in range(1, 8):
+                    output = (int(rating) - 1) / 6.0
+                    break
+                else:
+                    rating = input(errorSentence)
+            else:
+                rating = input(errorSentence)
+        
+
+        # Take photo
+        process = rb.take_picture(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, COUNTER), folder=target_emotion)
+        process.wait()
+        if process.returncode != 0:
+            print(process.stdout.readlines())
+            raise Exception("The subprocess does NOT end.")
+
+        # delete useless figure
+        folderPath = "image_analysis/{}/".format(target_emotion)
+        for i in os.listdir(folderPath):
+            if '1.png' in i:
+                os.remove(folderPath + i)
+
+        COUNTER += 1
+
+        # Save every parameters
+        # construct the DataFrame
+        df_dic = {}
+        df_dic[target_emotion] = [output]
+        for k,v in kwargs.items():
+            df_dic[k] = [v]
+        print(df_dic)
+        df = pd.DataFrame(df_dic)
+        df_name = rb.readablefileName[:-4]+"_axes_data.csv"
+
+        df.to_csv(df_name, index=False, sep=',')
+
+        # type 2, true or false rating
+        # PROBLEMATIC!!! What's the matric here, it's too hard to define the matric for running Bayesian Optimization. Otherwise just use random search.
+
+        # global totalTrails
+        # import matplotlib.pyplot as plt
+        # img = plt.imread(rb.bestImg)
+        # plt.imshow(img)
+        # plt.pause(1)
+        # instructionSentence = 'Choose Q or P.\n' + \
+        #     'If you think the figure on the left shows better facial expressions than the right one, input [Q] or [q] and press Enter.\n' + \
+        #     'Otherwise, input [P] or [p]and press Enter' 
+        # rating = input(instructionSentence)
+        # while rating.lower() not in ['q', 'p']:
+        #     print('Input ERROR, please try again.\n')
+        #     rating = input(instructionSentence)
+        # plt.close()
+        # if rating.lower() == 'p':
+        #     newimg = rb.readablefileName
+        #     rb.bestImg = newimg
+            
     return output
 
 
@@ -734,6 +798,20 @@ def bayesian_optimization(baseline, target_emotion, robot):
     # open all axes
     pbounds = generate_pbounds(all_axes_for_emotions)
 
+
+    # TODO SequentialDomainReductionTransformer
+    # reference : https://colab.research.google.com/drive/1tfbLZRLZgUadM5jz4trFudzta58849JV#scrollTo=J7Lp_Q6cQcP5
+
+    # from bayes_opt import SequentialDomainReductionTransformer
+    # bounds_transformer = SequentialDomainReductionTransformer()
+    # mutating_optimizer = BayesianOptimization(
+    #     f=middle_function,
+    #     pbounds=pbounds,
+    #     verbose=2,
+    #     random_state=1,
+    #     bounds_transformer=bounds_transformer
+    # )
+
     # print(pbounds)
     optimizer = BayesianOptimization(
         f=middle_function,
@@ -776,7 +854,7 @@ def bayesian_optimization(baseline, target_emotion, robot):
         # },
         
 
-        random_state=42,
+        random_state=1,
         verbose=2)
     # 2个初始化点和10轮优化，共12轮
 
@@ -880,7 +958,7 @@ def main():
     # change workdir
     workdir = "/home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package/scripts"
     os.chdir(workdir)
-
+    rb.bestImg = workdir + '/image_analysis/temp/neutral.png'
     assert os.getcwd() == workdir, print(os.getcwd())
     # res = subprocess.Popen("ls", cwd="/home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package/scripts")
     # print(res)
@@ -891,8 +969,121 @@ def main():
     # anger, disgust, fear, happiness, sadness, surprise
     # defaultPose.prototypeFacialExpressions
     
-    # 2022 TODO
-    # Exp 8: Human judge result
+    # TODO
+    # Exp 9: Psycho-physical optimization 100 trails Saori San 
+
+    # 100 trails
+    beginning_Instruction = "\n---------------INSTRUCTIONS--------------\nIn this experiment, you are required to watch the robot directly AFTER it changing the facial expressions. Then you need to rate the facial expressions from 1 to 7. 1 means you didn't feel the facial expression at all, and 7 means you think the robot represent the best facial expressions. \nPress Enter to continue."
+ 
+    input(beginning_Instruction)
+
+    # for target_emotion in ['anger']:
+    for target_emotion in ['disgust', 'fear', 'happiness', 'sadness', 'surprise', 'neutral']:
+    # for target_emotion in []:
+    # for target_emotion in []:
+    # for target_emotion in ['neutral']:
+        check_folder(target_emotion)
+        COUNTER = 0
+        print(target_emotion)
+        # target_emotion = "anger"
+        optimizer = bayesian_optimization(
+            baseline=defaultPose.prototypeFacialExpressions[target_emotion],
+            target_emotion=target_emotion,
+            robot=rb)
+        print('\n')
+        print("Current target emotion is: ", target_emotion, optimizer.res)
+        print('\n')
+        # Return to normal
+        rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+        rb.connect_ros(True, False)
+        # time.sleep(1)
+    # # Return to normal
+    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    # rb.connect_ros(True, False)
+
+
+    # 2022.1.7
+    # Exp 8: Namba Coding, Namba coding hot
+    #       Procedure: Switch FE -> Take photo -> py-feat evaluation.
+
+    # check_folder('prototypeFacialExpressions')
+    # check_folder('hotFacialExpressions')
+    # ----------------------------
+    # prototypeFacialExpressions
+    # ----------------------------
+
+    # for k,v in defaultPose.prototypeFacialExpressions.items():
+    #     folderName = 'prototypeFacialExpressions'
+    #     print("switch to: ",k)
+    #     rb.switch_to_customizedPose(v)
+    #     rb.connect_ros(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+    #     # Take photo
+    #     process = rb.take_picture(isUsingCounter=False, appendix='{}'.format(k), folder=folderName)
+    #     process.wait()
+    #     if process.returncode != 0:
+    #         print(process.stdout.readlines())
+    #         raise Exception("The subprocess does NOT end.")
+
+    #     # delete useless figure
+    #     folderPath = "image_analysis/{}/".format(folderName)
+    #     for i in os.listdir(folderPath):
+    #         if '1.png' in i:
+    #             os.remove(folderPath + i)
+
+
+    #     time.sleep(3)
+    #     print("py_feat_analysis result is: ", py_feat_analysis(rb.readablefileName, k))
+
+    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    # rb.connect_ros(True, False)
+
+    # --------------
+    # hotExpressions
+    # --------------
+    # for k,v in defaultPose.hotExpressions.items():
+    #     print("switch to: ", k)
+    #     folderName = 'hotFacialExpressions'
+    #     targetEmotion = k[3:]
+    #     print(targetEmotion)
+
+    #     rb.switch_to_customizedPose(v)
+    #     rb.connect_ros(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+    #     # Take photo
+    #     process = rb.take_picture(isUsingCounter=False, appendix='{}'.format(targetEmotion), folder=folderName)
+    #     process.wait()
+    #     if process.returncode != 0:
+    #         print(process.stdout.readlines())
+    #         raise Exception("The subprocess does NOT end.")
+
+    #     # delete useless figure
+    #     folderPath = "image_analysis/{}/".format(folderName)
+    #     for i in os.listdir(folderPath):
+    #         if '1.png' in i:
+    #             os.remove(folderPath + i)
+
+    #     # Py-feat Analysis
+    #     temp_pyfeat_result = py_feat_analysis(img=rb.readablefileName,  target_emotion = targetEmotion)
+
+    #     # Save every parameters
+    #     # construct the DataFrame
+    #     df_dic = {}
+    #     df_dic[k] = [temp_pyfeat_result]
+    #     print(df_dic)
+    #     # for k,v in kwargs.items():
+    #     #     df_dic[k] = [v]
+    #     # print(df_dic)
+    #     # df = pd.DataFrame(df_dic)
+    #     # df_name = rb.readablefileName[:-4]+"_axes_data.csv"
+
+    #     # df.to_csv(df_name, index=False, sep=',')
+
+
+    #     time.sleep(3)
+
+    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    # rb.connect_ros(True, False)
+    
+
 
     # 2021.12.23
     # Exp 6: Restrict search range of downward eye lid to avoid noise. # Seems OK!
@@ -903,25 +1094,25 @@ def main():
     # for target_emotion in ['disgust', 'fear']:
     # for target_emotion in ['happiness', 'sadness']:
     # for target_emotion in ['surprise', 'neutral']:
-    for target_emotion in ['neutral']:
-        check_folder(target_emotion)
-        COUNTER = 0
-        print(target_emotion)
-        # target_emotion = "anger"
-        optimizer = bayesian_optimization(
-            baseline=defaultPose.prototypeFacialExpressions[target_emotion], 
-            target_emotion=target_emotion,
-            robot=rb)
-        print('\n')
-        print("Current target emotion is: ", target_emotion, optimizer.res)
-        print('\n')
-        # Return to normal
-        rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-        rb.connect_ros(True, False)
-        # time.sleep(1)
-    # Return to normal
-    rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-    rb.connect_ros(True, False)
+    # for target_emotion in ['neutral']:
+    #     check_folder(target_emotion)
+    #     COUNTER = 0
+    #     print(target_emotion)
+    #     # target_emotion = "anger"
+    #     optimizer = bayesian_optimization(
+    #         baseline=defaultPose.prototypeFacialExpressions[target_emotion], 
+    #         target_emotion=target_emotion,
+    #         robot=rb)
+    #     print('\n')
+    #     print("Current target emotion is: ", target_emotion, optimizer.res)
+    #     print('\n')
+    #     # Return to normal
+    #     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    #     rb.connect_ros(True, False)
+    #     # time.sleep(1)
+    # # Return to normal
+    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    # rb.connect_ros(True, False)
 
 
     # 2021.12.22
