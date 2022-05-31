@@ -1,0 +1,841 @@
+,index,stimulus,target_emotion_for_rating,rating
+0,0,namba normal,anger,4
+1,1,namba normal,anger,5
+2,2,namba normal,anger,5
+3,3,namba normal,anger,1
+4,4,namba normal,anger,6
+5,5,namba normal,anger,5
+6,6,namba normal,anger,5
+7,7,namba normal,anger,1
+8,8,namba normal,anger,6
+9,9,namba normal,anger,5
+10,10,namba normal,anger,4
+11,11,namba normal,anger,5
+12,12,namba normal,anger,4
+13,13,namba normal,anger,4
+14,14,namba normal,anger,6
+15,15,namba normal,anger,2
+16,16,namba normal,anger,1
+17,17,namba normal,anger,4
+18,18,namba normal,anger,5
+19,19,namba normal,anger,3
+20,20,namba normal,anger,4
+21,21,namba normal,anger,4
+22,22,namba normal,anger,4
+23,23,namba normal,anger,2
+24,24,namba normal,anger,3
+25,25,namba normal,anger,4
+26,26,namba normal,anger,6
+27,27,namba normal,anger,2
+28,28,namba normal,anger,3
+29,29,namba normal,anger,2
+30,30,namba normal,anger,3
+31,31,namba normal,anger,6
+32,32,namba normal,anger,5
+33,33,namba normal,anger,7
+34,34,namba normal,anger,6
+35,35,namba normal,anger,2
+36,36,namba normal,anger,2
+37,37,namba normal,anger,5
+38,38,namba normal,anger,5
+39,39,namba normal,anger,4
+40,0,namba normal,disgust,3
+41,1,namba normal,disgust,3
+42,2,namba normal,disgust,6
+43,3,namba normal,disgust,2
+44,4,namba normal,disgust,4
+45,5,namba normal,disgust,1
+46,6,namba normal,disgust,3
+47,7,namba normal,disgust,2
+48,8,namba normal,disgust,4
+49,9,namba normal,disgust,1
+50,10,namba normal,disgust,2
+51,11,namba normal,disgust,3
+52,12,namba normal,disgust,2
+53,13,namba normal,disgust,4
+54,14,namba normal,disgust,1
+55,15,namba normal,disgust,2
+56,16,namba normal,disgust,1
+57,17,namba normal,disgust,1
+58,18,namba normal,disgust,4
+59,19,namba normal,disgust,1
+60,20,namba normal,disgust,1
+61,21,namba normal,disgust,1
+62,22,namba normal,disgust,2
+63,23,namba normal,disgust,2
+64,24,namba normal,disgust,3
+65,25,namba normal,disgust,1
+66,26,namba normal,disgust,2
+67,27,namba normal,disgust,3
+68,28,namba normal,disgust,1
+69,29,namba normal,disgust,1
+70,30,namba normal,disgust,2
+71,31,namba normal,disgust,5
+72,32,namba normal,disgust,3
+73,33,namba normal,disgust,4
+74,34,namba normal,disgust,2
+75,35,namba normal,disgust,1
+76,36,namba normal,disgust,2
+77,37,namba normal,disgust,4
+78,38,namba normal,disgust,1
+79,39,namba normal,disgust,1
+80,0,namba normal,fear,5
+81,1,namba normal,fear,2
+82,2,namba normal,fear,1
+83,3,namba normal,fear,3
+84,4,namba normal,fear,1
+85,5,namba normal,fear,1
+86,6,namba normal,fear,1
+87,7,namba normal,fear,4
+88,8,namba normal,fear,1
+89,9,namba normal,fear,1
+90,10,namba normal,fear,1
+91,11,namba normal,fear,2
+92,12,namba normal,fear,3
+93,13,namba normal,fear,2
+94,14,namba normal,fear,1
+95,15,namba normal,fear,1
+96,16,namba normal,fear,1
+97,17,namba normal,fear,1
+98,18,namba normal,fear,1
+99,19,namba normal,fear,1
+100,20,namba normal,fear,1
+101,21,namba normal,fear,1
+102,22,namba normal,fear,1
+103,23,namba normal,fear,1
+104,24,namba normal,fear,1
+105,25,namba normal,fear,1
+106,26,namba normal,fear,1
+107,27,namba normal,fear,1
+108,28,namba normal,fear,1
+109,29,namba normal,fear,1
+110,30,namba normal,fear,2
+111,31,namba normal,fear,2
+112,32,namba normal,fear,3
+113,33,namba normal,fear,2
+114,34,namba normal,fear,1
+115,35,namba normal,fear,1
+116,36,namba normal,fear,2
+117,37,namba normal,fear,1
+118,38,namba normal,fear,1
+119,39,namba normal,fear,1
+120,0,namba normal,happiness,4
+121,1,namba normal,happiness,2
+122,2,namba normal,happiness,5
+123,3,namba normal,happiness,1
+124,4,namba normal,happiness,4
+125,5,namba normal,happiness,4
+126,6,namba normal,happiness,3
+127,7,namba normal,happiness,4
+128,8,namba normal,happiness,5
+129,9,namba normal,happiness,2
+130,10,namba normal,happiness,1
+131,11,namba normal,happiness,3
+132,12,namba normal,happiness,5
+133,13,namba normal,happiness,3
+134,14,namba normal,happiness,1
+135,15,namba normal,happiness,2
+136,16,namba normal,happiness,5
+137,17,namba normal,happiness,1
+138,18,namba normal,happiness,4
+139,19,namba normal,happiness,2
+140,20,namba normal,happiness,1
+141,21,namba normal,happiness,1
+142,22,namba normal,happiness,1
+143,23,namba normal,happiness,4
+144,24,namba normal,happiness,1
+145,25,namba normal,happiness,1
+146,26,namba normal,happiness,5
+147,27,namba normal,happiness,2
+148,28,namba normal,happiness,4
+149,29,namba normal,happiness,1
+150,30,namba normal,happiness,3
+151,31,namba normal,happiness,4
+152,32,namba normal,happiness,4
+153,33,namba normal,happiness,4
+154,34,namba normal,happiness,2
+155,35,namba normal,happiness,3
+156,36,namba normal,happiness,1
+157,37,namba normal,happiness,4
+158,38,namba normal,happiness,1
+159,39,namba normal,happiness,1
+160,0,namba normal,sadness,5
+161,1,namba normal,sadness,3
+162,2,namba normal,sadness,4
+163,3,namba normal,sadness,1
+164,4,namba normal,sadness,2
+165,5,namba normal,sadness,2
+166,6,namba normal,sadness,2
+167,7,namba normal,sadness,1
+168,8,namba normal,sadness,3
+169,9,namba normal,sadness,5
+170,10,namba normal,sadness,2
+171,11,namba normal,sadness,2
+172,12,namba normal,sadness,2
+173,13,namba normal,sadness,3
+174,14,namba normal,sadness,1
+175,15,namba normal,sadness,2
+176,16,namba normal,sadness,1
+177,17,namba normal,sadness,1
+178,18,namba normal,sadness,3
+179,19,namba normal,sadness,1
+180,20,namba normal,sadness,1
+181,21,namba normal,sadness,1
+182,22,namba normal,sadness,1
+183,23,namba normal,sadness,1
+184,24,namba normal,sadness,1
+185,25,namba normal,sadness,1
+186,26,namba normal,sadness,3
+187,27,namba normal,sadness,1
+188,28,namba normal,sadness,1
+189,29,namba normal,sadness,1
+190,30,namba normal,sadness,2
+191,31,namba normal,sadness,5
+192,32,namba normal,sadness,2
+193,33,namba normal,sadness,3
+194,34,namba normal,sadness,2
+195,35,namba normal,sadness,1
+196,36,namba normal,sadness,1
+197,37,namba normal,sadness,1
+198,38,namba normal,sadness,1
+199,39,namba normal,sadness,1
+200,0,namba normal,surprise,6
+201,1,namba normal,surprise,3
+202,2,namba normal,surprise,6
+203,3,namba normal,surprise,2
+204,4,namba normal,surprise,5
+205,5,namba normal,surprise,6
+206,6,namba normal,surprise,6
+207,7,namba normal,surprise,2
+208,8,namba normal,surprise,5
+209,9,namba normal,surprise,3
+210,10,namba normal,surprise,6
+211,11,namba normal,surprise,4
+212,12,namba normal,surprise,5
+213,13,namba normal,surprise,6
+214,14,namba normal,surprise,7
+215,15,namba normal,surprise,2
+216,16,namba normal,surprise,6
+217,17,namba normal,surprise,7
+218,18,namba normal,surprise,3
+219,19,namba normal,surprise,5
+220,20,namba normal,surprise,3
+221,21,namba normal,surprise,3
+222,22,namba normal,surprise,4
+223,23,namba normal,surprise,1
+224,24,namba normal,surprise,5
+225,25,namba normal,surprise,3
+226,26,namba normal,surprise,7
+227,27,namba normal,surprise,7
+228,28,namba normal,surprise,2
+229,29,namba normal,surprise,4
+230,30,namba normal,surprise,3
+231,31,namba normal,surprise,6
+232,32,namba normal,surprise,5
+233,33,namba normal,surprise,6
+234,34,namba normal,surprise,3
+235,35,namba normal,surprise,3
+236,36,namba normal,surprise,2
+237,37,namba normal,surprise,6
+238,38,namba normal,surprise,6
+239,39,namba normal,surprise,5
+240,0,namba normal,neutral,5
+241,1,namba normal,neutral,4
+242,2,namba normal,neutral,1
+243,3,namba normal,neutral,2
+244,4,namba normal,neutral,2
+245,5,namba normal,neutral,1
+246,6,namba normal,neutral,1
+247,7,namba normal,neutral,7
+248,8,namba normal,neutral,4
+249,9,namba normal,neutral,2
+250,10,namba normal,neutral,1
+251,11,namba normal,neutral,3
+252,12,namba normal,neutral,5
+253,13,namba normal,neutral,1
+254,14,namba normal,neutral,1
+255,15,namba normal,neutral,3
+256,16,namba normal,neutral,3
+257,17,namba normal,neutral,1
+258,18,namba normal,neutral,2
+259,19,namba normal,neutral,3
+260,20,namba normal,neutral,1
+261,21,namba normal,neutral,1
+262,22,namba normal,neutral,4
+263,23,namba normal,neutral,4
+264,24,namba normal,neutral,1
+265,25,namba normal,neutral,3
+266,26,namba normal,neutral,1
+267,27,namba normal,neutral,1
+268,28,namba normal,neutral,3
+269,29,namba normal,neutral,1
+270,30,namba normal,neutral,4
+271,31,namba normal,neutral,2
+272,32,namba normal,neutral,3
+273,33,namba normal,neutral,1
+274,34,namba normal,neutral,1
+275,35,namba normal,neutral,1
+276,36,namba normal,neutral,3
+277,37,namba normal,neutral,1
+278,38,namba normal,neutral,1
+279,39,namba normal,neutral,1
+280,0,namba hot,anger,5
+281,1,namba hot,anger,2
+282,2,namba hot,anger,5
+283,3,namba hot,anger,2
+284,4,namba hot,anger,5
+285,5,namba hot,anger,3
+286,6,namba hot,anger,6
+287,7,namba hot,anger,5
+288,8,namba hot,anger,6
+289,9,namba hot,anger,5
+290,10,namba hot,anger,4
+291,11,namba hot,anger,6
+292,12,namba hot,anger,4
+293,13,namba hot,anger,4
+294,14,namba hot,anger,6
+295,15,namba hot,anger,4
+296,16,namba hot,anger,1
+297,17,namba hot,anger,6
+298,18,namba hot,anger,5
+299,19,namba hot,anger,2
+300,20,namba hot,anger,3
+301,21,namba hot,anger,6
+302,22,namba hot,anger,3
+303,23,namba hot,anger,6
+304,24,namba hot,anger,5
+305,25,namba hot,anger,1
+306,26,namba hot,anger,7
+307,27,namba hot,anger,5
+308,28,namba hot,anger,5
+309,29,namba hot,anger,4
+310,30,namba hot,anger,6
+311,31,namba hot,anger,7
+312,32,namba hot,anger,5
+313,33,namba hot,anger,6
+314,34,namba hot,anger,7
+315,35,namba hot,anger,2
+316,36,namba hot,anger,4
+317,37,namba hot,anger,1
+318,38,namba hot,anger,4
+319,39,namba hot,anger,7
+320,0,namba hot,disgust,4
+321,1,namba hot,disgust,2
+322,2,namba hot,disgust,6
+323,3,namba hot,disgust,1
+324,4,namba hot,disgust,5
+325,5,namba hot,disgust,3
+326,6,namba hot,disgust,3
+327,7,namba hot,disgust,4
+328,8,namba hot,disgust,3
+329,9,namba hot,disgust,1
+330,10,namba hot,disgust,3
+331,11,namba hot,disgust,2
+332,12,namba hot,disgust,2
+333,13,namba hot,disgust,5
+334,14,namba hot,disgust,1
+335,15,namba hot,disgust,3
+336,16,namba hot,disgust,1
+337,17,namba hot,disgust,1
+338,18,namba hot,disgust,5
+339,19,namba hot,disgust,6
+340,20,namba hot,disgust,1
+341,21,namba hot,disgust,1
+342,22,namba hot,disgust,4
+343,23,namba hot,disgust,1
+344,24,namba hot,disgust,4
+345,25,namba hot,disgust,2
+346,26,namba hot,disgust,6
+347,27,namba hot,disgust,3
+348,28,namba hot,disgust,2
+349,29,namba hot,disgust,1
+350,30,namba hot,disgust,4
+351,31,namba hot,disgust,4
+352,32,namba hot,disgust,5
+353,33,namba hot,disgust,4
+354,34,namba hot,disgust,1
+355,35,namba hot,disgust,2
+356,36,namba hot,disgust,3
+357,37,namba hot,disgust,3
+358,38,namba hot,disgust,1
+359,39,namba hot,disgust,1
+360,0,namba hot,fear,5
+361,1,namba hot,fear,4
+362,2,namba hot,fear,3
+363,3,namba hot,fear,1
+364,4,namba hot,fear,1
+365,5,namba hot,fear,1
+366,6,namba hot,fear,1
+367,7,namba hot,fear,2
+368,8,namba hot,fear,2
+369,9,namba hot,fear,1
+370,10,namba hot,fear,1
+371,11,namba hot,fear,1
+372,12,namba hot,fear,2
+373,13,namba hot,fear,1
+374,14,namba hot,fear,1
+375,15,namba hot,fear,1
+376,16,namba hot,fear,1
+377,17,namba hot,fear,1
+378,18,namba hot,fear,1
+379,19,namba hot,fear,1
+380,20,namba hot,fear,1
+381,21,namba hot,fear,1
+382,22,namba hot,fear,1
+383,23,namba hot,fear,1
+384,24,namba hot,fear,1
+385,25,namba hot,fear,1
+386,26,namba hot,fear,1
+387,27,namba hot,fear,1
+388,28,namba hot,fear,1
+389,29,namba hot,fear,1
+390,30,namba hot,fear,1
+391,31,namba hot,fear,1
+392,32,namba hot,fear,2
+393,33,namba hot,fear,2
+394,34,namba hot,fear,1
+395,35,namba hot,fear,1
+396,36,namba hot,fear,1
+397,37,namba hot,fear,1
+398,38,namba hot,fear,1
+399,39,namba hot,fear,1
+400,0,namba hot,happiness,5
+401,1,namba hot,happiness,2
+402,2,namba hot,happiness,5
+403,3,namba hot,happiness,1
+404,4,namba hot,happiness,5
+405,5,namba hot,happiness,1
+406,6,namba hot,happiness,2
+407,7,namba hot,happiness,2
+408,8,namba hot,happiness,3
+409,9,namba hot,happiness,2
+410,10,namba hot,happiness,1
+411,11,namba hot,happiness,1
+412,12,namba hot,happiness,3
+413,13,namba hot,happiness,3
+414,14,namba hot,happiness,1
+415,15,namba hot,happiness,2
+416,16,namba hot,happiness,4
+417,17,namba hot,happiness,1
+418,18,namba hot,happiness,3
+419,19,namba hot,happiness,6
+420,20,namba hot,happiness,1
+421,21,namba hot,happiness,1
+422,22,namba hot,happiness,1
+423,23,namba hot,happiness,2
+424,24,namba hot,happiness,1
+425,25,namba hot,happiness,1
+426,26,namba hot,happiness,3
+427,27,namba hot,happiness,3
+428,28,namba hot,happiness,3
+429,29,namba hot,happiness,1
+430,30,namba hot,happiness,2
+431,31,namba hot,happiness,2
+432,32,namba hot,happiness,3
+433,33,namba hot,happiness,2
+434,34,namba hot,happiness,1
+435,35,namba hot,happiness,1
+436,36,namba hot,happiness,3
+437,37,namba hot,happiness,1
+438,38,namba hot,happiness,1
+439,39,namba hot,happiness,1
+440,0,namba hot,sadness,6
+441,1,namba hot,sadness,5
+442,2,namba hot,sadness,6
+443,3,namba hot,sadness,2
+444,4,namba hot,sadness,6
+445,5,namba hot,sadness,7
+446,6,namba hot,sadness,2
+447,7,namba hot,sadness,6
+448,8,namba hot,sadness,6
+449,9,namba hot,sadness,5
+450,10,namba hot,sadness,4
+451,11,namba hot,sadness,2
+452,12,namba hot,sadness,5
+453,13,namba hot,sadness,6
+454,14,namba hot,sadness,1
+455,15,namba hot,sadness,3
+456,16,namba hot,sadness,4
+457,17,namba hot,sadness,1
+458,18,namba hot,sadness,6
+459,19,namba hot,sadness,6
+460,20,namba hot,sadness,6
+461,21,namba hot,sadness,1
+462,22,namba hot,sadness,6
+463,23,namba hot,sadness,2
+464,24,namba hot,sadness,1
+465,25,namba hot,sadness,7
+466,26,namba hot,sadness,5
+467,27,namba hot,sadness,5
+468,28,namba hot,sadness,2
+469,29,namba hot,sadness,1
+470,30,namba hot,sadness,6
+471,31,namba hot,sadness,2
+472,32,namba hot,sadness,4
+473,33,namba hot,sadness,4
+474,34,namba hot,sadness,3
+475,35,namba hot,sadness,1
+476,36,namba hot,sadness,3
+477,37,namba hot,sadness,5
+478,38,namba hot,sadness,1
+479,39,namba hot,sadness,6
+480,0,namba hot,surprise,5
+481,1,namba hot,surprise,2
+482,2,namba hot,surprise,5
+483,3,namba hot,surprise,1
+484,4,namba hot,surprise,5
+485,5,namba hot,surprise,4
+486,6,namba hot,surprise,7
+487,7,namba hot,surprise,4
+488,8,namba hot,surprise,5
+489,9,namba hot,surprise,3
+490,10,namba hot,surprise,5
+491,11,namba hot,surprise,3
+492,12,namba hot,surprise,5
+493,13,namba hot,surprise,4
+494,14,namba hot,surprise,4
+495,15,namba hot,surprise,3
+496,16,namba hot,surprise,1
+497,17,namba hot,surprise,3
+498,18,namba hot,surprise,6
+499,19,namba hot,surprise,3
+500,20,namba hot,surprise,3
+501,21,namba hot,surprise,2
+502,22,namba hot,surprise,3
+503,23,namba hot,surprise,3
+504,24,namba hot,surprise,1
+505,25,namba hot,surprise,1
+506,26,namba hot,surprise,6
+507,27,namba hot,surprise,6
+508,28,namba hot,surprise,3
+509,29,namba hot,surprise,2
+510,30,namba hot,surprise,6
+511,31,namba hot,surprise,6
+512,32,namba hot,surprise,5
+513,33,namba hot,surprise,5
+514,34,namba hot,surprise,4
+515,35,namba hot,surprise,2
+516,36,namba hot,surprise,4
+517,37,namba hot,surprise,1
+518,38,namba hot,surprise,2
+519,39,namba hot,surprise,2
+520,0,namba hot,neutral,5
+521,1,namba hot,neutral,4
+522,2,namba hot,neutral,2
+523,3,namba hot,neutral,5
+524,4,namba hot,neutral,1
+525,5,namba hot,neutral,1
+526,6,namba hot,neutral,1
+527,7,namba hot,neutral,3
+528,8,namba hot,neutral,4
+529,9,namba hot,neutral,1
+530,10,namba hot,neutral,1
+531,11,namba hot,neutral,2
+532,12,namba hot,neutral,3
+533,13,namba hot,neutral,1
+534,14,namba hot,neutral,1
+535,15,namba hot,neutral,1
+536,16,namba hot,neutral,3
+537,17,namba hot,neutral,1
+538,18,namba hot,neutral,2
+539,19,namba hot,neutral,3
+540,20,namba hot,neutral,1
+541,21,namba hot,neutral,1
+542,22,namba hot,neutral,1
+543,23,namba hot,neutral,2
+544,24,namba hot,neutral,1
+545,25,namba hot,neutral,1
+546,26,namba hot,neutral,1
+547,27,namba hot,neutral,1
+548,28,namba hot,neutral,4
+549,29,namba hot,neutral,1
+550,30,namba hot,neutral,1
+551,31,namba hot,neutral,1
+552,32,namba hot,neutral,2
+553,33,namba hot,neutral,2
+554,34,namba hot,neutral,1
+555,35,namba hot,neutral,1
+556,36,namba hot,neutral,1
+557,37,namba hot,neutral,1
+558,38,namba hot,neutral,1
+559,39,namba hot,neutral,1
+560,0,BO-based,anger,4
+561,1,BO-based,anger,5
+562,2,BO-based,anger,6
+563,3,BO-based,anger,3
+564,4,BO-based,anger,6
+565,5,BO-based,anger,6
+566,6,BO-based,anger,7
+567,7,BO-based,anger,7
+568,8,BO-based,anger,7
+569,9,BO-based,anger,2
+570,10,BO-based,anger,7
+571,11,BO-based,anger,6
+572,12,BO-based,anger,6
+573,13,BO-based,anger,4
+574,14,BO-based,anger,6
+575,15,BO-based,anger,3
+576,16,BO-based,anger,7
+577,17,BO-based,anger,7
+578,18,BO-based,anger,6
+579,19,BO-based,anger,1
+580,20,BO-based,anger,1
+581,21,BO-based,anger,5
+582,22,BO-based,anger,6
+583,23,BO-based,anger,5
+584,24,BO-based,anger,7
+585,25,BO-based,anger,5
+586,26,BO-based,anger,7
+587,27,BO-based,anger,6
+588,28,BO-based,anger,6
+589,29,BO-based,anger,6
+590,30,BO-based,anger,6
+591,31,BO-based,anger,5
+592,32,BO-based,anger,7
+593,33,BO-based,anger,6
+594,34,BO-based,anger,6
+595,35,BO-based,anger,5
+596,36,BO-based,anger,5
+597,37,BO-based,anger,6
+598,38,BO-based,anger,6
+599,39,BO-based,anger,7
+600,0,BO-based,disgust,5
+601,1,BO-based,disgust,4
+602,2,BO-based,disgust,7
+603,3,BO-based,disgust,2
+604,4,BO-based,disgust,5
+605,5,BO-based,disgust,4
+606,6,BO-based,disgust,2
+607,7,BO-based,disgust,4
+608,8,BO-based,disgust,5
+609,9,BO-based,disgust,6
+610,10,BO-based,disgust,4
+611,11,BO-based,disgust,2
+612,12,BO-based,disgust,5
+613,13,BO-based,disgust,6
+614,14,BO-based,disgust,1
+615,15,BO-based,disgust,3
+616,16,BO-based,disgust,2
+617,17,BO-based,disgust,1
+618,18,BO-based,disgust,6
+619,19,BO-based,disgust,6
+620,20,BO-based,disgust,1
+621,21,BO-based,disgust,2
+622,22,BO-based,disgust,2
+623,23,BO-based,disgust,2
+624,24,BO-based,disgust,2
+625,25,BO-based,disgust,2
+626,26,BO-based,disgust,6
+627,27,BO-based,disgust,2
+628,28,BO-based,disgust,2
+629,29,BO-based,disgust,1
+630,30,BO-based,disgust,5
+631,31,BO-based,disgust,6
+632,32,BO-based,disgust,4
+633,33,BO-based,disgust,2
+634,34,BO-based,disgust,2
+635,35,BO-based,disgust,3
+636,36,BO-based,disgust,4
+637,37,BO-based,disgust,6
+638,38,BO-based,disgust,1
+639,39,BO-based,disgust,1
+640,0,BO-based,fear,4
+641,1,BO-based,fear,2
+642,2,BO-based,fear,2
+643,3,BO-based,fear,1
+644,4,BO-based,fear,1
+645,5,BO-based,fear,1
+646,6,BO-based,fear,1
+647,7,BO-based,fear,1
+648,8,BO-based,fear,1
+649,9,BO-based,fear,1
+650,10,BO-based,fear,1
+651,11,BO-based,fear,1
+652,12,BO-based,fear,2
+653,13,BO-based,fear,1
+654,14,BO-based,fear,1
+655,15,BO-based,fear,1
+656,16,BO-based,fear,1
+657,17,BO-based,fear,1
+658,18,BO-based,fear,1
+659,19,BO-based,fear,1
+660,20,BO-based,fear,1
+661,21,BO-based,fear,1
+662,22,BO-based,fear,1
+663,23,BO-based,fear,1
+664,24,BO-based,fear,1
+665,25,BO-based,fear,1
+666,26,BO-based,fear,1
+667,27,BO-based,fear,1
+668,28,BO-based,fear,1
+669,29,BO-based,fear,1
+670,30,BO-based,fear,1
+671,31,BO-based,fear,1
+672,32,BO-based,fear,1
+673,33,BO-based,fear,1
+674,34,BO-based,fear,1
+675,35,BO-based,fear,1
+676,36,BO-based,fear,1
+677,37,BO-based,fear,1
+678,38,BO-based,fear,1
+679,39,BO-based,fear,1
+680,0,BO-based,happiness,4
+681,1,BO-based,happiness,1
+682,2,BO-based,happiness,5
+683,3,BO-based,happiness,5
+684,4,BO-based,happiness,4
+685,5,BO-based,happiness,3
+686,6,BO-based,happiness,2
+687,7,BO-based,happiness,2
+688,8,BO-based,happiness,2
+689,9,BO-based,happiness,2
+690,10,BO-based,happiness,2
+691,11,BO-based,happiness,1
+692,12,BO-based,happiness,3
+693,13,BO-based,happiness,2
+694,14,BO-based,happiness,1
+695,15,BO-based,happiness,2
+696,16,BO-based,happiness,3
+697,17,BO-based,happiness,1
+698,18,BO-based,happiness,3
+699,19,BO-based,happiness,6
+700,20,BO-based,happiness,1
+701,21,BO-based,happiness,1
+702,22,BO-based,happiness,1
+703,23,BO-based,happiness,3
+704,24,BO-based,happiness,1
+705,25,BO-based,happiness,1
+706,26,BO-based,happiness,2
+707,27,BO-based,happiness,2
+708,28,BO-based,happiness,2
+709,29,BO-based,happiness,1
+710,30,BO-based,happiness,2
+711,31,BO-based,happiness,4
+712,32,BO-based,happiness,2
+713,33,BO-based,happiness,1
+714,34,BO-based,happiness,1
+715,35,BO-based,happiness,1
+716,36,BO-based,happiness,4
+717,37,BO-based,happiness,1
+718,38,BO-based,happiness,1
+719,39,BO-based,happiness,1
+720,0,BO-based,sadness,5
+721,1,BO-based,sadness,5
+722,2,BO-based,sadness,6
+723,3,BO-based,sadness,6
+724,4,BO-based,sadness,5
+725,5,BO-based,sadness,7
+726,6,BO-based,sadness,1
+727,7,BO-based,sadness,4
+728,8,BO-based,sadness,7
+729,9,BO-based,sadness,5
+730,10,BO-based,sadness,4
+731,11,BO-based,sadness,2
+732,12,BO-based,sadness,5
+733,13,BO-based,sadness,6
+734,14,BO-based,sadness,1
+735,15,BO-based,sadness,2
+736,16,BO-based,sadness,1
+737,17,BO-based,sadness,1
+738,18,BO-based,sadness,5
+739,19,BO-based,sadness,6
+740,20,BO-based,sadness,7
+741,21,BO-based,sadness,2
+742,22,BO-based,sadness,4
+743,23,BO-based,sadness,5
+744,24,BO-based,sadness,1
+745,25,BO-based,sadness,5
+746,26,BO-based,sadness,6
+747,27,BO-based,sadness,5
+748,28,BO-based,sadness,3
+749,29,BO-based,sadness,1
+750,30,BO-based,sadness,5
+751,31,BO-based,sadness,6
+752,32,BO-based,sadness,3
+753,33,BO-based,sadness,5
+754,34,BO-based,sadness,4
+755,35,BO-based,sadness,2
+756,36,BO-based,sadness,4
+757,37,BO-based,sadness,2
+758,38,BO-based,sadness,1
+759,39,BO-based,sadness,1
+760,0,BO-based,surprise,6
+761,1,BO-based,surprise,4
+762,2,BO-based,surprise,6
+763,3,BO-based,surprise,2
+764,4,BO-based,surprise,5
+765,5,BO-based,surprise,3
+766,6,BO-based,surprise,6
+767,7,BO-based,surprise,5
+768,8,BO-based,surprise,7
+769,9,BO-based,surprise,6
+770,10,BO-based,surprise,5
+771,11,BO-based,surprise,3
+772,12,BO-based,surprise,5
+773,13,BO-based,surprise,5
+774,14,BO-based,surprise,6
+775,15,BO-based,surprise,2
+776,16,BO-based,surprise,4
+777,17,BO-based,surprise,4
+778,18,BO-based,surprise,4
+779,19,BO-based,surprise,2
+780,20,BO-based,surprise,1
+781,21,BO-based,surprise,2
+782,22,BO-based,surprise,4
+783,23,BO-based,surprise,3
+784,24,BO-based,surprise,2
+785,25,BO-based,surprise,4
+786,26,BO-based,surprise,7
+787,27,BO-based,surprise,4
+788,28,BO-based,surprise,3
+789,29,BO-based,surprise,1
+790,30,BO-based,surprise,6
+791,31,BO-based,surprise,5
+792,32,BO-based,surprise,5
+793,33,BO-based,surprise,3
+794,34,BO-based,surprise,5
+795,35,BO-based,surprise,1
+796,36,BO-based,surprise,4
+797,37,BO-based,surprise,4
+798,38,BO-based,surprise,5
+799,39,BO-based,surprise,2
+800,0,BO-based,neutral,5
+801,1,BO-based,neutral,6
+802,2,BO-based,neutral,2
+803,3,BO-based,neutral,1
+804,4,BO-based,neutral,1
+805,5,BO-based,neutral,1
+806,6,BO-based,neutral,1
+807,7,BO-based,neutral,1
+808,8,BO-based,neutral,4
+809,9,BO-based,neutral,1
+810,10,BO-based,neutral,1
+811,11,BO-based,neutral,2
+812,12,BO-based,neutral,3
+813,13,BO-based,neutral,1
+814,14,BO-based,neutral,1
+815,15,BO-based,neutral,1
+816,16,BO-based,neutral,1
+817,17,BO-based,neutral,1
+818,18,BO-based,neutral,1
+819,19,BO-based,neutral,3
+820,20,BO-based,neutral,1
+821,21,BO-based,neutral,1
+822,22,BO-based,neutral,1
+823,23,BO-based,neutral,1
+824,24,BO-based,neutral,1
+825,25,BO-based,neutral,1
+826,26,BO-based,neutral,1
+827,27,BO-based,neutral,1
+828,28,BO-based,neutral,6
+829,29,BO-based,neutral,1
+830,30,BO-based,neutral,1
+831,31,BO-based,neutral,1
+832,32,BO-based,neutral,1
+833,33,BO-based,neutral,2
+834,34,BO-based,neutral,1
+835,35,BO-based,neutral,1
+836,36,BO-based,neutral,1
+837,37,BO-based,neutral,1
+838,38,BO-based,neutral,1
+839,39,BO-based,neutral,1
