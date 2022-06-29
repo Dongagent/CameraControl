@@ -1,0 +1,65 @@
+,Contrast,stimulus_type,A,B,Paired,Parametric,T,dof,alternative,p-unc,BF10,hedges
+0,stimulus_type,-,Prototype,Res,TRUE,TRUE,-3.538452749,39,two-sided,0.001057926,29.04,-0.106868396
+1,stimulus_emotion,-,anger,disgust,TRUE,TRUE,5.686770964,39,two-sided,1.41E-06,1.24E+04,0.371745372
+2,stimulus_emotion,-,anger,fear,TRUE,TRUE,-0.639252131,39,two-sided,0.52639606,0.207,-0.027527281
+3,stimulus_emotion,-,anger,happiness,TRUE,TRUE,8.271307112,39,two-sided,4.13E-10,2.64E+07,0.874036839
+4,stimulus_emotion,-,anger,neutral,TRUE,TRUE,7.363316484,39,two-sided,6.83E-09,1.84E+06,0.960552014
+5,stimulus_emotion,-,anger,sadness,TRUE,TRUE,4.309082761,39,two-sided,0.000107523,227.629,0.257534355
+6,stimulus_emotion,-,anger,surprise,TRUE,TRUE,7.309944562,39,two-sided,8.07E-09,1.57E+06,0.620445418
+7,stimulus_emotion,-,disgust,fear,TRUE,TRUE,-6.052429333,39,two-sided,4.38E-07,3.68E+04,-0.396825104
+8,stimulus_emotion,-,disgust,happiness,TRUE,TRUE,5.833899762,39,two-sided,8.81E-07,1.92E+04,0.511950466
+9,stimulus_emotion,-,disgust,neutral,TRUE,TRUE,5.984058496,39,two-sided,5.45E-07,3.00E+04,0.590679729
+10,stimulus_emotion,-,disgust,sadness,TRUE,TRUE,-2.006776654,39,two-sided,0.051741559,1.041,-0.108977671
+11,stimulus_emotion,-,disgust,surprise,TRUE,TRUE,3.844153429,39,two-sided,0.000435086,64.287,0.238201493
+12,stimulus_emotion,-,fear,happiness,TRUE,TRUE,8.117247425,39,two-sided,6.61E-10,1.69E+07,0.894804877
+13,stimulus_emotion,-,fear,neutral,TRUE,TRUE,7.292712509,39,two-sided,8.52E-09,1.50E+06,0.980790185
+14,stimulus_emotion,-,fear,sadness,TRUE,TRUE,4.591572746,39,two-sided,4.50E-05,503.867,0.283095155
+15,stimulus_emotion,-,fear,surprise,TRUE,TRUE,6.90666847,39,two-sided,2.88E-08,4.74E+05,0.644123703
+16,stimulus_emotion,-,happiness,neutral,TRUE,TRUE,0.818695261,39,two-sided,0.417934941,0.233,0.062473183
+17,stimulus_emotion,-,happiness,sadness,TRUE,TRUE,-6.61479148,39,two-sided,7.27E-08,1.98E+05,-0.609730025
+18,stimulus_emotion,-,happiness,surprise,TRUE,TRUE,-4.446936939,39,two-sided,7.04E-05,334.728,-0.298332144
+19,stimulus_emotion,-,neutral,sadness,TRUE,TRUE,-5.975006584,39,two-sided,5.61E-07,2.92E+04,-0.688850114
+20,stimulus_emotion,-,neutral,surprise,TRUE,TRUE,-4.417394754,39,two-sided,7.71E-05,308.068,-0.3751499
+21,stimulus_emotion,-,sadness,surprise,TRUE,TRUE,4.788739184,39,two-sided,2.43E-05,885.656,0.346285312
+22,stimulus_type * stimulus_emotion,Prototype,anger,disgust,TRUE,TRUE,4.504512681,39,two-sided,5.90E-05,393.708,0.445046121
+23,stimulus_type * stimulus_emotion,Prototype,anger,fear,TRUE,TRUE,-1.624856342,39,two-sided,0.112248753,0.569,-0.104590725
+24,stimulus_type * stimulus_emotion,Prototype,anger,happiness,TRUE,TRUE,6.84889657,39,two-sided,3.46E-08,3.99E+05,0.736790144
+25,stimulus_type * stimulus_emotion,Prototype,anger,neutral,TRUE,TRUE,7.099787091,39,two-sided,1.56E-08,8.43E+05,0.833517315
+26,stimulus_type * stimulus_emotion,Prototype,anger,sadness,TRUE,TRUE,0.401599284,39,two-sided,0.690171225,0.184,0.03430389
+27,stimulus_type * stimulus_emotion,Prototype,anger,surprise,TRUE,TRUE,6.465045456,39,two-sided,1.17E-07,1.27E+05,0.667131029
+28,stimulus_type * stimulus_emotion,Prototype,disgust,fear,TRUE,TRUE,-5.003643443,39,two-sided,1.24E-05,1649.796,-0.55157826
+29,stimulus_type * stimulus_emotion,Prototype,disgust,happiness,TRUE,TRUE,2.782765704,39,two-sided,0.008265343,4.8,0.296322289
+30,stimulus_type * stimulus_emotion,Prototype,disgust,neutral,TRUE,TRUE,3.801336306,39,two-sided,0.000493546,57.405,0.383899014
+31,stimulus_type * stimulus_emotion,Prototype,disgust,sadness,TRUE,TRUE,-4.206632292,39,two-sided,0.000146915,171.412,-0.389566719
+32,stimulus_type * stimulus_emotion,Prototype,disgust,surprise,TRUE,TRUE,2.337232916,39,two-sided,0.024653947,1.906,0.203554396
+33,stimulus_type * stimulus_emotion,Prototype,fear,happiness,TRUE,TRUE,7.317352978,39,two-sided,7.89E-09,1.61E+06,0.843751735
+34,stimulus_type * stimulus_emotion,Prototype,fear,neutral,TRUE,TRUE,7.09017613,39,two-sided,1.61E-08,8.19E+05,0.943096802
+35,stimulus_type * stimulus_emotion,Prototype,fear,sadness,TRUE,TRUE,1.614949077,39,two-sided,0.11438431,0.561,0.134455911
+36,stimulus_type * stimulus_emotion,Prototype,fear,surprise,TRUE,TRUE,6.523780594,39,two-sided,9.72E-08,1.51E+05,0.778924366
+37,stimulus_type * stimulus_emotion,Prototype,happiness,neutral,TRUE,TRUE,0.808775942,39,two-sided,0.423550608,0.232,0.079200393
+38,stimulus_type * stimulus_emotion,Prototype,happiness,sadness,TRUE,TRUE,-5.936777444,39,two-sided,6.34E-07,2.60E+04,-0.666402233
+39,stimulus_type * stimulus_emotion,Prototype,happiness,surprise,TRUE,TRUE,-1.229069096,39,two-sided,0.226410284,0.343,-0.109704917
+40,stimulus_type * stimulus_emotion,Prototype,neutral,sadness,TRUE,TRUE,-5.886694235,39,two-sided,7.44E-07,2.24E+04,-0.755328036
+41,stimulus_type * stimulus_emotion,Prototype,neutral,surprise,TRUE,TRUE,-2.307627404,39,two-sided,0.026413719,1.8,-0.197650448
+42,stimulus_type * stimulus_emotion,Prototype,sadness,surprise,TRUE,TRUE,5.562808434,39,two-sided,2.10E-06,8548.929,0.596003025
+43,stimulus_type * stimulus_emotion,Res,anger,disgust,TRUE,TRUE,4.699274632,39,two-sided,3.22E-05,685.083,0.282383658
+44,stimulus_type * stimulus_emotion,Res,anger,fear,TRUE,TRUE,0.832718399,39,two-sided,0.410074131,0.236,0.046203669
+45,stimulus_type * stimulus_emotion,Res,anger,happiness,TRUE,TRUE,7.80537193,39,two-sided,1.72E-09,6.78E+06,0.968179886
+46,stimulus_type * stimulus_emotion,Res,anger,neutral,TRUE,TRUE,6.965571877,39,two-sided,2.39E-08,5.65E+05,1.040771975
+47,stimulus_type * stimulus_emotion,Res,anger,sadness,TRUE,TRUE,5.963413687,39,two-sided,5.82E-07,2.82E+04,0.474018105
+48,stimulus_type * stimulus_emotion,Res,anger,surprise,TRUE,TRUE,6.565993881,39,two-sided,8.50E-08,1.71E+05,0.549945859
+49,stimulus_type * stimulus_emotion,Res,disgust,fear,TRUE,TRUE,-4.503533658,39,two-sided,5.91E-05,392.621,-0.232712345
+50,stimulus_type * stimulus_emotion,Res,disgust,happiness,TRUE,TRUE,6.762000347,39,two-sided,4.56E-08,3.08E+05,0.677472235
+51,stimulus_type * stimulus_emotion,Res,disgust,neutral,TRUE,TRUE,5.941996702,39,two-sided,6.23E-07,2.65E+04,0.741318743
+52,stimulus_type * stimulus_emotion,Res,disgust,sadness,TRUE,TRUE,3.122498999,39,two-sided,0.003373051,10.438,0.183668319
+53,stimulus_type * stimulus_emotion,Res,disgust,surprise,TRUE,TRUE,3.656235987,39,two-sided,0.000753717,39.29,0.252650737
+54,stimulus_type * stimulus_emotion,Res,fear,happiness,TRUE,TRUE,7.489770277,39,two-sided,4.60E-09,2.68E+06,0.907340851
+55,stimulus_type * stimulus_emotion,Res,fear,neutral,TRUE,TRUE,6.696608542,39,two-sided,5.61E-08,2.53E+05,0.976597795
+56,stimulus_type * stimulus_emotion,Res,fear,sadness,TRUE,TRUE,5.029143373,39,two-sided,1.14E-05,1776.971,0.420327519
+57,stimulus_type * stimulus_emotion,Res,fear,surprise,TRUE,TRUE,5.630894999,39,two-sided,1.69E-06,1.05E+04,0.493782332
+58,stimulus_type * stimulus_emotion,Res,happiness,neutral,TRUE,TRUE,0.54615768,39,two-sided,0.588068516,0.196,0.043116072
+59,stimulus_type * stimulus_emotion,Res,happiness,sadness,TRUE,TRUE,-5.753787421,39,two-sided,1.14E-06,1.51E+04,-0.510018897
+60,stimulus_type * stimulus_emotion,Res,happiness,surprise,TRUE,TRUE,-5.915104946,39,two-sided,6.79E-07,2.44E+04,-0.457921643
+61,stimulus_type * stimulus_emotion,Res,neutral,sadness,TRUE,TRUE,-4.661381537,39,two-sided,3.62E-05,614.741,-0.571428485
+62,stimulus_type * stimulus_emotion,Res,neutral,surprise,TRUE,TRUE,-4.789712567,39,two-sided,2.43E-05,888.141,-0.519993564
+63,stimulus_type * stimulus_emotion,Res,sadness,surprise,TRUE,TRUE,0.893080977,39,two-sided,0.377291749,0.247,0.066564986
