@@ -22,7 +22,8 @@ import defaultPose
 # import socket
 import time
 import copy
-# import cv2
+import sys
+import cv2
 import os, subprocess
 import platform
 import numpy as np
@@ -40,9 +41,9 @@ import struct
 # ----- for ros END------
 
 SPACE = ' '
-LINUXVIDEOPATH = '/dev/video0' # ffplay
-loopFlag = 1 # 0 - py-feat, 1 - human
-DEBUG = 0 # 0 - Run; 1 - Debuging with robot; 2 - Debug WITHOUT robot 
+LINUXVIDEOPATH = '/dev/video2' # ffplay
+loopFlag = 0 # 0 - py-feat, 1 - human
+DEBUG = 2 # 0 - Run; 1 - Debuging with robot; 2 - Debug WITHOUT robot; 3 - Debug without pic
 
 
 class robot:
@@ -107,7 +108,7 @@ class robot:
                 self.fileName += "_" + appendix + self.photoform
             else:
                 self.fileName += self.photoform
-        if DEBUG == 2:
+        if DEBUG == 3:
             print("Filename is {}".format(self.fileName))
             return
         if folder:
@@ -143,13 +144,55 @@ class robot:
             videoPath, 
             self.fileName)
         # ffmpeg -f v4l2 -i /dev/video2 -vframes 1 /home/dongagent/github/CameraControl/algorithm/test.png
-
+        print(command)
         if "Linux" in platform.platform():
             # Linux
             return subprocess.Popen([command], stdout=subprocess.PIPE, shell=True)
         elif "Windows" in platform.platform():
             # Windows
             return subprocess.Popen(["pwsh", "-Command", command], stdout=subprocess.PIPE)
+
+    def take_picture_cv(self, isUsingCounter=True, appendix='', folder=''):
+        self.counter += 1
+        if isUsingCounter:
+            self.fileName = time.strftime("%Y_%m_%d_%H_%M_%S_No", time.localtime()) + str(self.counter)
+            if appendix:
+                self.fileName += "_" + appendix + '.png'
+            else:
+                self.fileName += '.png'
+        else:
+            self.fileName = time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime()) 
+            if appendix:
+                self.fileName += "_" + appendix + '.png'
+            else:
+                self.fileName += '.png'
+        if DEBUG == 3:
+            print("Filename is {}".format(self.fileName))
+            return
+        if folder:
+            folderPath = "image_analysis/{}/".format(folder)
+            if not os.path.exists(folderPath):
+                try:
+                    os.mkdir(folderPath)
+                except Exception as e:
+                    print(e)
+        if not folder:
+            self.fileName = "image_analysis/temp/{}".format(self.fileName)
+        else:
+            self.fileName = folderPath + self.fileName
+        
+        self.readablefileName = self.fileName
+        global cap
+        ret, frame = cap.read()
+        # if frame is read correctly ret is True
+        if not ret:
+            print("Can't receive frame (stream end?). Exiting ...", file=sys.stderr)
+            raise ERROR
+    
+        # Ideally, this save and rename part should be done in another thread
+        cv2.imwrite(self.readablefileName, frame)
+
+
     def take_video(self, isUsingCounter=True, appendix=''):
         self.counter += 1
         if isUsingCounter:
@@ -360,6 +403,7 @@ class robot:
             potaxisstr = recv_dict['Axes'].split(',')
             axiswithpotentio = map((lambda x: int(x)), potaxisstr)
             print(axiswithpotentio)
+
     def connect_ros(self, isSmoothly=False, isRecording=False, appendix="", steps=20, timeIntervalBeforeExp=1):
 
         if DEBUG == 2:
@@ -517,16 +561,18 @@ def py_feat_analysis(img, target_emotion, is_save_csv=True):
     '''
         @img: file name 
         @target_emotion: Anger, Disgust, Fear, Happiness, Sadness, Surprise
+        TODO: single instance mode
     '''
     from feat import Detector
     # face_model = "retinaface"
     # landmark_model = "mobilenet"
-    au_model = "rf"
+    au_model = "xgb"
     # au_model = "JAANET"
     emotion_model = "resmasknet"
     # emotion_model = "rf"
 
     detector = Detector(au_model = au_model, emotion_model = emotion_model)
+    
     
     image_prediction = detector.detect_image(img)
     df = image_prediction.head()
@@ -565,7 +611,7 @@ def checkParameters(robotParams):
     assert robotParams[18-1] * robotParams[19-1] == 0
     assert robotParams[22-1] * robotParams[23-1] == 0
     return robotParams
-# BOA
+# BO
 def target_function(**kwargs):
     """Pyfeat evaluation object
     
@@ -972,6 +1018,7 @@ def main():
     # TODO
     # Exp 9: Psycho-physical optimization 100 trails Saori San 
 
+    '''
     # 100 trails
     beginning_Instruction = "\n---------------INSTRUCTIONS--------------\nIn this experiment, you are required to watch the robot directly AFTER it changing the facial expressions. Then you need to rate the facial expressions from 1 to 7. 1 means you didn't feel the facial expression at all, and 7 means you think the robot represent the best facial expressions. \nPress Enter to continue."
  
@@ -1000,42 +1047,51 @@ def main():
     # # Return to normal
     # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
     # rb.connect_ros(True, False)
-
+    '''
 
     # 2022.1.7
     # Exp 8: Namba Coding, Namba coding hot
     #       Procedure: Switch FE -> Take photo -> py-feat evaluation.
 
-    # check_folder('prototypeFacialExpressions')
-    # check_folder('hotFacialExpressions')
+    check_folder('prototypeFacialExpressions')
+    check_folder('hotFacialExpressions')
     # ----------------------------
     # prototypeFacialExpressions
     # ----------------------------
 
-    # for k,v in defaultPose.prototypeFacialExpressions.items():
-    #     folderName = 'prototypeFacialExpressions'
-    #     print("switch to: ",k)
-    #     rb.switch_to_customizedPose(v)
-    #     rb.connect_ros(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
-    #     # Take photo
-    #     process = rb.take_picture(isUsingCounter=False, appendix='{}'.format(k), folder=folderName)
-    #     process.wait()
-    #     if process.returncode != 0:
-    #         print(process.stdout.readlines())
-    #         raise Exception("The subprocess does NOT end.")
+    # ---- DEBUG for cv2 ----
+    # global cap
+    # cap = cv2.VideoCapture(2)
 
-    #     # delete useless figure
-    #     folderPath = "image_analysis/{}/".format(folderName)
-    #     for i in os.listdir(folderPath):
-    #         if '1.png' in i:
-    #             os.remove(folderPath + i)
+    # ---- DEBUG for cv2 ----
+
+    for k,v in defaultPose.prototypeFacialExpressions.items():
+        folderName = 'prototypeFacialExpressions'
+        print("switch to: ",k)
+        rb.switch_to_customizedPose(v)
+        rb.connect_ros(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+        # Take photo
+        # process = rb.take_picture(isUsingCounter=False, appendix='{}'.format(k), folder=folderName)
+        # process.wait()
+        # if process.returncode != 0:
+        #     print(process.stdout.readlines())
+        #     raise Exception("The subprocess does NOT end.")
+
+        # Take cv photo
+        rb.take_picture(isUsingCounter=False, appendix='{}'.format(k), folder=folderName)
+
+        # # delete useless figure
+        # folderPath = "image_analysis/{}/".format(folderName)
+        # for i in os.listdir(folderPath):
+        #     if '1.png' in i:
+        #         os.remove(folderPath + i)
 
 
-    #     time.sleep(3)
-    #     print("py_feat_analysis result is: ", py_feat_analysis(rb.readablefileName, k))
+        time.sleep(3)
+        print("py_feat_analysis result is: ", py_feat_analysis(rb.readablefileName, k))
 
-    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-    # rb.connect_ros(True, False)
+    rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    rb.connect_ros(True, False)
 
     # --------------
     # hotExpressions
