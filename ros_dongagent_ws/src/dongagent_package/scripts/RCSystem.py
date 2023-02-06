@@ -20,10 +20,8 @@ from typing import Counter
 import defaultPose
 
 # import socket
-import time
-import copy
-import sys
-import cv2
+from threading import Thread
+import cv2, time, copy, sys
 import os, subprocess
 import platform
 import numpy as np
@@ -32,19 +30,77 @@ from bayes_opt import BayesianOptimization
 from bayes_opt.logger import JSONLogger
 from bayes_opt.event import Events
 # ----- for ros------
-import rospy
+import rospy, json, base64
 from std_msgs.msg import String
-import json
-import base64
-import time
 import struct
 # ----- for ros END------
 
 SPACE = ' '
 LINUXVIDEOPATH = '/dev/video2' # ffplay
 loopFlag = 0 # 0 - py-feat, 1 - human
-DEBUG = 2 # 0 - Run; 1 - Debuging with robot; 2 - Debug WITHOUT robot; 3 - Debug without pic
+DEBUG = 0
+# 0 - Run; 
+# 1 - Debuging with robot; 
+# 2 - Debug WITHOUT robot; for image debuging
+# 3 - Debug without pic, with  robot; 
+# 4 - Debug without pic, without robot;
 
+# pyfeat
+from feat import Detector
+emotion_model = "resmasknet"
+detector = ''
+
+class WebcamStreamWidget(object):
+    def __init__(self, stream_id=0):
+        self.stream_id = stream_id # default is 0 for main camera 
+        
+        # opening video capture stream vcap
+        self.vcap = cv2.VideoCapture(stream_id)
+        if not self.vcap.isOpened:
+            raise AttributeError("[ERROR]: Error accessing webcam stream.")
+        
+        # reading a single frame from vcap stream for initializing 
+        self.status , self.frame = self.vcap.read()
+        if not self.status:
+            print('[Exiting] No more frames to read')
+            exit(0)
+        # self.stopped is initialized to False 
+        self.stopped = True
+        # thread instantiation  
+        self.vthread = Thread(target=self.update, args=())
+        self.vthread.daemon = True # daemon threads run in background 
+
+    # start vthread 
+    def start(self):
+        self.stopped = False
+        self.vthread.start()
+
+    # the target method passed to vthread for reading the next available frame  
+    def update(self):
+        while True :
+            if self.stopped is True :
+                break
+            self.status , self.frame = self.vcap.read()
+            time.sleep(.01) # delay for simulating video processing
+            if self.status is False :
+                print('[Exiting] No more frames to read')
+                self.stopped = True
+                break 
+        self.vcap.release()
+
+    def read(self):
+        return self.frame
+
+    # stop reading frames
+    def stop(self):
+        self.stopped = True
+        self.vthread.join()
+    
+    def save_frame(self, path):
+        if not self.stopped:
+            cv2.imwrite(path, self.read())
+        else:
+            raise AttributeError('frame not found')
 
 class robot:
     def __init__(self, duration=3, fps=60):
@@ -73,7 +129,7 @@ class robot:
         self.AUPose = defaultPose.actionUnitParams
 
         # Camera Parameters
-        self.DEVICE_ID = 1
+        self.DEVICE_ID = int(LINUXVIDEOPATH[-1])
         self.WIDTH = 1280
         self.HEIGHT = 720
         self.FPS = fps
@@ -92,6 +148,11 @@ class robot:
         # Final initialization
         self.initialize_robotParams()
         self.return_to_stable_state()
+        
+        # webcam stream thread, initialize
+        self.webcam_stream_widget = WebcamStreamWidget(self.DEVICE_ID)
+        self.webcam_stream_widget.start()
+
     def take_picture(self, isUsingCounter=True, appendix='', folder=''):
         # we don't need this
         # Allright, we need this 
@@ -108,7 +169,7 @@ class robot:
                 self.fileName += "_" + appendix + self.photoform
             else:
                 self.fileName += self.photoform
-        if DEBUG == 3:
+        if DEBUG == 3 or DEBUG == 4:
             print("Filename is {}".format(self.fileName))
             return
         if folder:
@@ -166,8 +227,8 @@ class robot:
                 self.fileName += "_" + appendix + '.png'
             else:
                 self.fileName += '.png'
-        if DEBUG == 3:
-            print("Filename is {}".format(self.fileName))
+        if DEBUG == 3 or DEBUG == 4:    
+            print("[take_picture_cv] Filename is {}".format(self.fileName))
             return
         if folder:
             folderPath = "image_analysis/{}/".format(folder)
@@ -182,16 +243,13 @@ class robot:
             self.fileName = folderPath + self.fileName
         
         self.readablefileName = self.fileName
-        global cap
-        ret, frame = cap.read()
-        # if frame is read correctly ret is True
-        if not ret:
-            print("Can't receive frame (stream end?). Exiting ...", file=sys.stderr)
-            raise ERROR
-    
-        # Ideally, this save and rename part should be done in another thread
-        cv2.imwrite(self.readablefileName, frame)
-
+        
+        # save file in another thread
+        if self.readablefileName:
+            self.webcam_stream_widget.save_frame(self.readablefileName)
+            print('[INFO]frame captured.')
+        else:
+            raise ValueError('[ValueError] self.readablefileName is {}.'.format(self.readablefileName))
 
     def take_video(self, isUsingCounter=True, appendix=''):
         self.counter += 1
@@ -274,7 +332,7 @@ class robot:
         self.__check_robotParams()
         # Drive the robot to the 
         self.connect_ros(isSmoothly=True)
-        time.sleep(1)
+        time.sleep(0.5)
         print("[INFO]return_to_stable_state, self.robotParams are all set")
     def transfer_robotParams_to_states(self, params):
         states = [0 for x in range(35)]
@@ -406,9 +464,9 @@ class robot:
 
     def connect_ros(self, isSmoothly=False, isRecording=False, appendix="", steps=20, timeIntervalBeforeExp=1):
 
-        if DEBUG == 2:
+        if DEBUG == 2 or DEBUG == 4:
             print('you are DEBUGING')
-            return
+            return 0
         '''
         # socket method
         # @deprecated
@@ -561,29 +619,19 @@ def py_feat_analysis(img, target_emotion, is_save_csv=True):
     '''
         @img: file name 
         @target_emotion: Anger, Disgust, Fear, Happiness, Sadness, Surprise
-        TODO: single instance mode
     '''
-    from feat import Detector
-    # face_model = "retinaface"
-    # landmark_model = "mobilenet"
-    au_model = "xgb"
-    # au_model = "JAANET"
-    emotion_model = "resmasknet"
-    # emotion_model = "rf"
-
-    detector = Detector(au_model = au_model, emotion_model = emotion_model)
-    
-    
+    global detector
     image_prediction = detector.detect_image(img)
     df = image_prediction.head()
-    print(df.iloc[:, -8:])
+    emo_df = df.iloc[-1:,-9:]
     if is_save_csv:
         csv_name = img[:-4]+".csv"
         csv_emotion_name = img[:-4]+"_emotion.csv"
         df.to_csv(csv_name)
-        df.iloc[:, -8:].to_csv(csv_emotion_name)
+        emo_df.to_csv(csv_emotion_name)
     targetID = get_target(target_emotion)
-    return df.iloc[:, -8:].iloc[0,targetID]
+    print(emo_df.iloc[0,targetID])
+    return emo_df.iloc[0,targetID]
 
 def checkParameters(robotParams):
     # Axis (8, 9), (12, 13), (18, 19), (22, 23), 
@@ -611,6 +659,7 @@ def checkParameters(robotParams):
     assert robotParams[18-1] * robotParams[19-1] == 0
     assert robotParams[22-1] * robotParams[23-1] == 0
     return robotParams
+
 # BO
 def target_function(**kwargs):
     """Pyfeat evaluation object
@@ -679,7 +728,8 @@ def target_function(**kwargs):
     # control robot 
     print("[INFO]fixedrobotcode is", fixedrobotcode)
     rb.switch_to_customizedPose(fixedrobotcode)
-    returncode = rb.connect_ros(isSmoothly=True, isRecording=False, steps=20) # isSmoothly = True ,isRecording = True
+    returncode = rb.connect_ros(isSmoothly=True, isRecording=False, steps=5) # isSmoothly = True ,isRecording = True
+    time.sleep(0.5)
     # the sleep inside rb is not working for outside.
 
     # -------------
@@ -695,34 +745,35 @@ def target_function(**kwargs):
     global COUNTER
     # pyfeat_in_loop_output case
     if loopFlag == 0:
-        # Take photo
-        
-        process = rb.take_picture(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, COUNTER), folder=target_emotion)
-        process.wait()
-        if process.returncode != 0:
-            print(process.stdout.readlines())
-            raise Exception("The subprocess does NOT end.")
-
+        # Take photo using cv2
+        rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, COUNTER), folder=target_emotion)
+        # ------------------ deprecated ----------------
+        # Take photo using ffmpeg (deprecated)
+        # process = rb.take_picture(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, COUNTER), folder=target_emotion)
+        # process.wait()
+        # if process.returncode != 0:
+        #     print(process.stdout.readlines())
+        #     raise Exception("The subprocess does NOT end.")
         # delete useless figure
-        folderPath = "image_analysis/{}/".format(target_emotion)
-        for i in os.listdir(folderPath):
-            if '1.png' in i:
-                os.remove(folderPath + i)
-
+        # folderPath = "image_analysis/{}/".format(target_emotion)
+        # for i in os.listdir(folderPath):
+        #     if '1.png' in i:
+        #         os.remove(folderPath + i)
+        # ------------------ deprecated ----------------
         COUNTER += 1
         
         # Py-feat Analysis
+        print('[INFO]target_emotion', target_emotion)
         temp_pyfeat_result = py_feat_analysis(img=rb.readablefileName, target_emotion=target_emotion)
         output = temp_pyfeat_result
-
-
+        print('[INFO]output: {}'.format(output))
         # Save every parameters
         # construct the DataFrame
         df_dic = {}
         df_dic[target_emotion] = [temp_pyfeat_result]
         for k,v in kwargs.items():
             df_dic[k] = [v]
-        print(df_dic)
+        print('[INFO]df_dic', df_dic)
         df = pd.DataFrame(df_dic)
         df_name = rb.readablefileName[:-4]+"_axes_data.csv"
 
@@ -733,7 +784,7 @@ def target_function(**kwargs):
         # type 1, 1-7 rating
         # Human rating part
 
-        instructionSentence = '\n\nThe {}/100 trails for {}.\nPlease watch the robot face directly and type an integer number within 1-7 (1 is Lowest, 7 is Largest) and Enter:\n'.format(COUNTER + 1, target_emotion)
+        instructionSentence = '\n\nThe {}/100 trials for {}.\nPlease watch the robot face directly and type an integer number within 1-7 (1 is Lowest, 7 is Largest) and Enter:\n'.format(COUNTER + 1, target_emotion)
         errorSentence = 'Input ERROR. Please try again.\nType an integer number within 1-7 (1 is Lowest, 7 is Largest) and Enter:\n'
         rating = input(instructionSentence)
         while True:
@@ -746,19 +797,22 @@ def target_function(**kwargs):
             else:
                 rating = input(errorSentence)
         
-
-        # Take photo
-        process = rb.take_picture(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, COUNTER), folder=target_emotion)
-        process.wait()
-        if process.returncode != 0:
-            print(process.stdout.readlines())
-            raise Exception("The subprocess does NOT end.")
-
+        # Take photo using cv2
+        rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, COUNTER), folder=target_emotion)
+        
+        # ------------------ deprecated ----------------
+        # Take photo using ffmpeg (deprecated)
+        # process = rb.take_picture(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, COUNTER), folder=target_emotion)
+        # process.wait()
+        # if process.returncode != 0:
+        #     print(process.stdout.readlines())
+        #     raise Exception("The subprocess does NOT end.")
         # delete useless figure
-        folderPath = "image_analysis/{}/".format(target_emotion)
-        for i in os.listdir(folderPath):
-            if '1.png' in i:
-                os.remove(folderPath + i)
+        # folderPath = "image_analysis/{}/".format(target_emotion)
+        # for i in os.listdir(folderPath):
+        #     if '1.png' in i:
+        #         os.remove(folderPath + i)
+        # ------------------ deprecated ----------------
 
         COUNTER += 1
 
@@ -768,7 +822,7 @@ def target_function(**kwargs):
         df_dic[target_emotion] = [output]
         for k,v in kwargs.items():
             df_dic[k] = [v]
-        print(df_dic)
+        print('df_dic', df_dic)
         df = pd.DataFrame(df_dic)
         df_name = rb.readablefileName[:-4]+"_axes_data.csv"
 
@@ -906,9 +960,11 @@ def bayesian_optimization(baseline, target_emotion, robot):
 
     # initialization of pre-define facial expression
     neutral_baseline = defaultPose.prototypeFacialExpressions["neutral"]
-    subtract = abs(np.array(neutral_baseline) - np.array(baseline))
-    # print(subtract)
-    if subtract != []:
+    subtract = abs(np.array(neutral_baseline) - np.array(baseline)) 
+    if subtract.sum() == 0:
+        subtract += 1
+    if list(subtract) != []:
+        print('subtract', subtract)
         probe_param = {}
         for i in range(len(subtract)):
             if subtract[i] != 0:
@@ -919,6 +975,7 @@ def bayesian_optimization(baseline, target_emotion, robot):
     logger = JSONLogger(path="./image_analysis/"+ target_emotion + "/logs.json")
     optimizer.subscribe(Events.OPTIMIZATION_STEP, logger)
 
+    # ------------------- INFO  ----------------------------
     # x2 = x1, use one axis for eyes upper lid
     # x7 = x6, use one axis for eyes lower lid
     # x13 = x9
@@ -1000,12 +1057,15 @@ def main():
     global init_points
     global n_iter
     init_points = 10
-    n_iter = 90
+    n_iter = 490
     # change workdir
     workdir = "/home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package/scripts"
     os.chdir(workdir)
     rb.bestImg = workdir + '/image_analysis/temp/neutral.png'
     assert os.getcwd() == workdir, print(os.getcwd())
+    global detector
+    detector = Detector(emotion_model = emotion_model)
+
     # res = subprocess.Popen("ls", cwd="/home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package/scripts")
     # print(res)
 
@@ -1014,12 +1074,43 @@ def main():
     # Anger, Disgust, Fear, Happiness, Sadness, Surprise
     # anger, disgust, fear, happiness, sadness, surprise
     # defaultPose.prototypeFacialExpressions
+
     
+    # Exp 10: Use cv2 and do BORFEO for 500 trials
+    # Finished: anger, happiness, fear, disgust
+    # sadness, surprise, neutral
+    for target_emotion in ['anger', 'disgust', 'fear', 'happiness', 'sadness', 'surprise', 'neutral']:
+    # for target_emotion in ['sadness', 'surprise']:
+        check_folder(target_emotion)
+        COUNTER = 0
+        print(target_emotion)
+        # test photo
+        rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, 'test'), folder=target_emotion)
+        # target_emotion = "anger"
+        optimizer = bayesian_optimization(
+            baseline=defaultPose.prototypeFacialExpressions[target_emotion],
+            target_emotion=target_emotion,
+            robot=rb)
+        print('\n')
+        print("Current target emotion is: ", target_emotion, optimizer.res)
+        print('\n')
+        # Return to normal
+        rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+        rb.connect_ros(True, False)
+
+    # Return to normal
+    rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    rb.connect_ros(True, False)
+
+    rb.webcam_stream_widget.stop()
+    time.sleep(1)
+
+
     # TODO
-    # Exp 9: Psycho-physical optimization 100 trails Saori San 
+    # Exp 9: Psycho-physical optimization 100 trials Saori San 
 
     '''
-    # 100 trails
+    # 100 trials
     beginning_Instruction = "\n---------------INSTRUCTIONS--------------\nIn this experiment, you are required to watch the robot directly AFTER it changing the facial expressions. Then you need to rate the facial expressions from 1 to 7. 1 means you didn't feel the facial expression at all, and 7 means you think the robot represent the best facial expressions. \nPress Enter to continue."
  
     input(beginning_Instruction)
@@ -1053,45 +1144,43 @@ def main():
     # Exp 8: Namba Coding, Namba coding hot
     #       Procedure: Switch FE -> Take photo -> py-feat evaluation.
 
-    check_folder('prototypeFacialExpressions')
-    check_folder('hotFacialExpressions')
-    # ----------------------------
-    # prototypeFacialExpressions
-    # ----------------------------
+    # check_folder('prototypeFacialExpressions')
+    # check_folder('hotFacialExpressions')
+    # # ----------------------------
+    # # prototypeFacialExpressions
+    # # ----------------------------
 
-    # ---- DEBUG for cv2 ----
     # global cap
     # cap = cv2.VideoCapture(2)
+    # # open camera
 
-    # ---- DEBUG for cv2 ----
+    # for k,v in defaultPose.prototypeFacialExpressions.items():
+    #     folderName = 'prototypeFacialExpressions'
+    #     print("switch to: ",k)
+    #     rb.switch_to_customizedPose(v)
+    #     rb.connect_ros(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+    #     # Take photo
+    #     # process = rb.take_picture(isUsingCounter=False, appendix='{}'.format(k), folder=folderName)
+    #     # process.wait()
+    #     # if process.returncode != 0:
+    #     #     print(process.stdout.readlines())
+    #     #     raise Exception("The subprocess does NOT end.")
 
-    for k,v in defaultPose.prototypeFacialExpressions.items():
-        folderName = 'prototypeFacialExpressions'
-        print("switch to: ",k)
-        rb.switch_to_customizedPose(v)
-        rb.connect_ros(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
-        # Take photo
-        # process = rb.take_picture(isUsingCounter=False, appendix='{}'.format(k), folder=folderName)
-        # process.wait()
-        # if process.returncode != 0:
-        #     print(process.stdout.readlines())
-        #     raise Exception("The subprocess does NOT end.")
+    #     # Take cv photo
+    #     rb.take_picture_cv(isUsingCounter=False, appendix='{}'.format(k), folder=folderName)
 
-        # Take cv photo
-        rb.take_picture(isUsingCounter=False, appendix='{}'.format(k), folder=folderName)
-
-        # # delete useless figure
-        # folderPath = "image_analysis/{}/".format(folderName)
-        # for i in os.listdir(folderPath):
-        #     if '1.png' in i:
-        #         os.remove(folderPath + i)
+    #     # # delete useless figure
+    #     # folderPath = "image_analysis/{}/".format(folderName)
+    #     # for i in os.listdir(folderPath):
+    #     #     if '1.png' in i:
+    #     #         os.remove(folderPath + i)
 
 
-        time.sleep(3)
-        print("py_feat_analysis result is: ", py_feat_analysis(rb.readablefileName, k))
+    #     time.sleep(3)
+    #     print("py_feat_analysis result is: ", py_feat_analysis(rb.readablefileName, k))
 
-    rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-    rb.connect_ros(True, False)
+    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    # rb.connect_ros(True, False)
 
     # --------------
     # hotExpressions
@@ -1348,7 +1437,7 @@ def main():
     print(len(angExp))
 
 
-    # 6 trails
+    # 6 trials
     # subtle
     # middle
     # strong
@@ -1644,7 +1733,15 @@ def main():
     # time.sleep(3)
     
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception as e:
+        print(e)
+    finally:
+        rb = robot(duration=2)
+        rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+        rb.connect_ros(True, False)
+
 
 
 '''
