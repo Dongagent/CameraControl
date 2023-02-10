@@ -36,9 +36,10 @@ import struct
 # ----- for ros END------
 
 SPACE = ' '
-LINUXVIDEOPATH = '/dev/video2' # ffplay
+LINUXVIDEOPATH = '/dev/video0' # ffplay
 loopFlag = 0 # 0 - py-feat, 1 - human
 DEBUG = 0
+FEATVERSION = 1 # 0 - py-feat 0.3.7 , 1 - py-feat 0.5.0
 # 0 - Run; 
 # 1 - Debuging with robot; 
 # 2 - Debug WITHOUT robot; for image debuging
@@ -47,7 +48,6 @@ DEBUG = 0
 
 # pyfeat
 from feat import Detector
-emotion_model = "resmasknet"
 detector = ''
 
 class WebcamStreamWidget(object):
@@ -94,7 +94,7 @@ class WebcamStreamWidget(object):
     # stop reading frames
     def stop(self):
         self.stopped = True
-        self.vthread.join()
+        
     
     def save_frame(self, path):
         if not self.stopped:
@@ -355,8 +355,9 @@ class robot:
         # States
         self.lastState = self.nextState
         self.nextState = customizedPose
-        print("[INFO]self.lastState", self.lastState)
-        print("[INFO]self.nextState", self.nextState)
+        if DEBUG >= 1:
+            print("[INFO]self.lastState", self.lastState)
+            print("[INFO]self.nextState", self.nextState)
 
         # params
         self.change_robotParams(customizedPose)
@@ -623,15 +624,23 @@ def py_feat_analysis(img, target_emotion, is_save_csv=True):
     global detector
     image_prediction = detector.detect_image(img)
     df = image_prediction.head()
-    emo_df = df.iloc[-1:,-9:]
+    if FEATVERSION == 0:
+        emo_df = df.iloc[-1:,-8:] # feat 0.3.7
+    elif FEATVERSION == 1:
+        emo_df = df.iloc[-1:,-9:-1] # feat 0.5.0
+    else:
+        raise Exception("FEATVERSION is not correct")
+
     if is_save_csv:
         csv_name = img[:-4]+".csv"
         csv_emotion_name = img[:-4]+"_emotion.csv"
         df.to_csv(csv_name)
         emo_df.to_csv(csv_emotion_name)
     targetID = get_target(target_emotion)
-    print(emo_df.iloc[0,targetID])
-    return emo_df.iloc[0,targetID]
+    if DEBUG > 0:
+        print("[INFO]py_feat_analysis: {}".format(list(df[target_emotion])[0]))
+    # return emo_df.iloc[0,targetID]
+    return list(df[target_emotion])[0]
 
 def checkParameters(robotParams):
     # Axis (8, 9), (12, 13), (18, 19), (22, 23), 
@@ -726,9 +735,11 @@ def target_function(**kwargs):
     fixedrobotcode = checkParameters(fixedrobotcode)
     
     # control robot 
-    print("[INFO]fixedrobotcode is", fixedrobotcode)
+    if DEBUG > 0:
+        print("[INFO]fixedrobotcode is", fixedrobotcode)
     rb.switch_to_customizedPose(fixedrobotcode)
-    returncode = rb.connect_ros(isSmoothly=True, isRecording=False, steps=5) # isSmoothly = True ,isRecording = True
+    global MYSTEPS
+    returncode = rb.connect_ros(isSmoothly=True, isRecording=False, steps=MYSTEPS) # isSmoothly = True ,isRecording = True
     time.sleep(0.5)
     # the sleep inside rb is not working for outside.
 
@@ -763,10 +774,14 @@ def target_function(**kwargs):
         COUNTER += 1
         
         # Py-feat Analysis
+        print('[INFO]The {}th trial'.format(str(COUNTER + 1)))
         print('[INFO]target_emotion', target_emotion)
         temp_pyfeat_result = py_feat_analysis(img=rb.readablefileName, target_emotion=target_emotion)
         output = temp_pyfeat_result
-        print('[INFO]output: {}'.format(output))
+        if CURBEST[1] < output:
+            CURBEST[0] = rb.readablefileName
+            CURBEST[1] = output
+        print('[INFO]Current Best: {}, {}'.format(CURBEST[1], CURBEST[0]))
         # Save every parameters
         # construct the DataFrame
         df_dic = {}
@@ -822,6 +837,7 @@ def target_function(**kwargs):
         df_dic[target_emotion] = [output]
         for k,v in kwargs.items():
             df_dic[k] = [v]
+        
         print('df_dic', df_dic)
         df = pd.DataFrame(df_dic)
         df_name = rb.readablefileName[:-4]+"_axes_data.csv"
@@ -964,7 +980,7 @@ def bayesian_optimization(baseline, target_emotion, robot):
     if subtract.sum() == 0:
         subtract += 1
     if list(subtract) != []:
-        print('subtract', subtract)
+        # print('subtract', subtract)
         probe_param = {}
         for i in range(len(subtract)):
             if subtract[i] != 0:
@@ -1036,7 +1052,7 @@ def bayesian_optimization(baseline, target_emotion, robot):
     # alpha is interpreted as the variance of additional Gaussian measurement noise 
     # on the training observations.
 
-    print(target_emotion, "Final result:", optimizer.max)
+    print(target_emotion, "Max result:", optimizer.max)
     return optimizer
 
 def check_folder(folderName):
@@ -1056,15 +1072,21 @@ def main():
     COUNTER = 0
     global init_points
     global n_iter
+    global MYSTEPS
+    # init_points = 2
+    # n_iter = 2
     init_points = 10
     n_iter = 490
+    # set how much steps Nikola need to shift the axes from one to another
+    MYSTEPS = 15
     # change workdir
     workdir = "/home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package/scripts"
     os.chdir(workdir)
     rb.bestImg = workdir + '/image_analysis/temp/neutral.png'
     assert os.getcwd() == workdir, print(os.getcwd())
     global detector
-    detector = Detector(emotion_model = emotion_model)
+    # landmark_model should be set to mobilefacenet in case you want to use pyfeat 0.3.7
+    detector = Detector(emotion_model = "resmasknet", landmark_model='mobilefacenet')
 
     # res = subprocess.Popen("ls", cwd="/home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package/scripts")
     # print(res)
@@ -1076,17 +1098,20 @@ def main():
     # defaultPose.prototypeFacialExpressions
 
     
-    # Exp 10: Use cv2 and do BORFEO for 500 trials
+    # Exp 11 & 12: Use new threading for cv2 and do BORFEO for 500 trials
+    # Exp 13: Use new lighting system and do BORFEO for 500 trials
     # Finished: anger, happiness, fear, disgust
     # sadness, surprise, neutral
-    for target_emotion in ['anger', 'disgust', 'fear', 'happiness', 'sadness', 'surprise', 'neutral']:
-    # for target_emotion in ['sadness', 'surprise']:
+    # for target_emotion in ['anger', 'disgust', 'fear', 'happiness', 'sadness', 'surprise', 'neutral']:
+    # for target_emotion in ['anger', 'disgust', 'fear', 'happiness', 'sadness', 'surprise']:
+    for target_emotion in ['anger']:
         check_folder(target_emotion)
         COUNTER = 0
         print(target_emotion)
+        global CURBEST
+        CURBEST = ['', 0]
         # test photo
         rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, 'test'), folder=target_emotion)
-        # target_emotion = "anger"
         optimizer = bayesian_optimization(
             baseline=defaultPose.prototypeFacialExpressions[target_emotion],
             target_emotion=target_emotion,
@@ -1101,10 +1126,14 @@ def main():
     # Return to normal
     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
     rb.connect_ros(True, False)
-
+    time.sleep(2)
     rb.webcam_stream_widget.stop()
-    time.sleep(1)
+    try:
+        rb.webcam_stream_widget.vthread.join()
+    except Exception as e:
+        print(e)
 
+    # Exp 10 end with bug
 
     # TODO
     # Exp 9: Psycho-physical optimization 100 trials Saori San 

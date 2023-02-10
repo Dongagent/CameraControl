@@ -2,8 +2,8 @@ import cv2
 import threading
 
 class WebCamera:
-    def __init__(self):
-        self.cap = cv2.VideoCapture(2)
+    def __init__(self, device_id):
+        self.cap = cv2.VideoCapture(device_id)
         self.thread = None
         self.stopped = False
 
@@ -37,11 +37,18 @@ class WebCamera:
 def save_image(frame, path):
     cv2.imwrite(path, frame)
 
-camera = WebCamera()
-camera.start()
-frame = camera.read()
-if frame is not None:
-    save_image(frame, 'image.png')
-else:
-    print('error')
-camera.stop()
+def main():
+    camera = WebCamera()
+    camera.start()
+    frame = camera.read()
+    if frame is not None:
+        save_image(frame, 'image.png')
+    else:
+        print('error')
+    camera.stop()
+    camera.join()
+    
+
+if __name__ == "__main__":
+    main() 
+    main()

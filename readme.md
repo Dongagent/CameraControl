@@ -7,7 +7,8 @@ Current env: py37pyfeat1
 
 pytorch (install your compatiable version first.)
 
-py-feat  0.5.0
+py-feat  0.5.0 (resmasknet is changed, DON'T use it until varified.)
+py-feat  0.3.7
 
 bayesian-optimization 1.4.2
 
@@ -44,7 +45,7 @@ use ```v4l2-ctl --list-devices``` to check available webcams on Ubuntu
 
 While connecting the USB cable, use ```ls -Al /dev/ttyUSB0``` to check whether the cable is connected.
 
-Please check the access permission of ```/dev/ttyUSB0```, better to use ```chmod 777 /dev/ttyUSB0```
+Please check the access permission of ```/dev/ttyUSB0```, better to use ```sudo chmod 777 /dev/ttyUSB0```
 
 ### Initialize the Nikola on my laptop
 
@@ -72,8 +73,24 @@ Target Happiness and Fear
 Exp structure for each expression: 10 initialization + 490 iteration, 500 in total
 Duration: 1h 5m 22s
 
-Target disgust, sadness, surprise and neutral
+Exp11
+Env: py-feat 0.5.0
+Target anger, disgust, fear, happiness, sadness, surprise and neutral
 Exp structure: 10 initialization + 490 iteration, 500 in total
-Start time: 15:37:00
-End time:
-Duration: 
+Start time: 14:30:30
+End time: 17:15:19
+Duration: 2h 44m 49s
+
+Exp12
+Env: py-feat 0.3.7
+Target anger, disgust, fear, happiness, sadness, surprise and neutral
+Exp structure: 10 initialization + 490 iteration, 500 in total
+Start time: 16:15:00
+End time: 19:34:00
+
+Exp13 lighting
+Env: py-feat 0.3.7, use new lighting system
+Target anger, disgust, fear, happiness, sadness, surprise
+Exp structure: 10 initialization + 490 iteration, 500 in total 
+Duration: 1h 54m 25s
+
