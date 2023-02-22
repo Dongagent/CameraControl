@@ -1,46 +1,54 @@
-# modify by axes
+import cv2
+import threading
 
-import RCSystem
-import defaultPose
-import copy
-import time
+class WebCamera:
+    def __init__(self, device_id):
+        self.cap = cv2.VideoCapture(device_id)
+        self.thread = None
+        self.stopped = False
 
-# -----------------------
-# 211126
-# happiness
-emo_name = 'anger'
-final_iter = 5
-total_iter = 30
+    def start(self):
+        if self.thread is None:
+            self.thread = threading.Thread(target=self.update, args=())
+            self.thread.start()
+            return True
+        return False
 
-# def run_with_axes:
+    def update(self):
+        while True:
+            if self.stopped:
+                return
+            ret, frame = self.cap.read()
+            if not ret:
+                continue
+            # Perform any desired operations on the frame here
 
-rb = RCSystem.robot(duration=2)
-def run_with_axes(target_params):
-    target_params = target_params
-    neutral = [86, 86, 128, 128, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 128, 122]
-    finalResult = copy.copy(neutral)
-    for k,v in target_params["params"].items():
-            # print(k,v)
-            if "x" in k:
-                finalResult[int(k[1:])-1] = round(v)
-    # x2 = x1, use one axis for eyes upper lid
-    finalResult[1] = finalResult[0]
-    # x7 = x6, use one axis for eyes lower lid
-    finalResult[6] = finalResult[5]
-    # x13 = x9
-    finalResult[12] = finalResult[8]
-    # x17 = x16
-    finalResult[16] = finalResult[15]
-    # x22 = x18
-    finalResult[21] = finalResult[17]
-    print(finalResult)
-    finalResult = RCSystem.checkParameters(finalResult)
+    def read(self):
+        ret, frame = self.cap.read()
+        if ret:
+            return frame
+        return None
 
+    def stop(self):
+        self.stopped = True
+        self.thread.join()
+        self.cap.release()
+
+def save_image(frame, path):
+    cv2.imwrite(path, frame)
+
+def main():
+    camera = WebCamera()
+    camera.start()
+    frame = camera.read()
+    if frame is not None:
+        save_image(frame, 'image.png')
+    else:
+        print('error')
+    camera.stop()
+    camera.join()
     
-    rb.switch_to_customizedPose(finalResult)
-    rb.connect_ros(isSmoothly=True, isRecording=False, steps = 30) # isSmoothly = True ,isRecording = True
 
-run_with_axes({'params': {'x24': 200, 'x25': 128,'x26':128}})
-run_with_axes({'params': {'x24': 0}})
-
-
+if __name__ == "__main__":
+    main() 
+    main()
