@@ -324,7 +324,7 @@ class robot:
             0, 0, 0, 0, 0,
             0, 0, 0, 0, 0,
             0, 0, 0, 0, 0,
-            0, 32, 128, 128, 128
+            0, 32, 128, 128, 122
         ]
         for i in range(1, 36):
             self.robotParams["x{}".format(i)] = stableState[i - 1]
