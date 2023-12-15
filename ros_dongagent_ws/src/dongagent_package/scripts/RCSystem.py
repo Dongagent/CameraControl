@@ -35,11 +35,14 @@ from std_msgs.msg import String
 import struct
 # ----- for ros END------
 
+# ----- for new model -----
+from SiameseRankNet import SiameseRankNet_analysis
+# ----- for new model END -----
 SPACE = ' '
-LINUXVIDEOPATH = '/dev/video0' # ffplay
+LINUXVIDEOPATH = '/dev/video2' # ffplay
 loopFlag = 0 # 0 - py-feat, 1 - human
 DEBUG = 0
-FEATVERSION = 1 # 0 - py-feat 0.3.7 , 1 - py-feat 0.5.0
+FEATVERSION = 0 # 0 - py-feat 0.3.7 , 1 - py-feat 0.5.0
 # 0 - Run; 
 # 1 - Debuging with robot; 
 # 2 - Debug WITHOUT robot; for image debuging
@@ -51,11 +54,17 @@ from feat import Detector
 detector = ''
 
 class WebcamStreamWidget(object):
-    def __init__(self, stream_id=0):
+    def __init__(self, stream_id=0, width=1280, height=720):
+        # initialize the video camera stream and read the first frame
+        print("[INFO]WebcamStreamWidget initializing...")
+
         self.stream_id = stream_id # default is 0 for main camera 
         
         # opening video capture stream vcap
         self.vcap = cv2.VideoCapture(stream_id)
+        # set resolution to 1920x1080
+        self.vcap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+        self.vcap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
         if not self.vcap.isOpened:
             raise AttributeError("[ERROR]: Error accessing webcam stream.")
         
@@ -69,6 +78,7 @@ class WebcamStreamWidget(object):
         # thread instantiation  
         self.vthread = Thread(target=self.update, args=())
         self.vthread.daemon = True # daemon threads run in background 
+        print("[INFO]WebcamStreamWidget initialized.")
 
     # start vthread 
     def start(self):
@@ -80,7 +90,7 @@ class WebcamStreamWidget(object):
         while True :
             if self.stopped is True :
                 break
-            self.status , self.frame = self.vcap.read()
+            self.status, self.frame = self.vcap.read()
             time.sleep(.01) # delay for simulating video processing
             if self.status is False :
                 print('[Exiting] No more frames to read')
@@ -104,6 +114,8 @@ class WebcamStreamWidget(object):
 
 class robot:
     def __init__(self, duration=3, fps=60):
+        # initialization of robot
+        print("[INFO]robot initializing...")
         # Return to normal state first
         # Example: robotParams = {'1': 64, '2': 64, '3': 128, ...}
         self.connection = True
@@ -129,7 +141,10 @@ class robot:
         self.AUPose = defaultPose.actionUnitParams
 
         # Camera Parameters
-        self.DEVICE_ID = int(LINUXVIDEOPATH[-1])
+        if LINUXVIDEOPATH == '/dev/video2':
+            self.DEVICE_ID = 2
+        else:
+            self.DEVICE_ID = 0
         self.WIDTH = 1280
         self.HEIGHT = 720
         self.FPS = fps
@@ -140,7 +155,7 @@ class robot:
         self.VIDEOSIZE = "1280x720"
         self.DURATION = duration
         self.client = ""
-        self.photoform = '%01d.png' # what we need is 2.png
+        self.photoform = '%01d.png' 
 
         # human experiment
         self.bestImg = ""
@@ -150,8 +165,9 @@ class robot:
         self.return_to_stable_state()
         
         # webcam stream thread, initialize
-        self.webcam_stream_widget = WebcamStreamWidget(self.DEVICE_ID)
+        self.webcam_stream_widget = WebcamStreamWidget(self.DEVICE_ID, self.WIDTH, self.HEIGHT)
         self.webcam_stream_widget.start()
+        print("[INFO]robot and webcam initialized.")
 
     def take_picture(self, isUsingCounter=True, appendix='', folder=''):
         # we don't need this
@@ -776,8 +792,14 @@ def target_function(**kwargs):
         # Py-feat Analysis
         print('[INFO]The {}th trial'.format(str(COUNTER + 1)))
         print('[INFO]target_emotion', target_emotion)
-        temp_pyfeat_result = py_feat_analysis(img=rb.readablefileName, target_emotion=target_emotion)
-        output = temp_pyfeat_result
+
+        # Use Py-Feat 0.3.7
+        # output = py_feat_analysis(img=rb.readablefileName, target_emotion=target_emotion)
+
+        # Use SiameseRankNet
+        output = SiameseRankNet_analysis(img=rb.readablefileName, target_emotion=target_emotion)
+
+        
         if CURBEST[1] < output:
             CURBEST[0] = rb.readablefileName
             CURBEST[1] = output
@@ -785,7 +807,7 @@ def target_function(**kwargs):
         # Save every parameters
         # construct the DataFrame
         df_dic = {}
-        df_dic[target_emotion] = [temp_pyfeat_result]
+        df_dic[target_emotion] = [output]
         for k,v in kwargs.items():
             df_dic[k] = [v]
         print('[INFO]df_dic', df_dic)
@@ -1065,7 +1087,7 @@ def check_folder(folderName):
 
 # main
 def main():
-    # global rb
+    global rb
     rb = robot(duration=2)
     assert rb.connection == True
     global COUNTER
@@ -1076,7 +1098,7 @@ def main():
     # init_points = 2
     # n_iter = 2
     init_points = 10
-    n_iter = 490
+    n_iter = 90
     # set how much steps Nikola need to shift the axes from one to another
     MYSTEPS = 15
     # change workdir
@@ -1084,9 +1106,10 @@ def main():
     os.chdir(workdir)
     rb.bestImg = workdir + '/image_analysis/temp/neutral.png'
     assert os.getcwd() == workdir, print(os.getcwd())
+    
     global detector
     # landmark_model should be set to mobilefacenet in case you want to use pyfeat 0.3.7
-    detector = Detector(emotion_model = "resmasknet", landmark_model='mobilefacenet')
+    # detector = Detector(emotion_model = "resmasknet", landmark_model='mobilefacenet')
 
     # res = subprocess.Popen("ls", cwd="/home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package/scripts")
     # print(res)
@@ -1097,6 +1120,78 @@ def main():
     # anger, disgust, fear, happiness, sadness, surprise
     # defaultPose.prototypeFacialExpressions
 
+    # Exp 14: Use SiameseRanknet model for Nikola
+    # Setup: lighting system, webcam, tripot,
+    # Contents: BORFEO 100 trials, Prototype, Prototype with mouth opening
+
+    # ---------------------
+    # exp 14-1 prototype
+    # ---------------------
+    # for k,v in defaultPose.prototypeFacialExpressions.items():
+    #     print("switch to: ", k)
+    #     # print(v)
+    #     rb.switch_to_customizedPose(v)
+    #     rb.connect_ros(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+    #     rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(k, 'test'), folder=k)
+    #     time.sleep(3)
+    #     print("py_feat_analysis result is: ", py_feat_analysis(rb.fileName, k))
+    #     print("SiameseRankNet result is: ", SiameseRankNet_analysis(rb.fileName, k))
+
+    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    # rb.connect_ros(True, False)
+
+    # ------------------------------------
+    # exp 14-2 prototype with mouth opening
+    # ------------------------------------
+    # for k,v in defaultPose.hotExpressions.items():
+    #     print("switch to: ", k)
+    #     # print(v)
+    #     rb.switch_to_customizedPose(v)
+    #     rb.connect_ros(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+    #     rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(k, 'test'), folder=k)
+    #     time.sleep(3)
+    #     # print("py_feat_analysis result is: ", py_feat_analysis(rb.fileName, k))
+    #     print("SiameseRankNet result is: ", SiameseRankNet_analysis(rb.fileName, k))
+
+    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    # rb.connect_ros(True, False)
+
+    # -------------------------------------
+    # exp 14-3 BORFEO using SiameseRankNet
+    # -------------------------------------
+
+    for target_emotion in ['anger']:
+        check_folder(target_emotion)
+        COUNTER = 0
+        print(target_emotion)
+        global CURBEST
+        CURBEST = ['', 0]
+        # test photo
+        rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, 'test'), folder=target_emotion)
+        optimizer = bayesian_optimization(
+            baseline=defaultPose.prototypeFacialExpressions[target_emotion],
+            target_emotion=target_emotion,
+            robot=rb)
+        print('\n')
+        print("Current target emotion is: ", target_emotion, optimizer.res)
+        print('\n')
+        # Return to normal
+        rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+        rb.connect_ros(True, False)
+
+    # # Return to normal
+    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    # rb.connect_ros(True, False)
+    # time.sleep(2)
+    # rb.webcam_stream_widget.stop()
+    # try:
+    #     rb.webcam_stream_widget.vthread.join()
+    # except Exception as e:
+    #     print(e)
+
+
+
+
     
     # Exp 11 & 12: Use new threading for cv2 and do BORFEO for 500 trials
     # Exp 13: Use new lighting system and do BORFEO for 500 trials
@@ -1104,6 +1199,7 @@ def main():
     # sadness, surprise, neutral
     # for target_emotion in ['anger', 'disgust', 'fear', 'happiness', 'sadness', 'surprise', 'neutral']:
     # for target_emotion in ['anger', 'disgust', 'fear', 'happiness', 'sadness', 'surprise']:
+    '''
     for target_emotion in ['anger']:
         check_folder(target_emotion)
         COUNTER = 0
@@ -1132,8 +1228,10 @@ def main():
         rb.webcam_stream_widget.vthread.join()
     except Exception as e:
         print(e)
+    '''
 
     # Exp 10 end with bug
+
 
     # TODO
     # Exp 9: Psycho-physical optimization 100 trials Saori San 
@@ -1767,9 +1865,10 @@ if __name__ == '__main__':
     except Exception as e:
         print(e)
     finally:
-        rb = robot(duration=2)
+        global rb
         rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
         rb.connect_ros(True, False)
+        rb.webcam_stream_widget.stop()
 
 
 

@@ -43,6 +43,9 @@ use ```v4l2-ctl --list-devices``` to check available webcams on Ubuntu
 > v4l2-ctl -d /dev/video2 --get-ctrl focus_absolute # get the focus value after auto focus
 > v4l2-ctl -d /dev/video2 --set-ctrl focus_auto=0 # cancel auto focus
 
+Setup the webcam
+use ```ffplay /dev/video2```
+
 While connecting the USB cable, use ```ls -Al /dev/ttyUSB0``` to check whether the cable is connected.
 
 Please check the access permission of ```/dev/ttyUSB0```, better to use ```sudo chmod 777 /dev/ttyUSB0```
@@ -94,3 +97,4 @@ Target anger, disgust, fear, happiness, sadness, surprise
 Exp structure: 10 initialization + 490 iteration, 500 in total 
 Duration: 1h 54m 25s
 
+Exp14 

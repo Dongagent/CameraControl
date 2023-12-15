@@ -3,6 +3,8 @@ import cv2
 
 def show_webcam(mirror=False):
     cam = cv2.VideoCapture(2)
+    cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+    cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
     while True:
         ret_val, img = cam.read()
         if mirror: 
@@ -14,7 +16,7 @@ def show_webcam(mirror=False):
 
 
 def main():
-    show_webcam(mirror=True)
+    show_webcam(mirror=False)
 
 def main2():
     import cv2
@@ -47,4 +49,4 @@ def main2():
     stream_thread.join()
 
 if __name__ == '__main__':
-    main2()
+    main()
