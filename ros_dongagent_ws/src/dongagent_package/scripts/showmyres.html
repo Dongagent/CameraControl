@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Py-Feat version 0.6.1 Optimized Images</title>
+
+    <style>
+        .image-gallery {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .image-gallery img {
+            max-width: 350px; /* Adjust the size as needed */
+            max-height: 350px;
+            margin: 10px;
+        }
+        .image-container {
+            display: flex;
+            flex-direction: column; /* Stack image and score vertically */
+            align-items: center; /* Center items horizontally */
+            margin: 10px;
+        }
+        .image-score {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Welcome to My Image Gallery</h1>
+    <div id="gallery" class="image-gallery"></div>
+
+    <script>
+        
+        var imageSets = {
+            // 'final_an' : [['image_analysis/231219Exp16Feat037/anger/2023_12_19_14_58_49_anger_230.png', 0.877257], ['image_analysis/231219Exp16Feat037/anger/2023_12_19_14_51_19_anger_58.png', 0.8548], ['image_analysis/231219Exp16Feat037/anger/2023_12_19_15_10_44_anger_469.png', 0.825715], ['image_analysis/231219Exp16Feat037/anger/2023_12_19_14_51_46_anger_69.png', 0.862081]],
+            'fear4' : [['image_analysis/231219Exp16Feat037/fear/2023_12_19_16_55_14_fear_356.png', 0.938642], ['image_analysis/231219Exp16Feat037/fear/2023_12_19_16_44_44_fear_102.png', 0.90884], ['image_analysis/231218Exp15NewFeat/fear/2023_12_19_12_46_19_fear_320.png', 0.906334], ['image_analysis/231219Exp16Feat037/fear/2023_12_19_16_46_19_fear_141.png', 0.888427]],
+
+            'v4' : [['image_analysis/top50happiness/1_2023_12_19_13_14_42_happiness_337.png', 0.956833], ['image_analysis/top50happiness/20_2023_12_19_15_24_06_happiness_278.png', 0.910493], ['image_analysis/top50happiness/30_2023_12_19_13_17_34_happiness_388.png', 0.8365], ['image_analysis/top50happiness/15_2023_12_19_15_26_26_happiness_334.png', 0.4834]],
+
+            'v3' : [['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_14_42_happiness_337.png', 0.956833], ['image_analysis/231219Exp16Feat037/happiness/2023_12_19_15_32_03_happiness_462.png', 0.935815], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_22_25_happiness_469.png', 0.916838], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_08_07_happiness_218.png', 0.914777], ['image_analysis/231219Exp16Feat037/happiness/2023_12_19_15_23_58_happiness_275.png', 0.910313], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_17_01_happiness_378.png', 0.902309], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_11_01_happiness_270.png', 0.894584], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_10_21_happiness_258.png', 0.892963], ['image_analysis/231219Exp16Feat037/happiness/2023_12_19_15_25_12_happiness_305.png', 0.888788], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_19_50_happiness_427.png', 0.888061], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_15_29_happiness_351.png', 0.887657], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_16_21_happiness_367.png', 0.884125], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_01_20_happiness_91.png', 0.883208], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_12_49_happiness_304.png', 0.881794], ['image_analysis/231219Exp16Feat037/happiness/2023_12_19_15_26_26_happiness_334.png', 0.88104], ['image_analysis/231219Exp16Feat037/happiness/2023_12_19_15_24_28_happiness_287.png', 0.875617], ['image_analysis/231219Exp16Feat037/happiness/2023_12_19_15_25_49_happiness_319.png', 0.87008], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_18_47_happiness_409.png', 0.866897], ['image_analysis/231219Exp16Feat037/happiness/2023_12_19_15_25_01_happiness_301.png', 0.864147], ['image_analysis/231219Exp16Feat037/happiness/2023_12_19_15_24_06_happiness_278.png', 0.860579], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_05_12_happiness_165.png', 0.860237], ['image_analysis/231219Exp16Feat037/happiness/2023_12_19_15_26_24_happiness_333.png', 0.858731], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_20_13_happiness_433.png', 0.85833], ['image_analysis/231219Exp16Feat037/happiness/2023_12_19_15_29_21_happiness_402.png', 0.854663], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_00_00_happiness_66.png', 0.851545], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_10_51_happiness_267.png', 0.851301], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_23_37_happiness_489.png', 0.850103], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_07_50_happiness_213.png', 0.849319], ['image_analysis/231219Exp16Feat037/happiness/2023_12_19_15_17_32_happiness_121.png', 0.838519], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_17_34_happiness_388.png', 0.8365]], 
+
+            'happy_v1' : [['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_14_42_happiness_337.png', 0.956833], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_19_57_happiness_429.png', 0.942714], ['image_analysis/231219Exp16Feat037/happiness/2023_12_19_15_32_03_happiness_462.png', 0.935815], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_22_25_happiness_469.png', 0.916838], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_07_57_happiness_215.png', 0.916164], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_08_07_happiness_218.png', 0.914777], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_18_35_happiness_406.png', 0.910584], ['image_analysis/231219Exp16Feat037/happiness/2023_12_19_15_23_58_happiness_275.png', 0.910313], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_23_15_happiness_483.png', 0.910242], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_17_20_happiness_384.png', 0.906674], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_08_18_happiness_221.png', 0.906671], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_17_01_happiness_378.png', 0.902309], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_18_43_happiness_408.png', 0.898961], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_06_37_happiness_191.png', 0.896024], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_11_01_happiness_270.png', 0.894584], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_10_21_happiness_258.png', 0.892963], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_18_56_happiness_411.png', 0.890121], ['image_analysis/231219Exp16Feat037/happiness/2023_12_19_15_25_12_happiness_305.png', 0.888788], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_19_50_happiness_427.png', 0.888061], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_15_29_happiness_351.png', 0.887657], ['image_analysis/231219Exp16Feat037/happiness/2023_12_19_15_33_22_happiness_492.png', 0.884223], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_16_21_happiness_367.png', 0.884125], ['image_analysis/231219Exp16Feat037/happiness/2023_12_19_15_23_51_happiness_272.png', 0.883442], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_01_20_happiness_91.png', 0.883208], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_09_31_happiness_243.png', 0.881998], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_12_49_happiness_304.png', 0.881794], ['image_analysis/231219Exp16Feat037/happiness/2023_12_19_15_26_26_happiness_334.png', 0.88104], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_17_53_happiness_393.png', 0.877735], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_08_30_happiness_225.png', 0.875951], ['image_analysis/231219Exp16Feat037/happiness/2023_12_19_15_24_28_happiness_287.png', 0.875617]],
+
+            'happy_v2' : [['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_14_42_happiness_337.png', 0.956833], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_20_47_happiness_443.png', 0.951191], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_15_05_happiness_344.png', 0.950566], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_14_38_happiness_336.png', 0.95015], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_21_39_happiness_457.png', 0.946825], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_16_14_happiness_365.png', 0.944964], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_13_21_happiness_313.png', 0.944349], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_19_57_happiness_429.png', 0.942714], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_18_39_happiness_407.png', 0.939112], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_12_17_happiness_294.png', 0.938941], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_14_09_happiness_327.png', 0.93535], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_15_01_happiness_343.png', 0.933883], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_16_33_happiness_370.png', 0.933322], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_16_44_happiness_373.png', 0.932397], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_21_13_happiness_450.png', 0.932199], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_16_29_happiness_369.png', 0.932169], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_17_24_happiness_385.png', 0.931824], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_20_59_happiness_446.png', 0.93073], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_04_11_happiness_146.png', 0.929506], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_11_55_happiness_287.png', 0.927202], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_22_16_happiness_467.png', 0.924615], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_11_20_happiness_276.png', 0.921775], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_08_41_happiness_228.png', 0.921352], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_14_52_happiness_340.png', 0.920534], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_06_44_happiness_193.png', 0.919601], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_22_25_happiness_469.png', 0.916838], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_07_57_happiness_215.png', 0.916164], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_21_02_happiness_447.png', 0.915599], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_06_02_happiness_180.png', 0.915296], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_08_07_happiness_218.png', 0.914777], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_23_19_happiness_484.png', 0.913821], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_11_48_happiness_285.png', 0.913365], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_21_58_happiness_462.png', 0.911515], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_13_49_happiness_321.png', 0.910806], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_18_35_happiness_406.png', 0.910584], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_16_37_happiness_371.png', 0.910564], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_11_27_happiness_278.png', 0.910493], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_23_15_happiness_483.png', 0.910242], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_11_16_happiness_275.png', 0.909978], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_08_49_happiness_230.png', 0.908898], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_15_48_happiness_357.png', 0.908892], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_07_15_happiness_202.png', 0.908821], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_19_42_happiness_425.png', 0.907925], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_17_20_happiness_384.png', 0.906674], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_08_18_happiness_221.png', 0.906671], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_09_24_happiness_241.png', 0.906305], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_24_07_happiness_497.png', 0.904271], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_13_17_happiness_312.png', 0.903765], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_17_01_happiness_378.png', 0.902309], ['image_analysis/231218Exp15NewFeat/happiness/2023_12_19_13_19_19_happiness_418.png', 0.902022]],
+
+
+
+            'disgust_v2' : [['image_analysis/231219Exp16Feat037/disgust/2023_12_19_16_38_10_disgust_446.png', 0.935409], ['image_analysis/231218Exp15NewFeat/disgust/2023_12_19_12_12_37_disgust_192.png', 0.933728], ['image_analysis/231218Exp15NewFeat/disgust/2023_12_19_12_13_54_disgust_215.png', 0.922659], ['image_analysis/231219Exp16Feat037/disgust/2023_12_19_16_32_44_disgust_325.png', 0.922036]],
+
+
+            'fear_v2' : [['image_analysis/231219Exp16Feat037/fear/2023_12_19_16_55_14_fear_356.png', 0.938642], ['image_analysis/231218Exp15NewFeat/fear/2023_12_19_12_46_22_fear_321.png', 0.930199], ['image_analysis/231218Exp15NewFeat/fear/2023_12_19_12_40_52_fear_218.png', 0.914898], ['image_analysis/231219Exp16Feat037/fear/2023_12_19_17_01_10_fear_491.png', 0.911653]],
+            
+
+            'sad_v2' : [['image_analysis/231219Exp16Feat037/sadness/2023_12_19_15_51_40_sadness_370.png', 0.92779], ['image_analysis/231218Exp15NewFeat/sadness/2023_12_19_13_28_55_sadness_79.png', 0.904773], ['image_analysis/231219Exp16Feat037/sadness/2023_12_19_15_55_02_sadness_437.png', 0.904087], ['image_analysis/231219Exp16Feat037/sadness/2023_12_19_15_47_59_sadness_293.png', 0.901349]],
+
+            'surprise_v1' : [['image_analysis/231218Exp15NewFeat/surprise/2023_12_19_13_57_55_surprise_101.png', 0.998629], ['image_analysis/231219Exp16Feat037/surprise/2023_12_19_16_07_00_surprise_214.png', 0.992764], ['image_analysis/231218Exp15NewFeat/surprise/2023_12_19_14_05_47_surprise_248.png', 0.989611], ['image_analysis/231219Exp16Feat037/surprise/2023_12_19_16_18_36_surprise_479.png', 0.988977], ['image_analysis/231218Exp15NewFeat/surprise/2023_12_19_14_01_24_surprise_167.png', 0.988713]],
+
+            'surprise_v2' : [['image_analysis/231218Exp15NewFeat/surprise/2023_12_19_13_57_55_surprise_101.png', 0.998629], ['image_analysis/231219Exp16Feat037/surprise/2023_12_19_16_00_58_surprise_64.png', 0.997973], ['image_analysis/231219Exp16Feat037/surprise/2023_12_19_16_19_25_surprise_496.png', 0.997658], ['image_analysis/231218Exp15NewFeat/surprise/2023_12_19_13_55_34_surprise_55.png', 0.997651]],
+
+            
+            
+            'final_an' : [['image_analysis/231219Exp16Feat037/anger/2023_12_19_14_58_49_anger_230.png', 0.877257], ['image_analysis/231219Exp16Feat037/anger/2023_12_19_14_51_19_anger_58.png', 0.8548], ['image_analysis/231219Exp16Feat037/anger/2023_12_19_15_10_44_anger_469.png', 0.825715], ['image_analysis/231219Exp16Feat037/anger/2023_12_19_14_51_46_anger_69.png', 0.862081]],
+            
+            // Add more sets as needed
+        };
+
+        var gallery = document.getElementById("gallery");
+
+        for (var setTitle in imageSets) {
+            // Create a container for each set
+            var setContainer = document.createElement("div");
+            setContainer.classList.add("image-set");
+            gallery.appendChild(setContainer);
+
+            var heading = document.createElement("h2");
+            heading.textContent = setTitle;
+            setContainer.appendChild(heading);
+
+            // Add images for the set
+            imageSets[setTitle].forEach(function(image) {
+                var img = document.createElement("img");
+                img.src = image[0];
+                img.alt = "Description"; // You can also use dynamic descriptions
+                setContainer.appendChild(img);
+            });
+
+            // imageSets[setTitle].forEach(function(image) {
+            //     var imgContainer = document.createElement("div");
+            //     imgContainer.classList.add("image-container");
+
+            //     var img = document.createElement("img");
+            //     img.src = setTitle + '/' + image;
+            //     img.alt = "Description"; // You can also use dynamic descriptions
+            //     imgContainer.appendChild(img);
+
+            //     // var score = document.createElement("div");
+            //     // score.textContent = "Score: " + image[1];
+            //     // score.classList.add("image-score");
+            //     // imgContainer.appendChild(score);
+
+            //     setContainer.appendChild(imgContainer);
+            // });
+            
+        }
+    </script>
+
+</body>
+</html>
