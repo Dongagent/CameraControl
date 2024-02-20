@@ -21,7 +21,7 @@ import defaultPose
 
 # import socket
 from threading import Thread
-import cv2, time, copy, sys
+import cv2, time, copy, sys, math
 import os, subprocess
 import platform
 import numpy as np
@@ -53,7 +53,7 @@ headYaw_fix_flag = False
 headYaw_fix = 95
 
 global smoothSleepTime
-smoothSleepTime = 0.05
+smoothSleepTime = 0.2
 
 # pyfeat
 from feat import Detector
@@ -498,6 +498,36 @@ class robot:
             print("generate_execution_code ERROR")
             print(e)
 
+
+
+    def sigmoid_smooth_execution_mode(self, steps = 20, total_time = 2, isSigmoidForTime = False):
+        if self.robotParams:
+            stepNum = steps
+            for i in range(0, stepNum):
+                frab = (i + 1) / float(stepNum)
+                currentParams = {}
+                
+                
+                for k in self.lastParams.keys():
+                    start = self.lastParams[k]
+                    end = self.robotParams[k]
+                    currentParams[k] = start + (end - start) * sigmoid(5 * (i / stepNum - 0.5))
+                # print('DEBUG:', currentParams)
+                self.generate_execution_code(currentParams)
+                self.nextState = self.transfer_robotParams_to_states(currentParams)
+                # self.__sendExecutionCode() # Use socket
+                self.ros_talker()# Use ROS
+
+                # MODIFY HERE if you want to setup the duration of emotion
+                global smoothSleepTime
+                if isSigmoidForTime:
+                    total_time = smoothSleepTime * steps
+                    time_interval = total_time * sigmoid(7 * (i / stepNum - 0.5))
+                    # print(time_interval)
+                    time.sleep(time_interval)
+                else:
+                    time.sleep(smoothSleepTime)
+
     def smooth_execution_mode(self, steps = 20):
         # steps: the middle steps between two robot expressions, default value is 5
         if self.robotParams:
@@ -540,6 +570,11 @@ class robot:
             "Command": "MoveAllAxes",
             "Vals": list2string(target)
         }
+        # dictdata = {
+        #     "id": "HeadController",
+        #     "motin
+        #     "
+        # }
         
         if not rospy.is_shutdown():
             strdata = json.dumps(dictdata)
@@ -580,7 +615,7 @@ class robot:
             axiswithpotentio = map((lambda x: int(x)), potaxisstr)
             print(axiswithpotentio)
 
-    def connect_ros(self, isSmoothly=False, isRecording=False, appendix="", steps=20, timeIntervalBeforeExp=1):
+    def connect_ros(self, isSmoothly=False, isRecording=False, appendix="", steps=20, timeIntervalBeforeExp=1, isUsingSigmoid=False):
 
         if DEBUG == 2 or DEBUG == 4:
             print('you are DEBUGING')
@@ -631,7 +666,11 @@ class robot:
                     print("[INFO]Smoothly execution activated")
                     # if isRecording:
                     #     time.sleep(timeIntervalBeforeExp) # Sleep 1 second by default to wait for the start of the video 
-                    self.smooth_execution_mode(steps)
+                    if not isUsingSigmoid:  
+                        self.smooth_execution_mode(steps)
+                    else:
+                        # using Sigmoid
+                        self.sigmoid_smooth_execution_mode(steps)
                 # Otherwise
                 else:
                     self.normal_execution_mode()
@@ -716,6 +755,9 @@ def basicRunningCell(robotObject, commandSet, isRecordingFlag=False, steps=20):
     # Return to Standard Pose
     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
     rb.connect_ros(True, False)
+
+def sigmoid(x):
+    return 1 / (1 + math.exp(-x))
 
 def get_target(emotion_name):
     # Anger, Disgust, Fear, Happiness, Sadness, Surprise, Neutral
@@ -1302,7 +1344,7 @@ def main():
     global detector
     # landmark_model should be set to mobilefacenet in case you want to use pyfeat 0.3.7/0.5.0/0.6.1
     # Be care of FEAT_VERSION
-    detector = Detector(emotion_model = "resmasknet", landmark_model='mobilefacenet')
+    # detector = Detector(emotion_model = "resmasknet", landmark_model='mobilefacenet')
 
     # res = subprocess.Popen("ls", cwd="/home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package/scripts")
     # print(res)
@@ -1313,6 +1355,48 @@ def main():
     # anger, disgust, fear, happiness, sadness, surprise
     # defaultPose.prototypeFacialExpressions
     
+    # Exp 18: new environment basic video, sigmoid function
+    # 
+    # # record prototype video and prototype with mouth opening
+    global smoothSleepTime
+    # for k,v in defaultPose.prototypeFacialExpressions.items():
+    #     if k == 'neutral':
+    #         continue
+    #     rb.start_taking_video(appendix=k)
+    #     time.sleep(1)
+
+        
+    #     smoothSleepTime = 0.04
+    #     rb.switch_to_customizedPose(v)
+    #     rb.connect_ros(True, False, steps=25, isUsingSigmoid=True) # isSmoothly = True ,isRecording = True
+
+    #     time.sleep(2)
+    #     rb.stop_taking_video()
+        
+    #     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    #     rb.connect_ros(True, False)
+    #     time.sleep(1)
+    
+    
+    for k,v in defaultPose.hotExpressions.items():
+        if k == 'neutral':
+            continue
+        rb.start_taking_video(appendix=k)
+        time.sleep(1)
+
+        # global smoothSleepTime
+        smoothSleepTime = 0.03
+        rb.switch_to_customizedPose(v)
+        rb.connect_ros(True, False, steps=20, isUsingSigmoid=True) # isSmoothly = True ,isRecording = True
+
+        time.sleep(2)
+        rb.stop_taking_video()
+        
+        rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+        rb.connect_ros(True, False)
+        time.sleep(1) 
+
+
     # Exp 17: record video, record prototype images
     # fl = os.listdir("image_analysis/231225Exp17NewFeat/top50anger")
     # fl = sorted(fl, key=lambda x: int(x.split('_')[0]))
@@ -1331,25 +1415,44 @@ def main():
     #         time.sleep(1)
 
 
-    # record prototype video and prototype with mouth opening
+    # # record prototype video and prototype with mouth opening
+    # global smoothSleepTime
     # for k,v in defaultPose.prototypeFacialExpressions.items():
-    for k,v in defaultPose.hotExpressions.items():
-        if k == 'neutral':
-            continue
-        rb.start_taking_video(appendix=k)
-        time.sleep(1)
+    #     if k == 'neutral':
+    #         continue
+    #     rb.start_taking_video(appendix=k)
+    #     time.sleep(1)
 
-        global smoothSleepTime
-        smoothSleepTime = 0.02
-        rb.switch_to_customizedPose(v)
-        rb.connect_ros(True, False, steps=25) # isSmoothly = True ,isRecording = True
-
-        time.sleep(2)
-        rb.stop_taking_video()
         
-        rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-        rb.connect_ros(True, False)
-        time.sleep(1)
+    #     smoothSleepTime = 0.02
+    #     rb.switch_to_customizedPose(v)
+    #     rb.connect_ros(True, False, steps=25) # isSmoothly = True ,isRecording = True
+
+    #     time.sleep(2)
+    #     rb.stop_taking_video()
+        
+    #     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    #     rb.connect_ros(True, False)
+    #     time.sleep(1)
+    
+    
+    # for k,v in defaultPose.hotExpressions.items():
+    #     if k == 'neutral':
+    #         continue
+    #     rb.start_taking_video(appendix=k)
+    #     time.sleep(1)
+
+    #     # global smoothSleepTime
+    #     smoothSleepTime = 0.02
+    #     rb.switch_to_customizedPose(v)
+    #     rb.connect_ros(True, False, steps=25) # isSmoothly = True ,isRecording = True
+
+    #     time.sleep(2)
+    #     rb.stop_taking_video()
+        
+    #     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    #     rb.connect_ros(True, False)
+    #     time.sleep(1)
     
     # record prototype with mouth opening video
     
