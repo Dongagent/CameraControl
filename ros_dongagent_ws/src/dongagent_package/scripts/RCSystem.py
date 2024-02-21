@@ -50,7 +50,7 @@ FEAT_VERSION = 0 # 0 - py-feat 0.3.7 , 1 - py-feat 0.6.1
 # 4 - Debug without pic, without robot;
 
 headYaw_fix_flag = False
-headYaw_fix = 95
+headYaw_fix = 105
 
 global smoothSleepTime
 smoothSleepTime = 0.2
@@ -168,7 +168,7 @@ class robot:
             0, 0, 0, 0, 0,
             0, 0, 0, 0, 0,
             0, 0, 0, 0, 0,
-            0, 32, 128, 128, 95
+            0, 32, 128, 128, headYaw_fix
         ]
 
         # initialization of States, like [0, 0, 0, ... , 0]
@@ -362,56 +362,6 @@ class robot:
         self.webcam_stream_widget.stop_video_recording()
         print('[INFO]video recording stopped.')
 
-    # Deprecated
-    # def take_video(self, isUsingCounter=True, appendix=''):
-    #     self.counter += 1
-    #     if isUsingCounter:
-    #         self.fileName = time.strftime("%Y_%m_%d_%H_%M_%S_No", time.localtime()) + str(self.counter)
-    #         if appendix:
-    #             self.fileName += "_" + appendix + ".mkv"
-    #         else:
-    #             self.fileName += ".mkv"
-    #     else:
-    #         self.fileName = time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime()) 
-    #         if appendix:
-    #             self.fileName += "_" + appendix + ".mkv"
-    #         else:
-    #             self.fileName += ".mkv"
-    #     if DEBUG == 2:
-    #         print("Filename is {}".format(self.fileName))
-    #         return
-
-    #     if os.path.exists(self.fileName):
-    #         raise Exception("Same File!")
-    #     if "Linux" in platform.platform():
-    #         # Remember to check the path everytime.
-            
-    #         videoPath = LINUXVIDEOPATH
-    #         fParam = "v4l2"
-    #         videoTypeParm = "-input_format"
-    #     elif "Windows" in platform.platform():
-    #         videoPath = "video='C920 Pro Stream Webcam'"
-    #         fParam = "dshow" 
-    #         videoTypeParm = "-vcodec"
-        
-    #     command = "ffmpeg -f {} -framerate {} -video_size {} {} mjpeg -t {} -i {} -t {} -c copy {}".format(
-    #         fParam, 
-    #         str(self.FRAMERATE), 
-    #         self.VIDEOSIZE, 
-    #         videoTypeParm, 
-    #         str(self.DURATION), 
-    #         videoPath, 
-    #         str(self.DURATION), 
-    #         self.fileName
-    #     )
-    #     # ffmpeg -f v4l2 -framerate 60 -video_size 1280x720 -input_format mjpeg -i /dev/video2 -vf vflip -c copy 1.mkv
-        
-    #     if "Linux" in platform.platform():
-    #         # Linux
-    #         return subprocess.Popen([command], stdout=subprocess.PIPE, shell=True)
-    #     elif "Windows" in platform.platform():
-    #         # Windows
-    #         return subprocess.Popen(["pwsh", "-Command", command], stdout=subprocess.PIPE)
     def initialize_robotParams(self):
         # initialize robotParams like {"x1":0, "x2":0, ... , "x35": 0}
         print("initialize_robotParams")
@@ -484,23 +434,12 @@ class robot:
         for i in range(1, 36):
             self.robotParams["x{}".format(i)] = params[i - 1]
         self.__check_robotParams()
-    
-    def generate_execution_code(self, params):
-        """Construct the action code as 'moveaxis [axis] [pos] [priority]' """
-        # Generate execution code with given params
-        actionStr = "moveaxes"
-        try: 
-            for i in range(1, 36):
-                actionStr = actionStr + SPACE + str(i) + SPACE + str(params["x{}".format(i)]) + " 5 200"
-            actionStr += '\n' 
-            self.executionCode = actionStr
-        except Exception as e:
-            print("generate_execution_code ERROR")
-            print(e)
 
 
 
-    def sigmoid_smooth_execution_mode(self, steps = 20, total_time = 2, isSigmoidForTime = False):
+
+
+    def sigmoid_smooth_execution_mode(self, steps = 20, total_time = 2, isSigmoidForTime = False, sigmoid_factor=1):
         if self.robotParams:
             stepNum = steps
             for i in range(0, stepNum):
@@ -511,9 +450,9 @@ class robot:
                 for k in self.lastParams.keys():
                     start = self.lastParams[k]
                     end = self.robotParams[k]
-                    currentParams[k] = start + (end - start) * sigmoid(5 * (i / stepNum - 0.5))
+                    currentParams[k] = start + (end - start) * sigmoid(sigmoid_factor * (i / stepNum - 0.5))
                 # print('DEBUG:', currentParams)
-                self.generate_execution_code(currentParams)
+                
                 self.nextState = self.transfer_robotParams_to_states(currentParams)
                 # self.__sendExecutionCode() # Use socket
                 self.ros_talker()# Use ROS
@@ -542,7 +481,7 @@ class robot:
                     # if k == "1":
                     #     print(self.lastParams[k], self.robotParams[k], interval, currentParams[k])
 
-                self.generate_execution_code(currentParams)
+
                 self.nextState = self.transfer_robotParams_to_states(currentParams)
                 # self.__sendExecutionCode() # Use socket
                 self.ros_talker()# Use ROS
@@ -553,7 +492,6 @@ class robot:
 
     # @deprecated
     def normal_execution_mode(self):
-        self.generate_execution_code(self.robotParams)
         # self.__sendExecutionCode() # Use socket
         self.ros_talker()# Use ROS
 
@@ -570,11 +508,6 @@ class robot:
             "Command": "MoveAllAxes",
             "Vals": list2string(target)
         }
-        # dictdata = {
-        #     "id": "HeadController",
-        #     "motin
-        #     "
-        # }
         
         if not rospy.is_shutdown():
             strdata = json.dumps(dictdata)
@@ -597,6 +530,7 @@ class robot:
     #     # print('recv:', data.decode()) # print the data I received
     #     if "OK" not in data.decode():
     #         raise Exception("ERROR! Did NOT receive 'OK'")
+
     def sub_callback(self, data):
         recv_dict = json.loads(data.data)
         if recv_dict['Message'] == "PotentioValsBase64":
@@ -615,7 +549,7 @@ class robot:
             axiswithpotentio = map((lambda x: int(x)), potaxisstr)
             print(axiswithpotentio)
 
-    def connect_ros(self, isSmoothly=False, isRecording=False, appendix="", steps=20, timeIntervalBeforeExp=1, isUsingSigmoid=False):
+    def connect_ros(self, isSmoothly=True, isRecording=False, appendix="", steps=20, timeIntervalBeforeExp=1, isUsingSigmoid=False, sigmoid_factor=1):
 
         if DEBUG == 2 or DEBUG == 4:
             print('you are DEBUGING')
@@ -670,7 +604,7 @@ class robot:
                         self.smooth_execution_mode(steps)
                     else:
                         # using Sigmoid
-                        self.sigmoid_smooth_execution_mode(steps)
+                        self.sigmoid_smooth_execution_mode(steps=steps, sigmoid_factor=sigmoid_factor)
                 # Otherwise
                 else:
                     self.normal_execution_mode()
@@ -1345,7 +1279,8 @@ def main():
     # landmark_model should be set to mobilefacenet in case you want to use pyfeat 0.3.7/0.5.0/0.6.1
     # Be care of FEAT_VERSION
     # detector = Detector(emotion_model = "resmasknet", landmark_model='mobilefacenet')
-
+    
+    global smoothSleepTime
     # res = subprocess.Popen("ls", cwd="/home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package/scripts")
     # print(res)
 
@@ -1354,11 +1289,54 @@ def main():
     # Anger, Disgust, Fear, Happiness, Sadness, Surprise
     # anger, disgust, fear, happiness, sadness, surprise
     # defaultPose.prototypeFacialExpressions
+
+    # Exp 19: test the head movement
+    # collect data again confirming details
+    for k,v in defaultPose.prototypeFacialExpressions.items():
+        # if k != 'surprise':
+        #     continue
+        if k == 'neutral':
+            continue
+        rb.start_taking_video(appendix=k)
+        time.sleep(1)
+
+        
+        smoothSleepTime = 0.02
+        rb.switch_to_customizedPose(v)
+        rb.connect_ros(True, False, steps=25, isUsingSigmoid=True, sigmoid_factor=7) # isSmoothly = True ,isRecording = True
+
+        time.sleep(2)
+        rb.stop_taking_video()
+        
+        rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+        rb.connect_ros(True, False)
+        time.sleep(1)
+
+    for k,v in defaultPose.hotExpressions.items():
+        # if k != 'hotSurprise':
+        #     continue
+        if k == 'neutral':
+            continue
+        rb.start_taking_video(appendix=k)
+        time.sleep(1)
+
+        
+        smoothSleepTime = 0.02
+        rb.switch_to_customizedPose(v)
+        rb.connect_ros(True, False, steps=25, isUsingSigmoid=True, sigmoid_factor=7) # isSmoothly = True ,isRecording = True
+
+        time.sleep(2)
+        rb.stop_taking_video()
+        
+        rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+        rb.connect_ros(True, False)
+        time.sleep(1)
+
     
     # Exp 18: new environment basic video, sigmoid function
     # 
     # # record prototype video and prototype with mouth opening
-    global smoothSleepTime
+    
     # for k,v in defaultPose.prototypeFacialExpressions.items():
     #     if k == 'neutral':
     #         continue
@@ -1377,24 +1355,23 @@ def main():
     #     rb.connect_ros(True, False)
     #     time.sleep(1)
     
-    
-    for k,v in defaultPose.hotExpressions.items():
-        if k == 'neutral':
-            continue
-        rb.start_taking_video(appendix=k)
-        time.sleep(1)
+    # for k,v in defaultPose.hotExpressions.items():
+    #     if k == 'neutral':
+    #         continue
+    #     rb.start_taking_video(appendix=k)
+    #     time.sleep(1)
 
-        # global smoothSleepTime
-        smoothSleepTime = 0.03
-        rb.switch_to_customizedPose(v)
-        rb.connect_ros(True, False, steps=20, isUsingSigmoid=True) # isSmoothly = True ,isRecording = True
+    #     # global smoothSleepTime
+    #     smoothSleepTime = 0.03
+    #     rb.switch_to_customizedPose(v)
+    #     rb.connect_ros(True, False, steps=20, isUsingSigmoid=True) # isSmoothly = True ,isRecording = True
 
-        time.sleep(2)
-        rb.stop_taking_video()
+    #     time.sleep(2)
+    #     rb.stop_taking_video()
         
-        rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-        rb.connect_ros(True, False)
-        time.sleep(1) 
+    #     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    #     rb.connect_ros(True, False)
+    #     time.sleep(1) 
 
 
     # Exp 17: record video, record prototype images
