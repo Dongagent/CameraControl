@@ -53,7 +53,7 @@ headYaw_fix_flag = False
 headYaw_fix = 105
 
 global smoothSleepTime
-smoothSleepTime = 0.2
+smoothSleepTime = 0.02
 
 # pyfeat
 from feat import Detector
@@ -340,6 +340,7 @@ class robot:
                     print('[INFO]make video folder')
                 except Exception as e:
                     print(e)
+        # setup filename
         if not folder:
             self.fileName = "video_analysis/temp/{}".format(self.fileName)
         else:
@@ -386,7 +387,7 @@ class robot:
             0, 0, 0, 0, 0,
             0, 0, 0, 0, 0,
             0, 0, 0, 0, 0,
-            0, 32, 128, 128, 95
+            0, 32, 128, 128, headYaw_fix
         ]
         for i in range(1, 36):
             self.robotParams["x{}".format(i)] = stableState[i - 1]
@@ -435,11 +436,7 @@ class robot:
             self.robotParams["x{}".format(i)] = params[i - 1]
         self.__check_robotParams()
 
-
-
-
-
-    def sigmoid_smooth_execution_mode(self, steps = 20, total_time = 2, isSigmoidForTime = False, sigmoid_factor=1):
+    def sigmoid_smooth_execution_mode(self, steps = 20, total_time = 2, isSigmoidForTime = False, sigmoid_factor=10):
         if self.robotParams:
             stepNum = steps
             for i in range(0, stepNum):
@@ -549,7 +546,7 @@ class robot:
             axiswithpotentio = map((lambda x: int(x)), potaxisstr)
             print(axiswithpotentio)
 
-    def connect_ros(self, isSmoothly=True, isRecording=False, appendix="", steps=20, timeIntervalBeforeExp=1, isUsingSigmoid=False, sigmoid_factor=1):
+    def connect_ros(self, isSmoothly=True, isRecording=False, appendix="", steps=20, timeIntervalBeforeExp=1, isUsingSigmoid=False, sigmoid_factor=10):
 
         if DEBUG == 2 or DEBUG == 4:
             print('you are DEBUGING')
@@ -759,8 +756,8 @@ def checkParameters(robotParams):
     #     robotParams[np.random.choice([22-1, 23-1])] = 0
         
     # x22 = x18, x23 = x19
-    robotParams[21] = robotParams[17]
-    robotParams[22] = robotParams[18]
+    robotParams[22-1] = robotParams[18-1]
+    robotParams[23-1] = robotParams[19-1]
 
 
     assert robotParams[8-1] * robotParams[9-1] == 0
@@ -829,49 +826,6 @@ def target_function(**kwargs):
         # if the upper lid and lower lid are too close to each other, we should return 0
         print("[INFO]Happy Constraints, give 0 score.")
         return 0
-
-    # # x2 = x1, use one axis for eyes upper lid
-    # # fixedrobotcode[0] = 0
-    # fixedrobotcode[1] = fixedrobotcode[0]
-
-    # # x7 = x6, use one axis for eyes lower lid
-    # fixedrobotcode[6] = fixedrobotcode[5]
-
-    # # x12 = x8
-    # fixedrobotcode[11] = fixedrobotcode[7]
-
-    # # x13 = x9
-    # fixedrobotcode[12] = fixedrobotcode[8]
-
-    # # x14  = x10
-    # fixedrobotcode[13] = fixedrobotcode[9]
-
-
-    # # x17 = x16
-    # fixedrobotcode[16] = fixedrobotcode[15]
-
-    # # x22 = x18
-    # fixedrobotcode[21] = fixedrobotcode[17]
-
-    # # x23 = x19
-    # fixedrobotcode[22] = fixedrobotcode[18]
-
-    # # x24 = x20
-    # fixedrobotcode[23] = fixedrobotcode[19]
-
-    # # To open all axes
-    # # x4 = x3
-    # fixedrobotcode[3] = fixedrobotcode[2]
-
-    # # x15 = x11
-    # fixedrobotcode[14] = fixedrobotcode[10]
-
-    # ban x21 x25
-    # ban x26 x27 
-    # ban 31 34 33 35
-
-    # check parameters
-    # fixedrobotcode = checkParameters(fixedrobotcode)
 
     fixedrobotcode = fix_robot_param(fixedrobotcode)
     
@@ -1199,10 +1153,10 @@ def bayesian_optimization(baseline, target_emotion, robot):
     # --------------------------------------
 
     # Happiness prototype
-    optimizer.probe(
-        params={'x1': 86, 'x6': 255, 'x8': 0, 'x9': 255, 'x10': 0, 'x11': 0, 'x16': 255, 'x18': 255, 'x19': 0, 'x20': 0, 'x28': 255, 'x29': 255, 'x30': 0, 'x32': 0},
-        lazy=False,
-    )
+    #     optimizer.probe(
+    #         params={'x1': 86, 'x6': 255, 'x8': 0, 'x9': 255, 'x10': 0, 'x11': 0, 'x16': 255, 'x18': 255, 'x19': 0, 'x20': 0, 'x28': 255, 'x29': 255, 'x30': 0, 'x32': 0},
+    #         lazy=False,
+    #     )
 
     # Anger
     # optimizer.probe(
@@ -1230,7 +1184,7 @@ def check_folder(folderName):
 def recover_param_from_csv(csv_name, steps=15):
     df = pd.read_csv(csv_name)
 
-    neutral = [86, 86, 128, 128, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 128, 95]
+    neutral = [86, 86, 128, 128, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 128, headYaw_fix]
     fixedrobotcode = copy.copy(neutral)
     # dict = {}
     for k,v in df.to_dict().items():
@@ -1290,47 +1244,138 @@ def main():
     # anger, disgust, fear, happiness, sadness, surprise
     # defaultPose.prototypeFacialExpressions
 
+    # -----
+    # Exp 20: writing the Main Framework of Experiment
+    
+
+    def startVoice():
+        #「行きます」instruction voice
+        print("[INFO]Nikola speaks 行きます")
+        pass
+
+    def openEyes():
+        # open the eyes
+        pass
+
+    def closeEyes():
+        # close the eyes
+        pass
+
+    def raiseHead():
+        # raise the head
+        pass
+
+    def lowerHead():
+        # lower the head
+        pass
+
+    def makeFacialExpression():
+        # make a facial expression
+        pass
+
+    def turnToNormalState():
+        # turn to normal state
+        pass
+
+    def turnToOffState():
+        # turn to OFF state
+        pass
+
+    def turnToOnState():    
+        # turn to ON state
+        pass
+
+    # Between trials, Nikola looked down, closed his eyes, and made subtle motions.
+    def idle_off():
+        # turn OFF idle state
+        pass
+    def idle_on():
+        # turn ON idle state
+        pass
+
+    # Participants should watch Nikola’s face and give ratings by keyboard (fake target)
+
+    def run_exp2():
+        # Step 1: In each trial, during the「行きます」instruction voice
+        turnToOffState()
+        startVoice()
+
+
+        # Step 2: Nikola will open the eyes, raise his head (500ms).
+        # Step 3: Then Nikola will make a facial expression (500ms). Hold for about 2000ms, and turn to normal state
+        # Step 4: turn to OFF state(heads down, close eye). 
+
+        # for k,v in defaultPose.prototypeFacialExpressions.items():
+        #     if k == 'neutral':
+        #         continue
+        #     rb.start_taking_video(appendix=k)
+        #     time.sleep(1)
+
+            
+        #     smoothSleepTime = 0.02
+        #     rb.switch_to_customizedPose(v)
+        #     rb.connect_ros(True, False, steps=25, isUsingSigmoid=False) # isSmoothly = True ,isRecording = True
+        #     # rb.connect_ros(True, False, steps=25, isUsingSigmoid=True, sigmoid_factor=7) # isSmoothly = True ,isRecording = True
+
+        #     time.sleep(2)
+        #     rb.stop_taking_video()
+            
+        #     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+        #     rb.connect_ros(True, False)
+        #     time.sleep(1)
+    
+    
+    
+    # After we received the keyboard feedback, we can continue the next step.
+
+
+
+
+
+    # ----
+
+
     # Exp 19: test the head movement
     # collect data again confirming details
-    for k,v in defaultPose.prototypeFacialExpressions.items():
-        # if k != 'surprise':
-        #     continue
-        if k == 'neutral':
-            continue
-        rb.start_taking_video(appendix=k)
-        time.sleep(1)
+    # for k,v in defaultPose.prototypeFacialExpressions.items():
+    #     # if k != 'surprise':
+    #     #     continue
+    #     if k == 'neutral':
+    #         continue
+    #     rb.start_taking_video(appendix=k)
+    #     time.sleep(1)
 
         
-        smoothSleepTime = 0.02
-        rb.switch_to_customizedPose(v)
-        rb.connect_ros(True, False, steps=25, isUsingSigmoid=True, sigmoid_factor=7) # isSmoothly = True ,isRecording = True
+    #     smoothSleepTime = 0.02
+    #     rb.switch_to_customizedPose(v)
+    #     rb.connect_ros(True, False, steps=25, isUsingSigmoid=True, sigmoid_factor=7) # isSmoothly = True ,isRecording = True
 
-        time.sleep(2)
-        rb.stop_taking_video()
+    #     time.sleep(2)
+    #     rb.stop_taking_video()
         
-        rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-        rb.connect_ros(True, False)
-        time.sleep(1)
+    #     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    #     rb.connect_ros(True, False)
+    #     time.sleep(1)
 
-    for k,v in defaultPose.hotExpressions.items():
-        # if k != 'hotSurprise':
-        #     continue
-        if k == 'neutral':
-            continue
-        rb.start_taking_video(appendix=k)
-        time.sleep(1)
+    # for k,v in defaultPose.hotExpressions.items():
+    #     # if k != 'hotSurprise':
+    #     #     continue
+    #     if k == 'neutral':
+    #         continue
+    #     rb.start_taking_video(appendix=k)
+    #     time.sleep(1)
 
         
-        smoothSleepTime = 0.02
-        rb.switch_to_customizedPose(v)
-        rb.connect_ros(True, False, steps=25, isUsingSigmoid=True, sigmoid_factor=7) # isSmoothly = True ,isRecording = True
+    #     smoothSleepTime = 0.02
+    #     rb.switch_to_customizedPose(v)
+    #     rb.connect_ros(True, False, steps=25, isUsingSigmoid=True, sigmoid_factor=10) # isSmoothly = True ,isRecording = True
 
-        time.sleep(2)
-        rb.stop_taking_video()
+    #     time.sleep(2)
+    #     rb.stop_taking_video()
         
-        rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-        rb.connect_ros(True, False)
-        time.sleep(1)
+    #     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    #     rb.connect_ros(True, False)
+    #     time.sleep(1)
 
     
     # Exp 18: new environment basic video, sigmoid function

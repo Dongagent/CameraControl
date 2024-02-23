@@ -112,3 +112,12 @@ Exp structure: 10 initialization + 490 iteration, 500 in total
 
 Test: 100
 
+### Exp16 Use Py-Feat 0.6.1 for Nikola, with happy eye restriction
+
+### Exp 17: record video, record prototype images
+
+### Exp 18: new environment basic video, sigmoid function
+
+### Exp 19: test the head movement, collect data again confirming details
+
+### Exp 20: writing the Main Framework of Experiment
