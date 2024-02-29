@@ -53,7 +53,7 @@ headYaw_fix_flag = False
 headYaw_fix = 105
 
 global smoothSleepTime
-smoothSleepTime = 0.02
+smoothSleepTime = 0.025
 
 # pyfeat
 from feat import Detector
@@ -436,7 +436,7 @@ class robot:
             self.robotParams["x{}".format(i)] = params[i - 1]
         self.__check_robotParams()
 
-    def sigmoid_smooth_execution_mode(self, steps = 20, total_time = 2, isSigmoidForTime = False, sigmoid_factor=10):
+    def sigmoid_smooth_execution_mode(self, steps = 20, total_time = 2, isSigmoidForTime = False, sigmoid_factor=10, debugmode=False):
         if self.robotParams:
             stepNum = steps
             for i in range(0, stepNum):
@@ -447,8 +447,9 @@ class robot:
                 for k in self.lastParams.keys():
                     start = self.lastParams[k]
                     end = self.robotParams[k]
-                    currentParams[k] = start + (end - start) * sigmoid(sigmoid_factor * (i / stepNum - 0.5))
-                # print('DEBUG:', currentParams)
+                    currentParams[k] = start + (end - start) * sigmoid(sigmoid_factor * (i / stepNum))
+                if debugmode:
+                    print('DEBUG:', currentParams)
                 
                 self.nextState = self.transfer_robotParams_to_states(currentParams)
                 # self.__sendExecutionCode() # Use socket
@@ -458,13 +459,13 @@ class robot:
                 global smoothSleepTime
                 if isSigmoidForTime:
                     total_time = smoothSleepTime * steps
-                    time_interval = total_time * sigmoid(7 * (i / stepNum - 0.5))
+                    time_interval = total_time * sigmoid(7 * (i / stepNum))
                     # print(time_interval)
                     time.sleep(time_interval)
                 else:
                     time.sleep(smoothSleepTime)
 
-    def smooth_execution_mode(self, steps = 20):
+    def smooth_execution_mode(self, steps = 20, debugmode=False):
         # steps: the middle steps between two robot expressions, default value is 5
         if self.robotParams:
             stepNum = steps
@@ -477,7 +478,9 @@ class robot:
                     currentParams[k] = int(self.lastParams[k] - interval) if self.lastParams[k] > self.robotParams[k] else int(self.lastParams[k] + interval)
                     # if k == "1":
                     #     print(self.lastParams[k], self.robotParams[k], interval, currentParams[k])
-
+                if debugmode:
+                    print('DEBUG:', currentParams)
+                
 
                 self.nextState = self.transfer_robotParams_to_states(currentParams)
                 # self.__sendExecutionCode() # Use socket
@@ -546,7 +549,8 @@ class robot:
             axiswithpotentio = map((lambda x: int(x)), potaxisstr)
             print(axiswithpotentio)
 
-    def connect_ros(self, isSmoothly=True, isRecording=False, appendix="", steps=20, timeIntervalBeforeExp=1, isUsingSigmoid=False, sigmoid_factor=10):
+    def connect_ros(self, isSmoothly=True, isRecording=False, appendix="", steps=20, timeIntervalBeforeExp=1, isUsingSigmoid=False, 
+        sigmoid_factor=10, debugmode=False):
 
         if DEBUG == 2 or DEBUG == 4:
             print('you are DEBUGING')
@@ -598,10 +602,10 @@ class robot:
                     # if isRecording:
                     #     time.sleep(timeIntervalBeforeExp) # Sleep 1 second by default to wait for the start of the video 
                     if not isUsingSigmoid:  
-                        self.smooth_execution_mode(steps)
+                        self.smooth_execution_mode(steps=steps, debugmode=debugmode)
                     else:
                         # using Sigmoid
-                        self.sigmoid_smooth_execution_mode(steps=steps, sigmoid_factor=sigmoid_factor)
+                        self.sigmoid_smooth_execution_mode(steps=steps, sigmoid_factor=sigmoid_factor, debugmode=debugmode)
                 # Otherwise
                 else:
                     self.normal_execution_mode()
@@ -1200,7 +1204,11 @@ def recover_param_from_csv(csv_name, steps=15):
     smoothSleepTime = 0.02
     returncode = rb.connect_ros(isSmoothly=True, isRecording=False, steps=steps) # isSmoothly = True ,isRecording = True
     time.sleep(0.5)
-    
+
+def idle_behavior():
+    # First choose the start state and end state, and use another thread for randomly insert eye blinking 
+    # Before sending command to ros, combine eye and the interval state (let the eye parts always equal to the eye threading)
+    pass
 
 
 # main
