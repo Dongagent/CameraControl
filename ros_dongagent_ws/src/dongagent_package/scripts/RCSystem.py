@@ -1269,6 +1269,10 @@ def main():
         # close the eyes
         pass
 
+    def eyeblink():
+        # eye blink
+        pass
+
     def raiseHead():
         # raise the head
         pass
