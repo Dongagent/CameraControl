@@ -5,7 +5,7 @@
 # @Copyright = Copyright 2021, The Riken Robotics Project
 # @Date:   2021-05-20 18:19:38
 # @Last Modified by:   dongshengyang
-# @Last Modified time: 2021-05-20 18:21:38
+# @Last Modified time: 2024-03-8 09:21:38
 '''
 __author__ = "Dongsheng Yang"
 __copyright__ = "Copyright 2021, The Riken Robotics Project"
@@ -20,7 +20,9 @@ from typing import Counter
 import defaultPose
 
 # import socket
+import threading
 from threading import Thread
+import serial
 import cv2, time, copy, sys, math
 import os, subprocess
 import platform
@@ -203,6 +205,7 @@ class robot:
         # Final initialization
         self.initialize_robotParams()
         self.return_to_stable_state()
+        self.webcam = webcam
         
         # webcam stream thread, initialize
         if webcam:
@@ -436,9 +439,12 @@ class robot:
             self.robotParams["x{}".format(i)] = params[i - 1]
         self.__check_robotParams()
 
-    def sigmoid_smooth_execution_mode(self, steps = 20, total_time = 2, isSigmoidForTime = False, sigmoid_factor=10, debugmode=False):
+
+
+    def sigmoid_smooth_execution_mode(self, steps = 20, total_time = 2, useScaledSigmoid=True, sigmoid_factor=10, debugmode=False):
         if self.robotParams:
             stepNum = steps
+            x_values_for_scaled_sigmoid = np.linspace(-3, 3, steps)
             for i in range(0, stepNum):
                 frab = (i + 1) / float(stepNum)
                 currentParams = {}
@@ -447,7 +453,10 @@ class robot:
                 for k in self.lastParams.keys():
                     start = self.lastParams[k]
                     end = self.robotParams[k]
-                    currentParams[k] = start + (end - start) * sigmoid(sigmoid_factor * (i / stepNum))
+                    if useScaledSigmoid:
+                        currentParams[k] = start + (end - start) * scaled_sigmoid(x_values_for_scaled_sigmoid[i])
+                    else:
+                        currentParams[k] = start + (end - start) * sigmoid(sigmoid_factor * (i / stepNum - 0.5))
                 if debugmode:
                     print('DEBUG:', currentParams)
                 
@@ -457,13 +466,13 @@ class robot:
 
                 # MODIFY HERE if you want to setup the duration of emotion
                 global smoothSleepTime
-                if isSigmoidForTime:
-                    total_time = smoothSleepTime * steps
-                    time_interval = total_time * sigmoid(7 * (i / stepNum))
-                    # print(time_interval)
-                    time.sleep(time_interval)
-                else:
-                    time.sleep(smoothSleepTime)
+                # if isSigmoidForTime:
+                #     total_time = smoothSleepTime * steps
+                #     time_interval = total_time * sigmoid(7 * (i / stepNum))
+                #     # print(time_interval)
+                #     time.sleep(time_interval)
+                # else:
+                time.sleep(smoothSleepTime)
 
     def smooth_execution_mode(self, steps = 20, debugmode=False):
         # steps: the middle steps between two robot expressions, default value is 5
@@ -481,7 +490,6 @@ class robot:
                 if debugmode:
                     print('DEBUG:', currentParams)
                 
-
                 self.nextState = self.transfer_robotParams_to_states(currentParams)
                 # self.__sendExecutionCode() # Use socket
                 self.ros_talker()# Use ROS
@@ -496,7 +504,7 @@ class robot:
         self.ros_talker()# Use ROS
 
     def ros_talker(self):
-        rospy.init_node('rcpublisher', anonymous=True)
+        rospy.init_node('rcpublisher', anonymous=True, disable_signals=True)
         pub = rospy.Publisher('rc/command', String, queue_size=10)
         sub = rospy.Subscriber('rc/return', String, self.sub_callback)
         r = rospy.Rate(10) # speed
@@ -555,34 +563,6 @@ class robot:
         if DEBUG == 2 or DEBUG == 4:
             print('you are DEBUGING')
             return 0
-        '''
-        # socket method
-        # @deprecated
-        
-        # self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)                # create socket object
-        
-        # Please use ipconfig on the server to check the ip first. It may change every time we open the server.
-        host = '172.27.174.125'                                                      # set server address
-        port = 12000                                                                 # set port
-
-        # --------- DEBUG -------------
-        if DEBUG == 2:
-            print("function connect_ros:", self.robotParams)
-            # Test fileName
-            if isRecording:
-                self.take_video(isUsingCounter=False, appendix=appendix)
-            return
-        
-        # --------- DEBUG END -------------
-        
-        
-        try:
-            self.client.connect((host, port))
-            self.client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        except Exception as e:
-            print("Connection Failed, ERROR code is: ", e)
-            self.connection = False
-        '''
 
         try:
             # self.ros_talker()
@@ -693,6 +673,10 @@ def basicRunningCell(robotObject, commandSet, isRecordingFlag=False, steps=20):
 
 def sigmoid(x):
     return 1 / (1 + math.exp(-x))
+
+def scaled_sigmoid(x):
+    # x ~ [-3,3], y ~ [-1, 1]
+    return -0.052 + 1.105 * sigmoid(x)
 
 def get_target(emotion_name):
     # Anger, Disgust, Fear, Happiness, Sadness, Surprise, Neutral
@@ -1185,6 +1169,18 @@ def check_folder(folderName):
         except Exception as e:
             print(e)
 
+def get_param_from_csv(csv_name):
+    df = pd.read_csv(csv_name)
+    neutral = [86, 86, 128, 128, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 128, headYaw_fix]
+    fixedrobotcode = copy.copy(neutral)
+
+    for k,v in df.to_dict().items():
+        if "x" in k:
+            fixedrobotcode[int(k[1:])-1] = round(v[0])
+    fixedrobotcode = fix_robot_param(fixedrobotcode)
+
+    return fixedrobotcode
+            
 def recover_param_from_csv(csv_name, steps=15):
     df = pd.read_csv(csv_name)
 
@@ -1201,7 +1197,7 @@ def recover_param_from_csv(csv_name, steps=15):
     # control robot
     rb.switch_to_customizedPose(fixedrobotcode)
     global smoothSleepTime
-    smoothSleepTime = 0.02
+    # smoothSleepTime = 0.025
     returncode = rb.connect_ros(isSmoothly=True, isRecording=False, steps=steps) # isSmoothly = True ,isRecording = True
     time.sleep(0.5)
 
@@ -1210,11 +1206,76 @@ def idle_behavior():
     # Before sending command to ros, combine eye and the interval state (let the eye parts always equal to the eye threading)
     pass
 
+# Function to handle serial port communication
+def serial_port_listener(port, baud_rate, stop_event):
+    try:
+        ser = serial.Serial(port, baud_rate, timeout=0)
+        print(f"Opened serial port {port}")
+
+        while not stop_event.is_set():
+            if ser.in_waiting > 0:
+                data = ser.readline()
+                data = str(data)[-2]
+                data = int(data)
+                print(f"Received: {data}")
+
+                if data == 0:
+                    print(f"Received the serial number 0, neutral state.")
+                    # Your code for the action goes here
+                    rb.switch_to_customizedPose(defaultPose.prototypeFacialExpressions['neutral'])
+                    rb.connect_ros(True, False)
+                    time.sleep(1)
+
+                elif data == 1:
+                    print("Received the serial number 1, prototype anger")
+                    # Your code for the action goes here
+                    rb.switch_to_customizedPose(defaultPose.prototypeFacialExpressions['anger'])
+                    rb.connect_ros(True, False, steps = 40, isUsingSigmoid=True)
+                    time.sleep(2)
+
+                    # recover
+                    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+                    # rb.connect_ros(True, False)
+                    # time.sleep(1)
+
+
+
+                elif data == 2:
+                    print("Received the serial number 2, BO anger")
+
+                elif data == 3:
+                    print("Received the serial number 3, prototype happy")
+                    rb.switch_to_customizedPose(defaultPose.prototypeFacialExpressions['happiness'])
+                    rb.connect_ros(True, False, steps = 40, isUsingSigmoid=True)
+                    time.sleep(2)
+
+                    # recover
+                    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+                    # rb.connect_ros(True, False)
+                    # time.sleep(1)
+
+
+                elif data == 4:
+                    print("Received the serial number 4, BO happy")
+                elif data == 5:
+                    print("Received the serial number 5, IDLE ON")
+                elif data == 6:
+                    print("Received the serial number 6, IDLE OFF")
+
+    except serial.SerialException as e:
+        print(f"Error opening serial port {port}: {e}")
+    except KeyboardInterrupt:
+        print("Serial port listener stopped.")
+    finally:
+        ser.close()
+        print(f"Closed serial port {port}")
+    
+
 
 # main
 def main():
     global rb
-    rb = robot(duration=2)
+    rb = robot(duration=2, webcam=False)
     assert rb.connection == True
     global COUNTER
     COUNTER = 0
@@ -1251,6 +1312,28 @@ def main():
     # Anger, Disgust, Fear, Happiness, Sadness, Surprise
     # anger, disgust, fear, happiness, sadness, surprise
     # defaultPose.prototypeFacialExpressions
+
+    # Exp 21: test serial number
+
+
+    port_name = '/dev/ttyUSB1'  # Update to your serial port name
+    baud_rate = 115200  # Update to your baud rate
+    stop_event = threading.Event()
+
+
+    # Start the serial port listener in a separate thread
+    serialThread = threading.Thread(target=serial_port_listener, args=(port_name, baud_rate, stop_event))
+    serialThread.start()
+
+    try:
+        while True:
+            time.sleep(1)  # Main thread is free to do anything else or just sleep
+    except KeyboardInterrupt:
+        print("Program terminated by user.")
+        stop_event.set()  # Signal the listener thread to stop
+        serialThread.join()  # Wait for the listener thread to finish
+
+    print("Program ended.")
 
     # -----
     # Exp 20: writing the Main Framework of Experiment
@@ -2336,7 +2419,8 @@ if __name__ == '__main__':
         global rb
         rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
         rb.connect_ros(True, False)
-        rb.webcam_stream_widget.stop()
+        if rb.webcam:
+            rb.webcam_stream_widget.stop()
 
 
 
