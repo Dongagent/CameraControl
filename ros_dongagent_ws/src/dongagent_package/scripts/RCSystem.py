@@ -17,7 +17,7 @@ __status__ = "Developing"
 
 import random
 from typing import Counter
-import defaultPose
+import defaultPose, mimicryExpParams
 
 # import socket
 import threading
@@ -397,9 +397,9 @@ class robot:
         print("\n")
         self.__check_robotParams()
         # Drive the robot to the 
-        self.connect_ros(isSmoothly=True)
+        self.connect_ros(True, False, steps=20)
         time.sleep(0.5)
-        print("[INFO]return_to_stable_state, self.robotParams are all set")
+        print("[INFO]return_to_stable_state")
     def transfer_robotParams_to_states(self, params):
         states = [0 for x in range(35)]
         for i in range(1, 36):
@@ -446,7 +446,7 @@ class robot:
             stepNum = steps
             x_values_for_scaled_sigmoid = np.linspace(-3, 3, steps)
             for i in range(0, stepNum):
-                frab = (i + 1) / float(stepNum)
+                # frab = (i + 1) / float(stepNum)
                 currentParams = {}
                 
                 
@@ -461,7 +461,6 @@ class robot:
                     print('DEBUG:', currentParams)
                 
                 self.nextState = self.transfer_robotParams_to_states(currentParams)
-                # self.__sendExecutionCode() # Use socket
                 self.ros_talker()# Use ROS
 
                 # MODIFY HERE if you want to setup the duration of emotion
@@ -558,7 +557,7 @@ class robot:
             print(axiswithpotentio)
 
     def connect_ros(self, isSmoothly=True, isRecording=False, appendix="", steps=20, timeIntervalBeforeExp=1, isUsingSigmoid=False, 
-        sigmoid_factor=10, debugmode=False):
+        sigmoid_factor=10, useScaledSigmoid=True, debugmode=False):
 
         if DEBUG == 2 or DEBUG == 4:
             print('you are DEBUGING')
@@ -585,7 +584,7 @@ class robot:
                         self.smooth_execution_mode(steps=steps, debugmode=debugmode)
                     else:
                         # using Sigmoid
-                        self.sigmoid_smooth_execution_mode(steps=steps, sigmoid_factor=sigmoid_factor, debugmode=debugmode)
+                        self.sigmoid_smooth_execution_mode(steps=steps, useScaledSigmoid=useScaledSigmoid, sigmoid_factor=sigmoid_factor, debugmode=debugmode)
                 # Otherwise
                 else:
                     self.normal_execution_mode()
@@ -868,10 +867,11 @@ def target_function(**kwargs):
         # output = SiameseRankNet_analysis(img=rb.readablefileName, target_emotion=target_emotion)
 
         
-        if CURBEST[1] < output:
-            CURBEST[0] = rb.readablefileName
-            CURBEST[1] = output
-        print('[INFO]Current Best: {}, {}'.format(CURBEST[1], CURBEST[0]))
+        # if CURBEST[1] < output:
+        #     CURBEST[0] = rb.readablefileName
+        #     CURBEST[1] = output
+        # print('[INFO]Current Best: {}, {}'.format(CURBEST[1], CURBEST[0]))
+
         # Save every parameters
         # construct the DataFrame
         df_dic = {}
@@ -885,7 +885,7 @@ def target_function(**kwargs):
         df.to_csv(df_name, index=False, sep=',')
 
         # save robot param data
-        robot_param = pd.DataFrame(rb.robotParams, index=[0])
+        robot_param = pd.DataFrame(fixedrobotcode, index=[0]) # save the fixedrobotcode rather than rb.robotParams
         robot_param_name = rb.readablefileName[:-4]+"_rb_paramdata.csv"
         robot_param.to_csv(robot_param_name, index=False, sep=',')
 
@@ -1182,6 +1182,7 @@ def get_param_from_csv(csv_name):
     return fixedrobotcode
             
 def recover_param_from_csv(csv_name, steps=15):
+    # move robot to the csv state
     df = pd.read_csv(csv_name)
 
     neutral = [86, 86, 128, 128, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 128, headYaw_fix]
@@ -1202,9 +1203,41 @@ def recover_param_from_csv(csv_name, steps=15):
     time.sleep(0.5)
 
 def idle_behavior():
+    # need testing
+    # TODO randomly insert eye blinking 
+    # TODO open and close idle behavior is necessary. Use something like threading
     # First choose the start state and end state, and use another thread for randomly insert eye blinking 
     # Before sending command to ros, combine eye and the interval state (let the eye parts always equal to the eye threading)
-    pass
+    pp = [[83, 180], [2, 152], [193, 91], [133, 162], [145, 91], [71, 91], [182, 20]]
+    import copy, time
+
+    global smoothSleepTime
+    smoothSleepTime = 0.05
+
+
+    # start_taking_v(appendix='idle_behavior', folder='')
+    time.sleep(1)
+
+    for i in pp:
+        # mypose = copy.deepcopy(defaultPose.prototypeFacialExpressions['happiness'])
+        mypose = copy.deepcopy(defaultPose.actionUnitParams['StandardPose'])
+        mypose[33] = i[0]
+        mypose[34] = i[1]
+
+        rb.switch_to_customizedPose(mypose)
+        rb.connect_ros(True, False, steps=200, isUsingSigmoid=False, sigmoid_factor=5, debugmode=False)
+
+        time.sleep(3)
+
+    # mypose = copy.deepcopy(defaultPose.actionUnitParams['StandardPose'])
+    # mypose[33] = 250
+    # mypose[34] = 
+    # rb.switch_to_customizedPose(mypose)
+    # rb.connect_ros(True, False, steps=50, isUsingSigmoid=False, sigmoid_factor=5, debugmode=True)
+
+    # time.sleep(3)
+    rb.return_to_stable_state()
+    time.sleep(3)
 
 # Function to handle serial port communication
 def serial_port_listener(port, baud_rate, stop_event):
@@ -1221,32 +1254,47 @@ def serial_port_listener(port, baud_rate, stop_event):
 
                 if data == 0:
                     print(f"Received the serial number 0, neutral state.")
-                    # Your code for the action goes here
+
                     rb.switch_to_customizedPose(defaultPose.prototypeFacialExpressions['neutral'])
-                    rb.connect_ros(True, False)
+                    rb.connect_ros(True, False, steps = 40)
                     time.sleep(1)
 
                 elif data == 1:
                     print("Received the serial number 1, prototype anger")
-                    # Your code for the action goes here
-                    rb.switch_to_customizedPose(defaultPose.prototypeFacialExpressions['anger'])
-                    rb.connect_ros(True, False, steps = 40, isUsingSigmoid=True)
+
+                    # variation
+                    tmp_step = random.randint(39, 41)
+                    tmp_anger = mimicryExpParams.prototypeFacialExpressions['anger'][random.randint(0, 5)]
+
+                    rb.switch_to_customizedPose(tmp_anger)
+                    rb.connect_ros(True, False, steps = tmp_step, isUsingSigmoid=True)
                     time.sleep(2)
 
                     # recover
                     # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
                     # rb.connect_ros(True, False)
                     # time.sleep(1)
-
-
 
                 elif data == 2:
                     print("Received the serial number 2, BO anger")
 
+                    # variation
+                    tmp_step = random.randint(39, 41)
+                    tmp_anger = mimicryExpParams.BOFacialExpressions['anger'][random.randint(0, 5)]
+
+                    rb.switch_to_customizedPose(tmp_anger)
+                    rb.connect_ros(True, False, steps = tmp_step, isUsingSigmoid=True)
+                    time.sleep(2)
+
                 elif data == 3:
-                    print("Received the serial number 3, prototype happy")
-                    rb.switch_to_customizedPose(defaultPose.prototypeFacialExpressions['happiness'])
-                    rb.connect_ros(True, False, steps = 40, isUsingSigmoid=True)
+                    print("Received the serial number 3, prototype happiness")
+                    # Your code for the action goes here
+                    # variation
+                    tmp_step = random.randint(39, 41) # time variation
+                    tmp_happy = mimicryExpParams.prototypeFacialExpressions['happiness'][random.randint(0, 5)] # exp variation
+
+                    rb.switch_to_customizedPose(tmp_happy)
+                    rb.connect_ros(True, False, steps = tmp_step, isUsingSigmoid=True)
                     time.sleep(2)
 
                     # recover
@@ -1254,11 +1302,19 @@ def serial_port_listener(port, baud_rate, stop_event):
                     # rb.connect_ros(True, False)
                     # time.sleep(1)
 
-
                 elif data == 4:
                     print("Received the serial number 4, BO happy")
+                    # variation
+                    tmp_step = random.randint(39, 41) # time variation
+                    tmp_happy = mimicryExpParams.BOFacialExpressions['happiness'][random.randint(0, 5)] # exp variation
+
+                    rb.switch_to_customizedPose(tmp_happy)
+                    rb.connect_ros(True, False, steps = tmp_step, isUsingSigmoid=True)
+                    time.sleep(2)
+
                 elif data == 5:
                     print("Received the serial number 5, IDLE ON")
+
                 elif data == 6:
                     print("Received the serial number 6, IDLE OFF")
 
@@ -1291,14 +1347,14 @@ def main():
     global headYaw_fix_flag
     headYaw_fix_flag = True
     # set how much steps Nikola need to shift the axes from one to another
-    MYSTEPS = 15
+    MYSTEPS = 40
     # change workdir
     workdir = "/home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package/scripts"
     os.chdir(workdir)
     rb.bestImg = workdir + '/image_analysis/temp/neutral.png'
     assert os.getcwd() == workdir, print(os.getcwd())
     
-    global detector
+    # global detector
     # landmark_model should be set to mobilefacenet in case you want to use pyfeat 0.3.7/0.5.0/0.6.1
     # Be care of FEAT_VERSION
     # detector = Detector(emotion_model = "resmasknet", landmark_model='mobilefacenet')
