@@ -17,13 +17,15 @@ __status__ = "Developing"
 
 import random
 from typing import Counter
+from datetime import datetime
 import defaultPose, mimicryExpParams
+
 
 # import socket
 import threading
 from threading import Thread
 import serial
-import cv2, time, copy, sys, math
+import cv2, time, copy, sys, math, logging, 
 import os, subprocess
 import platform
 import numpy as np
@@ -1202,7 +1204,34 @@ def recover_param_from_csv(csv_name, steps=15):
     returncode = rb.connect_ros(isSmoothly=True, isRecording=False, steps=steps) # isSmoothly = True ,isRecording = True
     time.sleep(0.5)
 
-def idle_behavior():
+def eyeblink(rb, stop_event):
+    # only available in IDLE mode
+    try:
+        while not stop_event.is_set():
+            global smoothSleepTime
+            smoothSleepTime = 0.025
+            
+
+            itvl = round(random.uniform(0.5, 3), 3)
+            time.sleep(itvl) # interval
+
+            # close eye
+            rb.nextState[1-1] = 250
+            rb.nextState[2-1] = 250
+            time.sleep(smoothSleepTime)
+
+            # open eye
+            rb.nextState[1-1] = 86
+            rb.nextState[2-1] = 86
+
+    except KeyboardInterrupt:
+        print("eyeblink stopped.")
+    finally:
+        print('[INFO] eyeblink end')
+
+
+
+def idle_behavior(rb):
     # need testing
     # TODO randomly insert eye blinking 
     # TODO open and close idle behavior is necessary. Use something like threading
@@ -1211,12 +1240,13 @@ def idle_behavior():
     pp = [[83, 180], [2, 152], [193, 91], [133, 162], [145, 91], [71, 91], [182, 20]]
     import copy, time
 
-    global smoothSleepTime
-    smoothSleepTime = 0.05
-
-
     # start_taking_v(appendix='idle_behavior', folder='')
     time.sleep(1)
+
+    # eyeblink_stop_event = threading.Event()
+
+    # eyeBlinkThread = threading.Thread(target=eyeblink, args=(rb, eyeblink_stop_event))
+    # eyeBlinkThread.start()
 
     for i in pp:
         # mypose = copy.deepcopy(defaultPose.prototypeFacialExpressions['happiness'])
@@ -1229,6 +1259,9 @@ def idle_behavior():
 
         time.sleep(3)
 
+    # eyeblink_stop_event.set()  # Signal the listener thread to stop
+    # eyeBlinkThread.join()  # Wait for the listener thread to finish
+
     # mypose = copy.deepcopy(defaultPose.actionUnitParams['StandardPose'])
     # mypose[33] = 250
     # mypose[34] = 
@@ -1239,11 +1272,14 @@ def idle_behavior():
     rb.return_to_stable_state()
     time.sleep(3)
 
+
+
 # Function to handle serial port communication
-def serial_port_listener(port, baud_rate, stop_event):
+def serial_port_listener(port, baud_rate, stop_event, expLogger):
+    global smoothSleepTime
     try:
         ser = serial.Serial(port, baud_rate, timeout=0)
-        print(f"Opened serial port {port}")
+        expLogger.info(f"Opened serial port {port}")
 
         while not stop_event.is_set():
             if ser.in_waiting > 0:
@@ -1253,18 +1289,18 @@ def serial_port_listener(port, baud_rate, stop_event):
                 print(f"Received: {data}")
 
                 if data == 0:
-                    print(f"Received the serial number 0, neutral state.")
+                    expLogger.info("Received the serial number 0, neutral state.")
 
                     rb.switch_to_customizedPose(defaultPose.prototypeFacialExpressions['neutral'])
                     rb.connect_ros(True, False, steps = 40)
                     time.sleep(1)
 
                 elif data == 1:
-                    print("Received the serial number 1, prototype anger")
-
                     # variation
                     tmp_step = random.randint(39, 41)
-                    tmp_anger = mimicryExpParams.prototypeFacialExpressions['anger'][random.randint(0, 5)]
+                    tmp_anger_type = random.randint(0, 5)
+                    tmp_anger = mimicryExpParams.prototypeFacialExpressions['anger'][tmp_anger_type]
+                    expLogger.info(f"Received the serial number 1, prototype anger, duration: {tmp_step*smoothSleepTime}ms, type: {tmp_anger_type}")
 
                     rb.switch_to_customizedPose(tmp_anger)
                     rb.connect_ros(True, False, steps = tmp_step, isUsingSigmoid=True)
@@ -1276,22 +1312,22 @@ def serial_port_listener(port, baud_rate, stop_event):
                     # time.sleep(1)
 
                 elif data == 2:
-                    print("Received the serial number 2, BO anger")
-
                     # variation
                     tmp_step = random.randint(39, 41)
-                    tmp_anger = mimicryExpParams.BOFacialExpressions['anger'][random.randint(0, 5)]
+                    tmp_anger_type = random.randint(0, 5)
+                    tmp_anger = mimicryExpParams.BOFacialExpressions['anger'][tmp_anger_type]
+                    expLogger.info(f"Received the serial number 2, BO anger, duration: {tmp_step*smoothSleepTime}ms, type: {tmp_anger_type}")
 
                     rb.switch_to_customizedPose(tmp_anger)
                     rb.connect_ros(True, False, steps = tmp_step, isUsingSigmoid=True)
                     time.sleep(2)
 
                 elif data == 3:
-                    print("Received the serial number 3, prototype happiness")
-                    # Your code for the action goes here
                     # variation
                     tmp_step = random.randint(39, 41) # time variation
-                    tmp_happy = mimicryExpParams.prototypeFacialExpressions['happiness'][random.randint(0, 5)] # exp variation
+                    tmp_happy_type = random.randint(0, 5)
+                    tmp_happy = mimicryExpParams.prototypeFacialExpressions['happiness'][tmp_happy_type] # exp variation
+                    expLogger.info(f"Received the serial number 3, prototype happiness, duration: {tmp_step*smoothSleepTime}ms, type: {tmp_happy_type}")
 
                     rb.switch_to_customizedPose(tmp_happy)
                     rb.connect_ros(True, False, steps = tmp_step, isUsingSigmoid=True)
@@ -1306,7 +1342,9 @@ def serial_port_listener(port, baud_rate, stop_event):
                     print("Received the serial number 4, BO happy")
                     # variation
                     tmp_step = random.randint(39, 41) # time variation
-                    tmp_happy = mimicryExpParams.BOFacialExpressions['happiness'][random.randint(0, 5)] # exp variation
+                    tmp_happy_type = random.randint(0, 5)
+                    tmp_happy = mimicryExpParams.BOFacialExpressions['happiness'][tmp_happy_type] # exp variation
+                    expLogger.info(f"Received the serial number 4, BO happiness, duration: {tmp_step*smoothSleepTime}ms, type: {tmp_happy_type}")
 
                     rb.switch_to_customizedPose(tmp_happy)
                     rb.connect_ros(True, False, steps = tmp_step, isUsingSigmoid=True)
@@ -1326,7 +1364,28 @@ def serial_port_listener(port, baud_rate, stop_event):
         ser.close()
         print(f"Closed serial port {port}")
     
+def setup_logger(level=logging.INFO):
+    logger = logging.getLogger()
+    logger.setLevel(level)
+    formatter = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s')
 
+    stdout_handler = logging.StreamHandler(sys.stdout)
+    stdout_handler.setLevel(logging.DEBUG)
+    stdout_handler.setFormatter(formatter)
+
+    if not os.path.exists('mimicryExpLogs'):
+        os.makedirs('mimicryExpLogs')
+    # use date as the log file name
+    log_file = 'mimicryExpLogs/{}.log'.format(datetime.now().strftime('%Y_%m_%d_%H_%M_%S'))
+
+    file_handler = logging.FileHandler(log_file)
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(formatter)
+
+    if not len(logger.handlers):
+        logger.addHandler(file_handler)
+        logger.addHandler(stdout_handler)
+    return logger
 
 # main
 def main():
@@ -1369,8 +1428,17 @@ def main():
     # anger, disgust, fear, happiness, sadness, surprise
     # defaultPose.prototypeFacialExpressions
 
+    # Exp 22: eyeblink test
+
+    # idle_behavior(rb)
+
+
     # Exp 21: test serial number
 
+    # '''
+    # prepare logger
+    check_folder('mimicryExpLogs')
+    expLogger = setup_logger(logging.INFO)
 
     port_name = '/dev/ttyUSB1'  # Update to your serial port name
     baud_rate = 115200  # Update to your baud rate
@@ -1378,7 +1446,7 @@ def main():
 
 
     # Start the serial port listener in a separate thread
-    serialThread = threading.Thread(target=serial_port_listener, args=(port_name, baud_rate, stop_event))
+    serialThread = threading.Thread(target=serial_port_listener, args=(port_name, baud_rate, stop_event, expLogger))
     serialThread.start()
 
     try:
@@ -1390,6 +1458,8 @@ def main():
         serialThread.join()  # Wait for the listener thread to finish
 
     print("Program ended.")
+    # '''
+
 
     # -----
     # Exp 20: writing the Main Framework of Experiment
@@ -1400,17 +1470,7 @@ def main():
         print("[INFO]Nikola speaks 行きます")
         pass
 
-    def openEyes():
-        # open the eyes
-        pass
-
-    def closeEyes():
-        # close the eyes
-        pass
-
-    def eyeblink():
-        # eye blink
-        pass
+    
 
     def raiseHead():
         # raise the head
