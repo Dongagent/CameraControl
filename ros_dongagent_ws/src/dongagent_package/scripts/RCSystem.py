@@ -24,8 +24,8 @@ import defaultPose, mimicryExpParams
 # import socket
 import threading
 from threading import Thread
-import serial
-import cv2, time, copy, sys, math, logging, 
+import serial, itertools
+import cv2, time, copy, sys, math, logging
 import os, subprocess
 import platform
 import numpy as np
@@ -673,7 +673,7 @@ def basicRunningCell(robotObject, commandSet, isRecordingFlag=False, steps=20):
     rb.connect_ros(True, False)
 
 def sigmoid(x):
-    return 1 / (1 + math.exp(-x))
+    return 1 / (1 + np.exp(-x))
 
 def scaled_sigmoid(x):
     # x ~ [-3,3], y ~ [-1, 1]
@@ -1279,13 +1279,24 @@ def serial_port_listener(port, baud_rate, stop_event, expLogger):
     global smoothSleepTime
     try:
         ser = serial.Serial(port, baud_rate, timeout=0)
+        expLogger = expLogger
         expLogger.info(f"Opened serial port {port}")
+        
+        # TODO check the expLogger
+
+        conditionsStep = range(39, 42)
+        conditionsType = range(0, 5)
+        conditionsProAnger = []
+        conditionsBOAnger = []
+        conditionsProHappy = []
+        conditionBOHappy = []
 
         while not stop_event.is_set():
             if ser.in_waiting > 0:
                 data = ser.readline()
-                data = str(data)[-2]
-                data = int(data)
+                # data = str(data)[-2]
+                # data = int(data)
+                data = int.from_bytes(data, 'big')
                 print(f"Received: {data}")
 
                 if data == 0:
@@ -1293,18 +1304,27 @@ def serial_port_listener(port, baud_rate, stop_event, expLogger):
 
                     rb.switch_to_customizedPose(defaultPose.prototypeFacialExpressions['neutral'])
                     rb.connect_ros(True, False, steps = 40)
-                    time.sleep(1)
+                    # time.sleep(1)
 
                 elif data == 1:
-                    # variation
-                    tmp_step = random.randint(39, 41)
-                    tmp_anger_type = random.randint(0, 5)
-                    tmp_anger = mimicryExpParams.prototypeFacialExpressions['anger'][tmp_anger_type]
-                    expLogger.info(f"Received the serial number 1, prototype anger, duration: {tmp_step*smoothSleepTime}ms, type: {tmp_anger_type}")
+                    # Prototype Anger
+                    # tmp_step = random.randint(39, 41)
+                    # tmp_anger_type = random.randint(0, 5)
+                    if not conditionsProAnger:
+                        proAngerTrialNum = 1
+                        conditionsProAnger = list(itertools.product(conditionsStep, conditionsType))
+                        random.shuffle(conditionsProAnger)
+                        expLogger.info(f"Shuffle the conditionsProAnger: {conditionsProAnger}")
+                    curCondition = conditionsProAnger.pop(0)
+                    
+                    curAnger = mimicryExpParams.prototypeFacialExpressions['anger'][curCondition[1]]
+                    expLogger.info(f"Received the serial number 1, prototype anger, trial number {proAngerTrialNum}, duration: {curCondition[0] * smoothSleepTime * 1000}ms, type: {curCondition[1]}")
 
-                    rb.switch_to_customizedPose(tmp_anger)
-                    rb.connect_ros(True, False, steps = tmp_step, isUsingSigmoid=True)
-                    time.sleep(2)
+                    time.sleep(1)
+                    rb.switch_to_customizedPose(curAnger)
+                    rb.connect_ros(True, False, steps = curCondition[0], isUsingSigmoid=True)
+                    time.sleep(1)
+                    proAngerTrialNum += 1
 
                     # recover
                     # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
@@ -1312,43 +1332,64 @@ def serial_port_listener(port, baud_rate, stop_event, expLogger):
                     # time.sleep(1)
 
                 elif data == 2:
-                    # variation
-                    tmp_step = random.randint(39, 41)
-                    tmp_anger_type = random.randint(0, 5)
-                    tmp_anger = mimicryExpParams.BOFacialExpressions['anger'][tmp_anger_type]
-                    expLogger.info(f"Received the serial number 2, BO anger, duration: {tmp_step*smoothSleepTime}ms, type: {tmp_anger_type}")
+                    # BO Anger
+                    # tmp_step = random.randint(39, 41)
+                    # tmp_anger_type = random.randint(0, 5)
+                    if not conditionsBOAnger:
+                        BOAngerTrialNum = 1
+                        conditionsBOAnger = list(itertools.product(conditionsStep, conditionsType))
+                        random.shuffle(conditionsBOAnger)
+                        expLogger.info(f"Shuffle the conditionsBOAnger: {conditionsBOAnger}")
+                    curCondition = conditionsBOAnger.pop(0)
 
-                    rb.switch_to_customizedPose(tmp_anger)
-                    rb.connect_ros(True, False, steps = tmp_step, isUsingSigmoid=True)
-                    time.sleep(2)
+                    curAnger = mimicryExpParams.BOFacialExpressions['anger'][curCondition[1]]
+                    expLogger.info(f"Received the serial number 2, BO anger, trial number {BOAngerTrialNum}, duration: {curCondition[0] * smoothSleepTime * 1000}ms, type: {curCondition[1]}")
+
+                    time.sleep(1)
+                    rb.switch_to_customizedPose(curAnger)
+                    rb.connect_ros(True, False, steps = curCondition[0], isUsingSigmoid=True)
+                    time.sleep(1)
+                    BOAngerTrialNum += 1
 
                 elif data == 3:
-                    # variation
-                    tmp_step = random.randint(39, 41) # time variation
-                    tmp_happy_type = random.randint(0, 5)
-                    tmp_happy = mimicryExpParams.prototypeFacialExpressions['happiness'][tmp_happy_type] # exp variation
-                    expLogger.info(f"Received the serial number 3, prototype happiness, duration: {tmp_step*smoothSleepTime}ms, type: {tmp_happy_type}")
+                    # Prototype Happiness
+                    # tmp_step = random.randint(39, 41)
+                    # tmp_happy_type = random.randint(0, 5)
+                    if not conditionsProHappy:
+                        proHappyTrialNum = 1
+                        conditionsProHappy = list(itertools.product(conditionsStep, conditionsType))
+                        random.shuffle(conditionsProHappy)
+                        expLogger.info(f"Shuffle the conditionsProHappy: {conditionsProHappy}")
+                    curCondition = conditionsProHappy.pop(0)
 
-                    rb.switch_to_customizedPose(tmp_happy)
-                    rb.connect_ros(True, False, steps = tmp_step, isUsingSigmoid=True)
-                    time.sleep(2)
+                    curHappy = mimicryExpParams.prototypeFacialExpressions['happiness'][curCondition[1]] # exp variation
+                    expLogger.info(f"Received the serial number 3, prototype happiness, trial number {proHappyTrialNum}, duration: {curCondition[0] * smoothSleepTime * 1000}ms, type: {curCondition[1]}")
 
-                    # recover
-                    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-                    # rb.connect_ros(True, False)
-                    # time.sleep(1)
+                    time.sleep(1)
+                    rb.switch_to_customizedPose(curHappy)
+                    rb.connect_ros(True, False, steps = curCondition[0], isUsingSigmoid=True)
+                    time.sleep(1)
+                    proHappyTrialNum += 1
 
                 elif data == 4:
-                    print("Received the serial number 4, BO happy")
-                    # variation
-                    tmp_step = random.randint(39, 41) # time variation
-                    tmp_happy_type = random.randint(0, 5)
-                    tmp_happy = mimicryExpParams.BOFacialExpressions['happiness'][tmp_happy_type] # exp variation
-                    expLogger.info(f"Received the serial number 4, BO happiness, duration: {tmp_step*smoothSleepTime}ms, type: {tmp_happy_type}")
+                    # BO Happiness
+                    # tmp_step = random.randint(39, 41)
+                    # tmp_happy_type = random.randint(0, 5)
+                    if not conditionBOHappy:
+                        BOHappyTrialNum = 1
+                        conditionBOHappy = list(itertools.product(conditionsStep, conditionsType))
+                        random.shuffle(conditionBOHappy)
+                        expLogger.info(f"Shuffle the conditionBOHappy: {conditionBOHappy}")
+                    curCondition = conditionBOHappy.pop(0)
+                    
+                    curHappy = mimicryExpParams.BOFacialExpressions['happiness'][curCondition[1]] # exp variation
+                    expLogger.info(f"Received the serial number 4, BO happiness, trial number {BOHappyTrialNum}, duration: {curCondition[0] * smoothSleepTime * 1000}ms, type: {curCondition[1]}")
 
-                    rb.switch_to_customizedPose(tmp_happy)
-                    rb.connect_ros(True, False, steps = tmp_step, isUsingSigmoid=True)
-                    time.sleep(2)
+                    time.sleep(1)
+                    rb.switch_to_customizedPose(curHappy)
+                    rb.connect_ros(True, False, steps = curCondition[0], isUsingSigmoid=True)
+                    time.sleep(1)
+                    BOHappyTrialNum += 1
 
                 elif data == 5:
                     print("Received the serial number 5, IDLE ON")
@@ -1364,27 +1405,39 @@ def serial_port_listener(port, baud_rate, stop_event, expLogger):
         ser.close()
         print(f"Closed serial port {port}")
     
-def setup_logger(level=logging.INFO):
-    logger = logging.getLogger()
+def setup_logger(level=logging.INFO, participantsID = 0):
+    logger = logging.getLogger('my_logger')
     logger.setLevel(level)
-    formatter = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s')
-
-    stdout_handler = logging.StreamHandler(sys.stdout)
-    stdout_handler.setLevel(logging.DEBUG)
-    stdout_handler.setFormatter(formatter)
 
     if not os.path.exists('mimicryExpLogs'):
         os.makedirs('mimicryExpLogs')
-    # use date as the log file name
-    log_file = 'mimicryExpLogs/{}.log'.format(datetime.now().strftime('%Y_%m_%d_%H_%M_%S'))
+    
+    expDate = datetime.now().strftime('%Y%m%d')
+    expDateFolder = 'mimicryExpLogs/' + expDate
+    if not os.path.exists(expDateFolder):
+        os.makedirs(expDateFolder)
 
-    file_handler = logging.FileHandler(log_file)
-    file_handler.setLevel(logging.DEBUG)
-    file_handler.setFormatter(formatter)
+    # Function to check if handler already exists
+    def handler_exists(hdlr_type):
+        return any(isinstance(h, hdlr_type) for h in logger.handlers)
 
-    if not len(logger.handlers):
+    formatter = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s')
+
+    # Add file handler if it doesn't exists
+    if not handler_exists(logging.FileHandler):
+        log_file = os.path.join(expDateFolder, '{}_p{}.log'.format(datetime.now().strftime('%Y_%m_%d_%H_%M_%S'), participantsID))
+        print(f'Add FileHandler  {log_file}')
+        file_handler = logging.FileHandler(log_file)
+        file_handler.setLevel(logging.DEBUG)
+        file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
+    
+        print(f'Add StreamHandler')
+        stdout_handler = logging.StreamHandler()
+        stdout_handler.setLevel(logging.DEBUG)
+        stdout_handler.setFormatter(formatter)
         logger.addHandler(stdout_handler)
+
     return logger
 
 # main
@@ -1438,7 +1491,7 @@ def main():
     # '''
     # prepare logger
     check_folder('mimicryExpLogs')
-    expLogger = setup_logger(logging.INFO)
+    expLogger = setup_logger(logging.INFO, 0)
 
     port_name = '/dev/ttyUSB1'  # Update to your serial port name
     baud_rate = 115200  # Update to your baud rate
@@ -1453,11 +1506,11 @@ def main():
         while True:
             time.sleep(1)  # Main thread is free to do anything else or just sleep
     except KeyboardInterrupt:
-        print("Program terminated by user.")
+        print("Serial port listener Program terminated by user.")
         stop_event.set()  # Signal the listener thread to stop
         serialThread.join()  # Wait for the listener thread to finish
 
-    print("Program ended.")
+    print("Experiment ended.")
     # '''
 
 
