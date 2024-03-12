@@ -34,3 +34,4 @@ algorithm/past_result
 ros_dongagent_ws/src/dongagent_package/scripts/image_analysis
 ros_dongagent_ws/src/dongagent_package/scripts/video_analysis
 ros_dongagent_ws/src/dongagent_package/scripts/new_models/
+!ros_dongagent_ws/src/dongagent_package/scripts/mimicryExpLogs
