@@ -1286,6 +1286,10 @@ def serial_port_listener(port, baud_rate, stop_event, expLogger):
 
         conditionsStep = range(39, 42)
         conditionsType = range(0, 5)
+        # [(39, 0, 1), (39, 1, 2), (39, 2, 3), (39, 3, 4), (39, 4, 5), 
+        # (40, 0, 6), (40, 1, 7), (40, 2, 8), (40, 3, 9), (40, 4, 10), 
+        # (41, 0, 11), (41, 1, 12), (41, 2, 13), (41, 3, 14), (41, 4, 15)]
+        # conditions = list(conditionsStep, conditionsType, index)
         conditionsProAnger = []
         conditionsBOAnger = []
         conditionsProHappy = []
@@ -1313,12 +1317,15 @@ def serial_port_listener(port, baud_rate, stop_event, expLogger):
                     if not conditionsProAnger:
                         proAngerTrialNum = 1
                         conditionsProAnger = list(itertools.product(conditionsStep, conditionsType))
+                        for idx, v in enumerate(conditionsProAnger):
+                            d = (idx + 1,)
+                            conditionsProAnger[idx] = v + d
                         random.shuffle(conditionsProAnger)
                         expLogger.info(f"Shuffle the conditionsProAnger: {conditionsProAnger}")
                     curCondition = conditionsProAnger.pop(0)
                     
                     curAnger = mimicryExpParams.prototypeFacialExpressions['anger'][curCondition[1]]
-                    expLogger.info(f"Received the serial number 1, prototype anger, trial number {proAngerTrialNum}, duration: {curCondition[0] * smoothSleepTime * 1000}ms, type: {curCondition[1]}")
+                    expLogger.info(f"Received the serial number 1, index {curCondition[2]}, trial number {proAngerTrialNum}, prototype anger, duration {round(curCondition[0] * smoothSleepTime * 1000)}ms, duration type {curCondition[0]}, exp type {curCondition[1]}")
 
                     time.sleep(1)
                     rb.switch_to_customizedPose(curAnger)
@@ -1338,12 +1345,15 @@ def serial_port_listener(port, baud_rate, stop_event, expLogger):
                     if not conditionsBOAnger:
                         BOAngerTrialNum = 1
                         conditionsBOAnger = list(itertools.product(conditionsStep, conditionsType))
+                        for idx, v in enumerate(conditionsBOAnger):
+                            d = (idx + 1,)
+                            conditionsBOAnger[idx] = v + d
                         random.shuffle(conditionsBOAnger)
                         expLogger.info(f"Shuffle the conditionsBOAnger: {conditionsBOAnger}")
                     curCondition = conditionsBOAnger.pop(0)
 
                     curAnger = mimicryExpParams.BOFacialExpressions['anger'][curCondition[1]]
-                    expLogger.info(f"Received the serial number 2, BO anger, trial number {BOAngerTrialNum}, duration: {curCondition[0] * smoothSleepTime * 1000}ms, type: {curCondition[1]}")
+                    expLogger.info(f"Received the serial number 2, index {curCondition[2]}, trial number {BOAngerTrialNum}, BO anger, duration {round(curCondition[0] * smoothSleepTime * 1000)}ms, duration type {curCondition[0]}, exp type {curCondition[1]}")
 
                     time.sleep(1)
                     rb.switch_to_customizedPose(curAnger)
@@ -1358,12 +1368,15 @@ def serial_port_listener(port, baud_rate, stop_event, expLogger):
                     if not conditionsProHappy:
                         proHappyTrialNum = 1
                         conditionsProHappy = list(itertools.product(conditionsStep, conditionsType))
+                        for idx, v in enumerate(conditionsProHappy):
+                            d = (idx + 1,)
+                            conditionsProHappy[idx] = v + d
                         random.shuffle(conditionsProHappy)
                         expLogger.info(f"Shuffle the conditionsProHappy: {conditionsProHappy}")
                     curCondition = conditionsProHappy.pop(0)
 
                     curHappy = mimicryExpParams.prototypeFacialExpressions['happiness'][curCondition[1]] # exp variation
-                    expLogger.info(f"Received the serial number 3, prototype happiness, trial number {proHappyTrialNum}, duration: {curCondition[0] * smoothSleepTime * 1000}ms, type: {curCondition[1]}")
+                    expLogger.info(f"Received the serial number 3, index {curCondition[2]}, trial number {proHappyTrialNum}, prototype happiness, duration {round(curCondition[0] * smoothSleepTime * 1000)}ms, duration type {curCondition[0]}, exp type {curCondition[1]}")
 
                     time.sleep(1)
                     rb.switch_to_customizedPose(curHappy)
@@ -1378,12 +1391,15 @@ def serial_port_listener(port, baud_rate, stop_event, expLogger):
                     if not conditionBOHappy:
                         BOHappyTrialNum = 1
                         conditionBOHappy = list(itertools.product(conditionsStep, conditionsType))
+                        for idx, v in enumerate(conditionBOHappy):
+                            d = (idx + 1,)
+                            conditionBOHappy[idx] = v + d
                         random.shuffle(conditionBOHappy)
                         expLogger.info(f"Shuffle the conditionBOHappy: {conditionBOHappy}")
                     curCondition = conditionBOHappy.pop(0)
                     
                     curHappy = mimicryExpParams.BOFacialExpressions['happiness'][curCondition[1]] # exp variation
-                    expLogger.info(f"Received the serial number 4, BO happiness, trial number {BOHappyTrialNum}, duration: {curCondition[0] * smoothSleepTime * 1000}ms, type: {curCondition[1]}")
+                    expLogger.info(f"Received the serial number 4, index {curCondition[2]}, trial number {BOHappyTrialNum}, BO happiness, duration {round(curCondition[0] * smoothSleepTime * 1000)}ms, duration type {curCondition[0]}, exp type {curCondition[1]}")
 
                     time.sleep(1)
                     rb.switch_to_customizedPose(curHappy)
