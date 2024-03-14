@@ -1320,7 +1320,9 @@ def serial_port_listener(port, baud_rate, stop_event, expLogger):
                         for idx, v in enumerate(conditionsProAnger):
                             d = (idx + 1,)
                             conditionsProAnger[idx] = v + d
+                        practiceTrial = conditionsProAnger[0]
                         random.shuffle(conditionsProAnger)
+                        conditionsProAnger.insert(0, practiceTrial)
                         expLogger.info(f"Shuffle the conditionsProAnger: {conditionsProAnger}")
                     curCondition = conditionsProAnger.pop(0)
                     
@@ -1348,7 +1350,9 @@ def serial_port_listener(port, baud_rate, stop_event, expLogger):
                         for idx, v in enumerate(conditionsBOAnger):
                             d = (idx + 1,)
                             conditionsBOAnger[idx] = v + d
+                        practiceTrial = conditionsBOAnger[0]
                         random.shuffle(conditionsBOAnger)
+                        conditionsBOAnger.insert(0, practiceTrial)
                         expLogger.info(f"Shuffle the conditionsBOAnger: {conditionsBOAnger}")
                     curCondition = conditionsBOAnger.pop(0)
 
@@ -1371,7 +1375,9 @@ def serial_port_listener(port, baud_rate, stop_event, expLogger):
                         for idx, v in enumerate(conditionsProHappy):
                             d = (idx + 1,)
                             conditionsProHappy[idx] = v + d
+                        practiceTrial = conditionsProHappy[0]
                         random.shuffle(conditionsProHappy)
+                        conditionsProHappy.insert(0, practiceTrial)
                         expLogger.info(f"Shuffle the conditionsProHappy: {conditionsProHappy}")
                     curCondition = conditionsProHappy.pop(0)
 
@@ -1394,7 +1400,9 @@ def serial_port_listener(port, baud_rate, stop_event, expLogger):
                         for idx, v in enumerate(conditionBOHappy):
                             d = (idx + 1,)
                             conditionBOHappy[idx] = v + d
+                        practiceTrial = conditionBOHappy[0]
                         random.shuffle(conditionBOHappy)
+                        conditionBOHappy.insert(0, practiceTrial)
                         expLogger.info(f"Shuffle the conditionBOHappy: {conditionBOHappy}")
                     curCondition = conditionBOHappy.pop(0)
                     
