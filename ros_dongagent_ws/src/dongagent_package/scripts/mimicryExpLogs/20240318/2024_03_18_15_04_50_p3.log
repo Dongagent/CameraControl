@@ -1,0 +1,265 @@
+2024-03-18 15:04:50,296 | INFO | Opened serial port /dev/ttyUSB1
+2024-03-18 15:05:06,399 | INFO | Shuffle the conditionsBOAnger: [(39, 0, 1), (40, 0, 6), (39, 3, 4), (39, 2, 3), (41, 0, 11), (41, 1, 12), (39, 4, 5), (41, 2, 13), (41, 4, 15), (39, 1, 2), (40, 3, 9), (41, 3, 14), (40, 4, 10), (40, 1, 7), (39, 0, 1), (40, 2, 8)]
+2024-03-18 15:05:06,399 | INFO | Received the serial number 2, index 1, trial number 1, BO anger, duration 975ms, duration type 39, exp type 0
+2024-03-18 15:05:09,420 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:05:16,914 | INFO | Shuffle the conditionsProAnger: [(39, 0, 1), (39, 3, 4), (39, 4, 5), (39, 1, 2), (41, 3, 14), (40, 0, 6), (40, 2, 8), (40, 4, 10), (40, 1, 7), (41, 2, 13), (41, 4, 15), (39, 0, 1), (41, 0, 11), (40, 3, 9), (41, 1, 12), (39, 2, 3)]
+2024-03-18 15:05:16,914 | INFO | Received the serial number 1, index 1, trial number 1, prototype anger, duration 975ms, duration type 39, exp type 0
+2024-03-18 15:05:19,934 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:05:27,692 | INFO | Shuffle the conditionBOHappy: [(39, 0, 1), (40, 4, 10), (39, 0, 1), (39, 3, 4), (40, 1, 7), (41, 2, 13), (40, 3, 9), (41, 4, 15), (39, 4, 5), (40, 0, 6), (41, 0, 11), (41, 3, 14), (41, 1, 12), (40, 2, 8), (39, 1, 2), (39, 2, 3)]
+2024-03-18 15:05:27,692 | INFO | Received the serial number 4, index 1, trial number 1, BO happiness, duration 975ms, duration type 39, exp type 0
+2024-03-18 15:05:30,716 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:05:38,470 | INFO | Shuffle the conditionsProHappy: [(39, 0, 1), (39, 3, 4), (40, 1, 7), (41, 2, 13), (40, 0, 6), (39, 0, 1), (41, 4, 15), (41, 1, 12), (40, 3, 9), (39, 2, 3), (39, 4, 5), (39, 1, 2), (40, 2, 8), (41, 0, 11), (40, 4, 10), (41, 3, 14)]
+2024-03-18 15:05:38,470 | INFO | Received the serial number 3, index 1, trial number 1, prototype happiness, duration 975ms, duration type 39, exp type 0
+2024-03-18 15:05:41,492 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:06:41,491 | INFO | Received the serial number 4, index 10, trial number 2, BO happiness, duration 1000ms, duration type 40, exp type 4
+2024-03-18 15:06:44,537 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:06:52,006 | INFO | Received the serial number 2, index 6, trial number 2, BO anger, duration 1000ms, duration type 40, exp type 0
+2024-03-18 15:06:55,050 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:07:02,784 | INFO | Received the serial number 1, index 4, trial number 2, prototype anger, duration 975ms, duration type 39, exp type 3
+2024-03-18 15:07:05,802 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:07:13,562 | INFO | Received the serial number 3, index 4, trial number 2, prototype happiness, duration 975ms, duration type 39, exp type 3
+2024-03-18 15:07:16,585 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:07:25,340 | INFO | Received the serial number 3, index 7, trial number 3, prototype happiness, duration 1000ms, duration type 40, exp type 1
+2024-03-18 15:07:28,382 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:07:36,617 | INFO | Received the serial number 2, index 4, trial number 3, BO anger, duration 975ms, duration type 39, exp type 3
+2024-03-18 15:07:39,640 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:07:47,395 | INFO | Received the serial number 3, index 13, trial number 4, prototype happiness, duration 1025ms, duration type 41, exp type 2
+2024-03-18 15:07:50,466 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:07:58,423 | INFO | Received the serial number 1, index 5, trial number 3, prototype anger, duration 975ms, duration type 39, exp type 4
+2024-03-18 15:08:01,446 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:08:09,951 | INFO | Received the serial number 4, index 1, trial number 3, BO happiness, duration 975ms, duration type 39, exp type 0
+2024-03-18 15:08:12,973 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:08:21,229 | INFO | Received the serial number 2, index 3, trial number 4, BO anger, duration 975ms, duration type 39, exp type 2
+2024-03-18 15:08:24,248 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:08:32,006 | INFO | Received the serial number 4, index 4, trial number 4, BO happiness, duration 975ms, duration type 39, exp type 3
+2024-03-18 15:08:35,025 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:08:42,784 | INFO | Received the serial number 4, index 7, trial number 5, BO happiness, duration 1000ms, duration type 40, exp type 1
+2024-03-18 15:08:45,832 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:08:53,312 | INFO | Received the serial number 1, index 2, trial number 4, prototype anger, duration 975ms, duration type 39, exp type 1
+2024-03-18 15:08:56,324 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:09:04,340 | INFO | Received the serial number 3, index 6, trial number 5, prototype happiness, duration 1000ms, duration type 40, exp type 0
+2024-03-18 15:09:07,387 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:09:15,868 | INFO | Received the serial number 1, index 14, trial number 5, prototype anger, duration 1025ms, duration type 41, exp type 3
+2024-03-18 15:09:18,942 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:09:26,896 | INFO | Received the serial number 3, index 1, trial number 6, prototype happiness, duration 975ms, duration type 39, exp type 0
+2024-03-18 15:09:29,920 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:09:37,424 | INFO | Received the serial number 2, index 11, trial number 5, BO anger, duration 1025ms, duration type 41, exp type 0
+2024-03-18 15:09:40,495 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:09:49,452 | INFO | Received the serial number 3, index 15, trial number 7, prototype happiness, duration 1025ms, duration type 41, exp type 4
+2024-03-18 15:09:52,526 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:09:59,979 | INFO | Received the serial number 2, index 12, trial number 6, BO anger, duration 1025ms, duration type 41, exp type 1
+2024-03-18 15:10:03,046 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:10:12,007 | INFO | Received the serial number 2, index 5, trial number 7, BO anger, duration 975ms, duration type 39, exp type 4
+2024-03-18 15:10:15,030 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:10:22,785 | INFO | Received the serial number 4, index 13, trial number 6, BO happiness, duration 1025ms, duration type 41, exp type 2
+2024-03-18 15:10:25,859 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:10:33,313 | INFO | Received the serial number 2, index 13, trial number 8, BO anger, duration 1025ms, duration type 41, exp type 2
+2024-03-18 15:10:36,383 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:10:43,841 | INFO | Received the serial number 3, index 12, trial number 8, prototype happiness, duration 1025ms, duration type 41, exp type 1
+2024-03-18 15:10:46,916 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:10:54,869 | INFO | Received the serial number 2, index 15, trial number 9, BO anger, duration 1025ms, duration type 41, exp type 4
+2024-03-18 15:10:57,939 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:11:06,897 | INFO | Received the serial number 3, index 9, trial number 9, prototype happiness, duration 1000ms, duration type 40, exp type 3
+2024-03-18 15:11:09,950 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:11:17,675 | INFO | Received the serial number 1, index 6, trial number 6, prototype anger, duration 1000ms, duration type 40, exp type 0
+2024-03-18 15:11:20,720 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:11:29,452 | INFO | Received the serial number 4, index 9, trial number 7, BO happiness, duration 1000ms, duration type 40, exp type 3
+2024-03-18 15:11:32,500 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:11:40,480 | INFO | Received the serial number 4, index 15, trial number 8, BO happiness, duration 1025ms, duration type 41, exp type 4
+2024-03-18 15:11:43,553 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:11:52,258 | INFO | Received the serial number 1, index 8, trial number 7, prototype anger, duration 1000ms, duration type 40, exp type 2
+2024-03-18 15:11:55,303 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:12:04,535 | INFO | Received the serial number 1, index 10, trial number 8, prototype anger, duration 1000ms, duration type 40, exp type 4
+2024-03-18 15:12:07,585 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:12:15,813 | INFO | Received the serial number 4, index 5, trial number 9, BO happiness, duration 975ms, duration type 39, exp type 4
+2024-03-18 15:12:18,833 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:12:27,840 | INFO | Received the serial number 1, index 7, trial number 9, prototype anger, duration 1000ms, duration type 40, exp type 1
+2024-03-18 15:12:30,891 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:14:07,826 | INFO | Received the serial number 1, index 13, trial number 10, prototype anger, duration 1025ms, duration type 41, exp type 2
+2024-03-18 15:14:10,899 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:14:18,841 | INFO | Received the serial number 2, index 2, trial number 10, BO anger, duration 975ms, duration type 39, exp type 1
+2024-03-18 15:14:21,871 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:14:29,619 | INFO | Received the serial number 4, index 6, trial number 10, BO happiness, duration 1000ms, duration type 40, exp type 0
+2024-03-18 15:14:32,663 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:14:40,897 | INFO | Received the serial number 1, index 15, trial number 11, prototype anger, duration 1025ms, duration type 41, exp type 4
+2024-03-18 15:14:43,967 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:14:53,174 | INFO | Received the serial number 4, index 11, trial number 11, BO happiness, duration 1025ms, duration type 41, exp type 0
+2024-03-18 15:14:56,251 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:15:03,952 | INFO | Received the serial number 4, index 14, trial number 12, BO happiness, duration 1025ms, duration type 41, exp type 3
+2024-03-18 15:15:07,031 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:15:15,230 | INFO | Received the serial number 1, index 1, trial number 12, prototype anger, duration 975ms, duration type 39, exp type 0
+2024-03-18 15:15:18,254 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:15:25,758 | INFO | Received the serial number 4, index 12, trial number 13, BO happiness, duration 1025ms, duration type 41, exp type 1
+2024-03-18 15:15:28,834 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:15:36,286 | INFO | Received the serial number 4, index 8, trial number 14, BO happiness, duration 1000ms, duration type 40, exp type 2
+2024-03-18 15:15:39,336 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:15:47,064 | INFO | Received the serial number 2, index 9, trial number 11, BO anger, duration 1000ms, duration type 40, exp type 3
+2024-03-18 15:15:50,110 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:15:58,342 | INFO | Received the serial number 1, index 11, trial number 13, prototype anger, duration 1025ms, duration type 41, exp type 0
+2024-03-18 15:16:01,421 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:16:09,120 | INFO | Received the serial number 3, index 3, trial number 10, prototype happiness, duration 975ms, duration type 39, exp type 2
+2024-03-18 15:16:12,141 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:16:20,648 | INFO | Received the serial number 4, index 2, trial number 15, BO happiness, duration 975ms, duration type 39, exp type 1
+2024-03-18 15:16:23,671 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:16:31,175 | INFO | Received the serial number 2, index 14, trial number 12, BO anger, duration 1025ms, duration type 41, exp type 3
+2024-03-18 15:16:34,251 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:16:41,703 | INFO | Received the serial number 3, index 5, trial number 11, prototype happiness, duration 975ms, duration type 39, exp type 4
+2024-03-18 15:16:44,726 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:16:52,231 | INFO | Received the serial number 3, index 2, trial number 12, prototype happiness, duration 975ms, duration type 39, exp type 1
+2024-03-18 15:16:55,252 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:17:03,259 | INFO | Received the serial number 2, index 10, trial number 13, BO anger, duration 1000ms, duration type 40, exp type 4
+2024-03-18 15:17:06,316 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:17:15,287 | INFO | Received the serial number 3, index 8, trial number 13, prototype happiness, duration 1000ms, duration type 40, exp type 2
+2024-03-18 15:17:18,341 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:17:26,315 | INFO | Received the serial number 2, index 7, trial number 14, BO anger, duration 1000ms, duration type 40, exp type 1
+2024-03-18 15:17:29,364 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:17:38,343 | INFO | Received the serial number 2, index 1, trial number 15, BO anger, duration 975ms, duration type 39, exp type 0
+2024-03-18 15:17:41,364 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:17:49,620 | INFO | Received the serial number 4, index 3, trial number 16, BO happiness, duration 975ms, duration type 39, exp type 2
+2024-03-18 15:17:52,648 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:18:01,148 | INFO | Received the serial number 1, index 9, trial number 14, prototype anger, duration 1000ms, duration type 40, exp type 3
+2024-03-18 15:18:04,196 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:18:12,175 | INFO | Received the serial number 3, index 11, trial number 14, prototype happiness, duration 1025ms, duration type 41, exp type 0
+2024-03-18 15:18:15,257 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:18:23,203 | INFO | Received the serial number 2, index 8, trial number 16, BO anger, duration 1000ms, duration type 40, exp type 2
+2024-03-18 15:18:26,253 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:18:36,231 | INFO | Received the serial number 1, index 12, trial number 15, prototype anger, duration 1025ms, duration type 41, exp type 1
+2024-03-18 15:18:39,306 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:18:47,008 | INFO | Received the serial number 3, index 10, trial number 15, prototype happiness, duration 1000ms, duration type 40, exp type 4
+2024-03-18 15:18:50,056 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:18:58,786 | INFO | Received the serial number 1, index 3, trial number 16, prototype anger, duration 975ms, duration type 39, exp type 2
+2024-03-18 15:19:01,812 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:19:09,313 | INFO | Received the serial number 3, index 14, trial number 16, prototype happiness, duration 1025ms, duration type 41, exp type 3
+2024-03-18 15:19:12,391 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:21:43,016 | INFO | Shuffle the conditionsProHappy: [(39, 0, 1), (39, 4, 5), (41, 2, 13), (40, 2, 8), (41, 1, 12), (40, 4, 10), (39, 2, 3), (41, 0, 11), (41, 3, 14), (40, 0, 6), (40, 1, 7), (41, 4, 15), (39, 0, 1), (39, 1, 2), (40, 3, 9), (39, 3, 4)]
+2024-03-18 15:21:43,016 | INFO | Received the serial number 3, index 1, trial number 1, prototype happiness, duration 975ms, duration type 39, exp type 0
+2024-03-18 15:21:46,041 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:22:21,581 | INFO | Shuffle the conditionsProAnger: [(39, 0, 1), (41, 0, 11), (39, 1, 2), (40, 2, 8), (40, 4, 10), (39, 0, 1), (40, 1, 7), (41, 2, 13), (40, 0, 6), (39, 2, 3), (41, 4, 15), (41, 1, 12), (39, 4, 5), (41, 3, 14), (40, 3, 9), (39, 3, 4)]
+2024-03-18 15:22:21,581 | INFO | Received the serial number 1, index 1, trial number 1, prototype anger, duration 975ms, duration type 39, exp type 0
+2024-03-18 15:22:24,605 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:22:41,971 | INFO | Shuffle the conditionsBOAnger: [(39, 0, 1), (39, 2, 3), (40, 4, 10), (41, 2, 13), (39, 1, 2), (41, 0, 11), (41, 3, 14), (41, 4, 15), (40, 3, 9), (39, 3, 4), (40, 0, 6), (40, 2, 8), (39, 0, 1), (41, 1, 12), (39, 4, 5), (40, 1, 7)]
+2024-03-18 15:22:41,971 | INFO | Received the serial number 2, index 1, trial number 1, BO anger, duration 975ms, duration type 39, exp type 0
+2024-03-18 15:22:44,993 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:23:01,328 | INFO | Shuffle the conditionBOHappy: [(39, 0, 1), (39, 3, 4), (40, 4, 10), (41, 4, 15), (41, 3, 14), (41, 1, 12), (40, 0, 6), (39, 0, 1), (40, 2, 8), (41, 0, 11), (40, 1, 7), (40, 3, 9), (39, 1, 2), (39, 4, 5), (39, 2, 3), (41, 2, 13)]
+2024-03-18 15:23:01,328 | INFO | Received the serial number 4, index 1, trial number 1, BO happiness, duration 975ms, duration type 39, exp type 0
+2024-03-18 15:23:04,356 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:23:50,883 | INFO | Received the serial number 1, index 11, trial number 2, prototype anger, duration 1025ms, duration type 41, exp type 0
+2024-03-18 15:23:53,959 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:24:07,893 | INFO | Received the serial number 3, index 5, trial number 2, prototype happiness, duration 975ms, duration type 39, exp type 4
+2024-03-18 15:24:10,924 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:24:23,951 | INFO | Received the serial number 1, index 2, trial number 3, prototype anger, duration 975ms, duration type 39, exp type 1
+2024-03-18 15:24:26,977 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:24:38,278 | INFO | Received the serial number 2, index 3, trial number 2, BO anger, duration 975ms, duration type 39, exp type 2
+2024-03-18 15:24:41,303 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:24:55,070 | INFO | Received the serial number 4, index 4, trial number 2, BO happiness, duration 975ms, duration type 39, exp type 3
+2024-03-18 15:24:58,097 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:25:16,609 | INFO | Received the serial number 3, index 13, trial number 3, prototype happiness, duration 1025ms, duration type 41, exp type 2
+2024-03-18 15:25:19,689 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:25:34,050 | INFO | Received the serial number 2, index 10, trial number 3, BO anger, duration 1000ms, duration type 40, exp type 4
+2024-03-18 15:25:37,104 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:25:48,559 | INFO | Received the serial number 1, index 8, trial number 4, prototype anger, duration 1000ms, duration type 40, exp type 2
+2024-03-18 15:25:51,613 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:26:06,468 | INFO | Received the serial number 4, index 10, trial number 3, BO happiness, duration 1000ms, duration type 40, exp type 4
+2024-03-18 15:26:09,517 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:26:27,823 | INFO | Received the serial number 2, index 13, trial number 4, BO anger, duration 1025ms, duration type 41, exp type 2
+2024-03-18 15:26:30,902 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:26:48,380 | INFO | Received the serial number 4, index 15, trial number 4, BO happiness, duration 1025ms, duration type 41, exp type 4
+2024-03-18 15:26:51,457 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:27:05,071 | INFO | Received the serial number 4, index 14, trial number 5, BO happiness, duration 1025ms, duration type 41, exp type 3
+2024-03-18 15:27:08,155 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:27:17,515 | INFO | Received the serial number 1, index 10, trial number 5, prototype anger, duration 1000ms, duration type 40, exp type 4
+2024-03-18 15:27:20,562 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:27:32,575 | INFO | Received the serial number 1, index 1, trial number 6, prototype anger, duration 975ms, duration type 39, exp type 0
+2024-03-18 15:27:35,600 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:27:48,884 | INFO | Received the serial number 3, index 8, trial number 4, prototype happiness, duration 1000ms, duration type 40, exp type 2
+2024-03-18 15:27:51,940 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:28:04,009 | INFO | Received the serial number 4, index 12, trial number 6, BO happiness, duration 1025ms, duration type 41, exp type 1
+2024-03-18 15:28:07,083 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:28:15,986 | INFO | Received the serial number 1, index 7, trial number 7, prototype anger, duration 1000ms, duration type 40, exp type 1
+2024-03-18 15:28:19,039 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:28:36,244 | INFO | Received the serial number 1, index 13, trial number 8, prototype anger, duration 1025ms, duration type 41, exp type 2
+2024-03-18 15:28:39,320 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:28:51,002 | INFO | Received the serial number 4, index 6, trial number 7, BO happiness, duration 1000ms, duration type 40, exp type 0
+2024-03-18 15:28:54,054 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:29:08,944 | INFO | Received the serial number 4, index 1, trial number 8, BO happiness, duration 975ms, duration type 39, exp type 0
+2024-03-18 15:29:11,974 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:29:25,235 | INFO | Received the serial number 2, index 2, trial number 5, BO anger, duration 975ms, duration type 39, exp type 1
+2024-03-18 15:29:28,269 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:29:38,928 | INFO | Received the serial number 3, index 12, trial number 5, prototype happiness, duration 1025ms, duration type 41, exp type 1
+2024-03-18 15:29:42,012 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:29:52,855 | INFO | Received the serial number 3, index 10, trial number 6, prototype happiness, duration 1000ms, duration type 40, exp type 4
+2024-03-18 15:29:55,908 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:30:07,198 | INFO | Received the serial number 2, index 11, trial number 6, BO anger, duration 1025ms, duration type 41, exp type 0
+2024-03-18 15:30:10,279 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:30:20,959 | INFO | Received the serial number 3, index 3, trial number 7, prototype happiness, duration 975ms, duration type 39, exp type 2
+2024-03-18 15:30:23,987 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:30:43,747 | INFO | Received the serial number 2, index 14, trial number 7, BO anger, duration 1025ms, duration type 41, exp type 3
+2024-03-18 15:30:46,829 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:31:00,872 | INFO | Received the serial number 3, index 11, trial number 8, prototype happiness, duration 1025ms, duration type 41, exp type 0
+2024-03-18 15:31:03,951 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:31:16,164 | INFO | Received the serial number 2, index 15, trial number 8, BO anger, duration 1025ms, duration type 41, exp type 4
+2024-03-18 15:31:19,242 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:33:04,499 | INFO | Received the serial number 2, index 9, trial number 9, BO anger, duration 1000ms, duration type 40, exp type 3
+2024-03-18 15:33:07,554 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:33:19,243 | INFO | Received the serial number 3, index 14, trial number 9, prototype happiness, duration 1025ms, duration type 41, exp type 3
+2024-03-18 15:33:22,323 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:33:32,936 | INFO | Received the serial number 4, index 8, trial number 9, BO happiness, duration 1000ms, duration type 40, exp type 2
+2024-03-18 15:33:35,988 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:33:46,729 | INFO | Received the serial number 2, index 4, trial number 10, BO anger, duration 975ms, duration type 39, exp type 3
+2024-03-18 15:33:49,757 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:34:00,106 | INFO | Received the serial number 3, index 6, trial number 10, prototype happiness, duration 1000ms, duration type 40, exp type 0
+2024-03-18 15:34:03,158 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:34:23,678 | INFO | Received the serial number 3, index 7, trial number 11, prototype happiness, duration 1000ms, duration type 40, exp type 1
+2024-03-18 15:34:26,728 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:34:38,387 | INFO | Received the serial number 1, index 6, trial number 9, prototype anger, duration 1000ms, duration type 40, exp type 0
+2024-03-18 15:34:41,445 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:34:53,546 | INFO | Received the serial number 1, index 3, trial number 10, prototype anger, duration 975ms, duration type 39, exp type 2
+2024-03-18 15:34:56,577 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:35:11,771 | INFO | Received the serial number 4, index 11, trial number 10, BO happiness, duration 1025ms, duration type 41, exp type 0
+2024-03-18 15:35:14,852 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:35:26,946 | INFO | Received the serial number 4, index 7, trial number 11, BO happiness, duration 1000ms, duration type 40, exp type 1
+2024-03-18 15:35:30,000 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:35:44,388 | INFO | Received the serial number 1, index 15, trial number 11, prototype anger, duration 1025ms, duration type 41, exp type 4
+2024-03-18 15:35:47,466 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:35:57,231 | INFO | Received the serial number 2, index 6, trial number 11, BO anger, duration 1000ms, duration type 40, exp type 0
+2024-03-18 15:36:00,282 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:36:18,504 | INFO | Received the serial number 3, index 15, trial number 12, prototype happiness, duration 1025ms, duration type 41, exp type 4
+2024-03-18 15:36:21,591 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:36:31,947 | INFO | Received the serial number 1, index 12, trial number 12, prototype anger, duration 1025ms, duration type 41, exp type 1
+2024-03-18 15:36:35,028 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:36:47,673 | INFO | Received the serial number 3, index 1, trial number 13, prototype happiness, duration 975ms, duration type 39, exp type 0
+2024-03-18 15:36:50,701 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:37:05,014 | INFO | Received the serial number 1, index 5, trial number 13, prototype anger, duration 975ms, duration type 39, exp type 4
+2024-03-18 15:37:08,043 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:37:18,508 | INFO | Received the serial number 4, index 9, trial number 12, BO happiness, duration 1000ms, duration type 40, exp type 3
+2024-03-18 15:37:21,568 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:37:33,135 | INFO | Received the serial number 2, index 8, trial number 12, BO anger, duration 1000ms, duration type 40, exp type 2
+2024-03-18 15:37:36,187 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:37:46,161 | INFO | Received the serial number 4, index 2, trial number 13, BO happiness, duration 975ms, duration type 39, exp type 1
+2024-03-18 15:37:49,192 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:38:06,285 | INFO | Received the serial number 1, index 14, trial number 14, prototype anger, duration 1025ms, duration type 41, exp type 3
+2024-03-18 15:38:09,364 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:38:24,159 | INFO | Received the serial number 3, index 2, trial number 14, prototype happiness, duration 975ms, duration type 39, exp type 1
+2024-03-18 15:38:27,187 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:38:38,885 | INFO | Received the serial number 2, index 1, trial number 13, BO anger, duration 975ms, duration type 39, exp type 0
+2024-03-18 15:38:41,915 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:38:57,908 | INFO | Received the serial number 1, index 9, trial number 15, prototype anger, duration 1000ms, duration type 40, exp type 3
+2024-03-18 15:39:00,972 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:39:13,651 | INFO | Received the serial number 3, index 9, trial number 15, prototype happiness, duration 1000ms, duration type 40, exp type 3
+2024-03-18 15:39:16,704 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:39:31,060 | INFO | Received the serial number 1, index 4, trial number 16, prototype anger, duration 975ms, duration type 39, exp type 3
+2024-03-18 15:39:34,095 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:39:44,669 | INFO | Received the serial number 2, index 12, trial number 14, BO anger, duration 1025ms, duration type 41, exp type 1
+2024-03-18 15:39:47,758 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:40:03,293 | INFO | Received the serial number 4, index 5, trial number 14, BO happiness, duration 975ms, duration type 39, exp type 4
+2024-03-18 15:40:06,330 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:40:16,753 | INFO | Received the serial number 2, index 5, trial number 15, BO anger, duration 975ms, duration type 39, exp type 4
+2024-03-18 15:40:19,784 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:40:32,645 | INFO | Received the serial number 4, index 3, trial number 15, BO happiness, duration 975ms, duration type 39, exp type 2
+2024-03-18 15:40:35,677 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:40:54,002 | INFO | Received the serial number 3, index 4, trial number 16, prototype happiness, duration 975ms, duration type 39, exp type 3
+2024-03-18 15:40:57,034 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:41:10,527 | INFO | Received the serial number 2, index 7, trial number 16, BO anger, duration 1000ms, duration type 40, exp type 1
+2024-03-18 15:41:13,586 | INFO | Received the serial number 0, neutral state.
+2024-03-18 15:41:24,870 | INFO | Received the serial number 4, index 13, trial number 16, BO happiness, duration 1025ms, duration type 41, exp type 2
+2024-03-18 15:41:27,956 | INFO | Received the serial number 0, neutral state.

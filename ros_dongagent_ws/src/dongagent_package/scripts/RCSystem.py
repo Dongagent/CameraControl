@@ -1275,7 +1275,7 @@ def idle_behavior(rb):
 
 
 # Function to handle serial port communication
-def serial_port_listener(port, baud_rate, stop_event, expLogger):
+def serial_port_listener(port, baud_rate, stop_event, expLogger, isPracticeTrial=True):
     global smoothSleepTime
     try:
         ser = serial.Serial(port, baud_rate, timeout=0)
@@ -1322,7 +1322,8 @@ def serial_port_listener(port, baud_rate, stop_event, expLogger):
                             conditionsProAnger[idx] = v + d
                         practiceTrial = conditionsProAnger[0]
                         random.shuffle(conditionsProAnger)
-                        conditionsProAnger.insert(0, practiceTrial)
+                        if isPracticeTrial:
+                            conditionsProAnger.insert(0, practiceTrial)
                         expLogger.info(f"Shuffle the conditionsProAnger: {conditionsProAnger}")
                     curCondition = conditionsProAnger.pop(0)
                     
@@ -1352,7 +1353,8 @@ def serial_port_listener(port, baud_rate, stop_event, expLogger):
                             conditionsBOAnger[idx] = v + d
                         practiceTrial = conditionsBOAnger[0]
                         random.shuffle(conditionsBOAnger)
-                        conditionsBOAnger.insert(0, practiceTrial)
+                        if isPracticeTrial:
+                            conditionsBOAnger.insert(0, practiceTrial)
                         expLogger.info(f"Shuffle the conditionsBOAnger: {conditionsBOAnger}")
                     curCondition = conditionsBOAnger.pop(0)
 
@@ -1377,7 +1379,8 @@ def serial_port_listener(port, baud_rate, stop_event, expLogger):
                             conditionsProHappy[idx] = v + d
                         practiceTrial = conditionsProHappy[0]
                         random.shuffle(conditionsProHappy)
-                        conditionsProHappy.insert(0, practiceTrial)
+                        if isPracticeTrial:
+                            conditionsProHappy.insert(0, practiceTrial)
                         expLogger.info(f"Shuffle the conditionsProHappy: {conditionsProHappy}")
                     curCondition = conditionsProHappy.pop(0)
 
@@ -1402,7 +1405,8 @@ def serial_port_listener(port, baud_rate, stop_event, expLogger):
                             conditionBOHappy[idx] = v + d
                         practiceTrial = conditionBOHappy[0]
                         random.shuffle(conditionBOHappy)
-                        conditionBOHappy.insert(0, practiceTrial)
+                        if isPracticeTrial:
+                            conditionBOHappy.insert(0, practiceTrial)
                         expLogger.info(f"Shuffle the conditionBOHappy: {conditionBOHappy}")
                     curCondition = conditionBOHappy.pop(0)
                     
@@ -1515,15 +1519,22 @@ def main():
     # '''
     # prepare logger
     check_folder('mimicryExpLogs')
-    expLogger = setup_logger(logging.INFO, 0)
+    participantsID = 6
+    expLogger = setup_logger(logging.INFO, participantsID)
 
     port_name = '/dev/ttyUSB1'  # Update to your serial port name
     baud_rate = 115200  # Update to your baud rate
     stop_event = threading.Event()
 
+    # -------------------------
+    # if the experiment crushed in the middle and we need to do it again, we can set isPracticeTrial to False
+    # recover it before the next experiment
+    isPracticeTrial = True 
+
+    # -------------------------
 
     # Start the serial port listener in a separate thread
-    serialThread = threading.Thread(target=serial_port_listener, args=(port_name, baud_rate, stop_event, expLogger))
+    serialThread = threading.Thread(target=serial_port_listener, args=(port_name, baud_rate, stop_event, expLogger, isPracticeTrial))
     serialThread.start()
 
     try:
