@@ -1519,7 +1519,7 @@ def main():
     # '''
     # prepare logger
     check_folder('mimicryExpLogs')
-    participantsID = 6
+    participantsID = 26
     expLogger = setup_logger(logging.INFO, participantsID)
 
     port_name = '/dev/ttyUSB1'  # Update to your serial port name
