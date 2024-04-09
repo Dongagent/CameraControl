@@ -5,7 +5,7 @@
 # @Copyright = Copyright 2021, The Riken Robotics Project
 # @Date:   2021-05-20 18:19:38
 # @Last Modified by:   dongshengyang
-# @Last Modified time: 2021-05-20 18:21:38
+# @Last Modified time: 2024-03-8 09:21:38
 '''
 __author__ = "Dongsheng Yang"
 __copyright__ = "Copyright 2021, The Riken Robotics Project"
@@ -17,11 +17,15 @@ __status__ = "Developing"
 
 import random
 from typing import Counter
-import defaultPose
+from datetime import datetime
+import defaultPose, mimicryExpParams
+
 
 # import socket
+import threading
 from threading import Thread
-import cv2, time, copy, sys
+import serial, itertools
+import cv2, time, copy, sys, math, logging
 import os, subprocess
 import platform
 import numpy as np
@@ -35,27 +39,42 @@ from std_msgs.msg import String
 import struct
 # ----- for ros END------
 
+# ----- for new model -----
+# from SiameseRankNet import SiameseRankNet_analysis
+# ----- for new model END -----
 SPACE = ' '
-LINUXVIDEOPATH = '/dev/video0' # ffplay
+LINUXVIDEOPATH = '/dev/video2' # ffplay # v4l2-ctl --list-devices
 loopFlag = 0 # 0 - py-feat, 1 - human
 DEBUG = 0
-FEATVERSION = 1 # 0 - py-feat 0.3.7 , 1 - py-feat 0.5.0
+FEAT_VERSION = 0 # 0 - py-feat 0.3.7 , 1 - py-feat 0.6.1
 # 0 - Run; 
 # 1 - Debuging with robot; 
 # 2 - Debug WITHOUT robot; for image debuging
 # 3 - Debug without pic, with  robot; 
 # 4 - Debug without pic, without robot;
 
+headYaw_fix_flag = False
+headYaw_fix = 105
+
+global smoothSleepTime
+smoothSleepTime = 0.025
+
 # pyfeat
 from feat import Detector
 detector = ''
 
 class WebcamStreamWidget(object):
-    def __init__(self, stream_id=0):
+    def __init__(self, stream_id=0, width=1280, height=720):
+        # initialize the video camera stream and read the first frame
+        print("[INFO]WebcamStreamWidget initializing...")
+
         self.stream_id = stream_id # default is 0 for main camera 
         
         # opening video capture stream vcap
         self.vcap = cv2.VideoCapture(stream_id)
+        # set resolution to 1920x1080
+        self.vcap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+        self.vcap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
         if not self.vcap.isOpened:
             raise AttributeError("[ERROR]: Error accessing webcam stream.")
         
@@ -63,12 +82,13 @@ class WebcamStreamWidget(object):
         self.status , self.frame = self.vcap.read()
         if not self.status:
             print('[Exiting] No more frames to read')
-            exit(0)
+            raise Exception 
         # self.stopped is initialized to False 
         self.stopped = True
         # thread instantiation  
         self.vthread = Thread(target=self.update, args=())
         self.vthread.daemon = True # daemon threads run in background 
+        print("[INFO]WebcamStreamWidget initialized.")
 
     # start vthread 
     def start(self):
@@ -80,7 +100,7 @@ class WebcamStreamWidget(object):
         while True :
             if self.stopped is True :
                 break
-            self.status , self.frame = self.vcap.read()
+            self.status, self.frame = self.vcap.read()
             time.sleep(.01) # delay for simulating video processing
             if self.status is False :
                 print('[Exiting] No more frames to read')
@@ -95,15 +115,51 @@ class WebcamStreamWidget(object):
     def stop(self):
         self.stopped = True
         
-    
     def save_frame(self, path):
         if not self.stopped:
             cv2.imwrite(path, self.read())
         else:
             raise AttributeError('frame not found')
 
+    # Video recording methods
+    def start_video_recording(self, path, codec='XVID', fps=60.0):
+        self.video_path = path
+        self.video_codec = codec
+        self.video_fps = fps
+        self.video_stopped = False
+
+        self.video_thread = Thread(target=self._record_video)
+        self.video_thread.daemon = True
+        self.video_thread.start()
+
+    def _record_video(self):
+        fourcc = cv2.VideoWriter_fourcc(*self.video_codec)
+        out = cv2.VideoWriter(self.video_path, fourcc, self.video_fps, (self.frame.shape[1], self.frame.shape[0]))
+
+        while not self.video_stopped:
+            if self.frame is not None:
+                out.write(self.frame)
+            time.sleep(1 / self.video_fps)
+
+        out.release()
+        print(f'Video saved to {self.video_path}')
+
+    def stop_video_recording(self):
+        self.video_stopped = True
+        if self.video_thread.is_alive():
+            self.video_thread.join()
+
+
+    
+
+    
+
+
+
 class robot:
-    def __init__(self, duration=3, fps=60):
+    def __init__(self, duration=3, webcam=True, fps=60):
+        # initialization of robot
+        print("[INFO]robot initializing...")
         # Return to normal state first
         # Example: robotParams = {'1': 64, '2': 64, '3': 128, ...}
         self.connection = True
@@ -116,7 +172,7 @@ class robot:
             0, 0, 0, 0, 0,
             0, 0, 0, 0, 0,
             0, 0, 0, 0, 0,
-            0, 32, 128, 128, 128
+            0, 32, 128, 128, headYaw_fix
         ]
 
         # initialization of States, like [0, 0, 0, ... , 0]
@@ -129,7 +185,10 @@ class robot:
         self.AUPose = defaultPose.actionUnitParams
 
         # Camera Parameters
-        self.DEVICE_ID = int(LINUXVIDEOPATH[-1])
+        if LINUXVIDEOPATH == '/dev/video2':
+            self.DEVICE_ID = 2
+        else:
+            self.DEVICE_ID = 0
         self.WIDTH = 1280
         self.HEIGHT = 720
         self.FPS = fps
@@ -140,7 +199,7 @@ class robot:
         self.VIDEOSIZE = "1280x720"
         self.DURATION = duration
         self.client = ""
-        self.photoform = '%01d.png' # what we need is 2.png
+        self.photoform = '%01d.png' 
 
         # human experiment
         self.bestImg = ""
@@ -148,10 +207,15 @@ class robot:
         # Final initialization
         self.initialize_robotParams()
         self.return_to_stable_state()
+        self.webcam = webcam
         
         # webcam stream thread, initialize
-        self.webcam_stream_widget = WebcamStreamWidget(self.DEVICE_ID)
-        self.webcam_stream_widget.start()
+        if webcam:
+            self.webcam_stream_widget = WebcamStreamWidget(self.DEVICE_ID, self.WIDTH, self.HEIGHT)
+            self.webcam_stream_widget.start()
+            print("[INFO]robot and webcam initialized.")
+        else:
+            print("[INFO]robot initialized.")
 
     def take_picture(self, isUsingCounter=True, appendix='', folder=''):
         # we don't need this
@@ -251,10 +315,11 @@ class robot:
         else:
             raise ValueError('[ValueError] self.readablefileName is {}.'.format(self.readablefileName))
 
-    def take_video(self, isUsingCounter=True, appendix=''):
+    # use webcam_stream_widget to take video
+    def start_taking_video(self, isUsingCounter=True, appendix='', folder=''):
         self.counter += 1
         if isUsingCounter:
-            self.fileName = time.strftime("%Y_%m_%d_%H_%M_%S_No", time.localtime()) + str(self.counter)
+            self.fileName = str(self.counter) + '_' + time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime())
             if appendix:
                 self.fileName += "_" + appendix + ".mkv"
             else:
@@ -265,41 +330,44 @@ class robot:
                 self.fileName += "_" + appendix + ".mkv"
             else:
                 self.fileName += ".mkv"
-        if DEBUG == 2:
+        if DEBUG == 3 or DEBUG == 4:
             print("Filename is {}".format(self.fileName))
             return
 
-        if os.path.exists(self.fileName):
-            raise Exception("Same File!")
-        if "Linux" in platform.platform():
-            # Remember to check the path everytime.
-            
-            videoPath = LINUXVIDEOPATH
-            fParam = "v4l2"
-            videoTypeParm = "-input_format"
-        elif "Windows" in platform.platform():
-            videoPath = "video='C920 Pro Stream Webcam'"
-            fParam = "dshow" 
-            videoTypeParm = "-vcodec"
+        if not os.path.exists('video_analysis/temp'):
+            os.makedirs('video_analysis/temp')
+
+        if folder:
+            folderPath = "video_analysis/{}/".format(folder)
+            if not os.path.exists(folderPath):
+                try:
+                    os.makedirs(folderPath)
+                    print('[INFO]make video folder')
+                except Exception as e:
+                    print(e)
+        # setup filename
+        if not folder:
+            self.fileName = "video_analysis/temp/{}".format(self.fileName)
+        else:
+            self.fileName = folderPath + self.fileName
         
-        command = "ffmpeg -f {} -framerate {} -video_size {} {} mjpeg -t {} -i {} -t {} -c copy {}".format(
-            fParam, 
-            str(self.FRAMERATE), 
-            self.VIDEOSIZE, 
-            videoTypeParm, 
-            str(self.DURATION), 
-            videoPath, 
-            str(self.DURATION), 
-            self.fileName
-        )
-        # ffmpeg -f v4l2 -framerate 60 -video_size 1280x720 -input_format mjpeg -i /dev/video2 -vf vflip -c copy 1.mkv
+        self.readablefileName = self.fileName
         
-        if "Linux" in platform.platform():
-            # Linux
-            return subprocess.Popen([command], stdout=subprocess.PIPE, shell=True)
-        elif "Windows" in platform.platform():
-            # Windows
-            return subprocess.Popen(["pwsh", "-Command", command], stdout=subprocess.PIPE)
+        # save file in another thread
+        if self.readablefileName:
+            self.webcam_stream_widget.start_video_recording(self.readablefileName)
+            print('[INFO]video recording started.')
+            return 0
+        else:
+            raise ValueError('[ValueError] self.readablefileName is {}.'.format(self.readablefileName))
+        
+        return 404
+
+    # stop video recording
+    def stop_taking_video(self):
+        self.webcam_stream_widget.stop_video_recording()
+        print('[INFO]video recording stopped.')
+
     def initialize_robotParams(self):
         # initialize robotParams like {"x1":0, "x2":0, ... , "x35": 0}
         print("initialize_robotParams")
@@ -324,16 +392,16 @@ class robot:
             0, 0, 0, 0, 0,
             0, 0, 0, 0, 0,
             0, 0, 0, 0, 0,
-            0, 32, 128, 128, 128
+            0, 32, 128, 128, headYaw_fix
         ]
         for i in range(1, 36):
             self.robotParams["x{}".format(i)] = stableState[i - 1]
         print("\n")
         self.__check_robotParams()
         # Drive the robot to the 
-        self.connect_ros(isSmoothly=True)
+        self.connect_ros(True, False, steps=20)
         time.sleep(0.5)
-        print("[INFO]return_to_stable_state, self.robotParams are all set")
+        print("[INFO]return_to_stable_state")
     def transfer_robotParams_to_states(self, params):
         states = [0 for x in range(35)]
         for i in range(1, 36):
@@ -372,20 +440,42 @@ class robot:
         for i in range(1, 36):
             self.robotParams["x{}".format(i)] = params[i - 1]
         self.__check_robotParams()
-    # @deprecated
-    def generate_execution_code(self, params):
-        """Construct the action code as 'moveaxis [axis] [pos] [priority]' """
-        # Generate execution code with given params
-        actionStr = "moveaxes"
-        try: 
-            for i in range(1, 36):
-                actionStr = actionStr + SPACE + str(i) + SPACE + str(params["x{}".format(i)]) + " 5 200"
-            actionStr += '\n' 
-            self.executionCode = actionStr
-        except Exception as e:
-            print("generate_execution_code ERROR")
-            print(e)
-    def smooth_execution_mode(self, steps = 20):
+
+
+
+    def sigmoid_smooth_execution_mode(self, steps = 20, total_time = 2, useScaledSigmoid=True, sigmoid_factor=10, debugmode=False):
+        if self.robotParams:
+            stepNum = steps
+            x_values_for_scaled_sigmoid = np.linspace(-3, 3, steps)
+            for i in range(0, stepNum):
+                # frab = (i + 1) / float(stepNum)
+                currentParams = {}
+                
+                
+                for k in self.lastParams.keys():
+                    start = self.lastParams[k]
+                    end = self.robotParams[k]
+                    if useScaledSigmoid:
+                        currentParams[k] = start + (end - start) * scaled_sigmoid(x_values_for_scaled_sigmoid[i])
+                    else:
+                        currentParams[k] = start + (end - start) * sigmoid(sigmoid_factor * (i / stepNum - 0.5))
+                if debugmode:
+                    print('DEBUG:', currentParams)
+                
+                self.nextState = self.transfer_robotParams_to_states(currentParams)
+                self.ros_talker()# Use ROS
+
+                # MODIFY HERE if you want to setup the duration of emotion
+                global smoothSleepTime
+                # if isSigmoidForTime:
+                #     total_time = smoothSleepTime * steps
+                #     time_interval = total_time * sigmoid(7 * (i / stepNum))
+                #     # print(time_interval)
+                #     time.sleep(time_interval)
+                # else:
+                time.sleep(smoothSleepTime)
+
+    def smooth_execution_mode(self, steps = 20, debugmode=False):
         # steps: the middle steps between two robot expressions, default value is 5
         if self.robotParams:
             stepNum = steps
@@ -398,20 +488,24 @@ class robot:
                     currentParams[k] = int(self.lastParams[k] - interval) if self.lastParams[k] > self.robotParams[k] else int(self.lastParams[k] + interval)
                     # if k == "1":
                     #     print(self.lastParams[k], self.robotParams[k], interval, currentParams[k])
-
-                self.generate_execution_code(currentParams)
+                if debugmode:
+                    print('DEBUG:', currentParams)
+                
                 self.nextState = self.transfer_robotParams_to_states(currentParams)
                 # self.__sendExecutionCode() # Use socket
                 self.ros_talker()# Use ROS
 
-                time.sleep(0.05)
+                # MODIFY HERE if you want to setup the duration of emotion
+                global smoothSleepTime
+                time.sleep(smoothSleepTime)
+
+    # @deprecated
     def normal_execution_mode(self):
-        self.generate_execution_code(self.robotParams)
         # self.__sendExecutionCode() # Use socket
         self.ros_talker()# Use ROS
 
     def ros_talker(self):
-        rospy.init_node('rcpublisher', anonymous=True)
+        rospy.init_node('rcpublisher', anonymous=True, disable_signals=True)
         pub = rospy.Publisher('rc/command', String, queue_size=10)
         sub = rospy.Subscriber('rc/return', String, self.sub_callback)
         r = rospy.Rate(10) # speed
@@ -435,16 +529,17 @@ class robot:
         
     # Now use ROS instead
     # @deprecated
-    def __sendExecutionCode(self):
-        # This function cannot be called outside
-        assert "move" in self.executionCode
-        msg = self.executionCode # message
+    # def __sendExecutionCode(self):
+    #     # This function cannot be called outside
+    #     assert "move" in self.executionCode
+    #     msg = self.executionCode # message
 
-        self.client.send(msg.encode('utf-8')) # send a message to server, python3 only receive byte data
-        data = self.client.recv(1024) # receive a message, the maximum length is 1024 bytes
-        # print('recv:', data.decode()) # print the data I received
-        if "OK" not in data.decode():
-            raise Exception("ERROR! Did NOT receive 'OK'")
+    #     self.client.send(msg.encode('utf-8')) # send a message to server, python3 only receive byte data
+    #     data = self.client.recv(1024) # receive a message, the maximum length is 1024 bytes
+    #     # print('recv:', data.decode()) # print the data I received
+    #     if "OK" not in data.decode():
+    #         raise Exception("ERROR! Did NOT receive 'OK'")
+
     def sub_callback(self, data):
         recv_dict = json.loads(data.data)
         if recv_dict['Message'] == "PotentioValsBase64":
@@ -463,67 +558,46 @@ class robot:
             axiswithpotentio = map((lambda x: int(x)), potaxisstr)
             print(axiswithpotentio)
 
-    def connect_ros(self, isSmoothly=False, isRecording=False, appendix="", steps=20, timeIntervalBeforeExp=1):
+    def connect_ros(self, isSmoothly=True, isRecording=False, appendix="", steps=20, timeIntervalBeforeExp=1, isUsingSigmoid=False, 
+        sigmoid_factor=10, useScaledSigmoid=True, debugmode=False):
 
         if DEBUG == 2 or DEBUG == 4:
             print('you are DEBUGING')
             return 0
-        '''
-        # socket method
-        # @deprecated
-        
-        # self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)                # create socket object
-        
-        # Please use ipconfig on the server to check the ip first. It may change every time we open the server.
-        host = '172.27.174.125'                                                      # set server address
-        port = 12000                                                                 # set port
-
-        # --------- DEBUG -------------
-        if DEBUG == 2:
-            print("function connect_ros:", self.robotParams)
-            # Test fileName
-            if isRecording:
-                self.take_video(isUsingCounter=False, appendix=appendix)
-            return
-        
-        # --------- DEBUG END -------------
-        
-        
-        try:
-            self.client.connect((host, port))
-            self.client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        except Exception as e:
-            print("Connection Failed, ERROR code is: ", e)
-            self.connection = False
-        '''
 
         try:
             # self.ros_talker()
             if self.connection:
+                # if we need to fix the headYaw, we need to change the value of x35 for every connect_ros
+                if headYaw_fix_flag:
+                    self.robotParams["x35"] = headYaw_fix
+
                 # Start Record if isRecording
-                if isRecording:
-                    # Please set which recording system you want to use. Video or image.
-                    # For image, we need to take photos after conneect_socket
-                    process = self.take_video(isUsingCounter=False, appendix=appendix)
-                    # process = self.take_picture(isUsingCounter=False, appendix=appendix)
-                    # time.sleep(1)
+                # if isRecording:
+                #     # Please set which recording system you want to use. Video or image.
+                #     process = self.start_taking_video(isUsingCounter=False, appendix=appendix)
+                #     # time.sleep(1)
                 # Smoothly execute
                 if isSmoothly:
                     print("[INFO]Smoothly execution activated")
-                    if isRecording:
-                        time.sleep(timeIntervalBeforeExp) # Sleep 1 second by default to wait for the start of the video 
-                    self.smooth_execution_mode(steps)
+                    # if isRecording:
+                    #     time.sleep(timeIntervalBeforeExp) # Sleep 1 second by default to wait for the start of the video 
+                    if not isUsingSigmoid:  
+                        self.smooth_execution_mode(steps=steps, debugmode=debugmode)
+                    else:
+                        # using Sigmoid
+                        self.sigmoid_smooth_execution_mode(steps=steps, useScaledSigmoid=useScaledSigmoid, sigmoid_factor=sigmoid_factor, debugmode=debugmode)
                 # Otherwise
                 else:
                     self.normal_execution_mode()
                 # self.client.close() # use ros now
                 
-                # Close Record
-                if isRecording:
-                    process.wait()
-                    if process.returncode != 0:
-                        print(process.stdout.readlines())
-                        raise Exception("The subprocess does NOT end.")
+                # # Close Record
+                # if isRecording:
+                #     process.wait()
+                #     if process.returncode != 0:
+                #         print(process.stdout.readlines())
+                #         raise Exception("The subprocess does NOT end.")
             else:
                 raise Exception("Connection Failed")
         except rospy.ROSInterruptException: 
@@ -592,11 +666,18 @@ def basicRunningCell(robotObject, commandSet, isRecordingFlag=False, steps=20):
         # Go to the facial expressions
         print("Switch to {}".format(k))
         rb.switch_to_customizedPose(v)
-        rb.connect_ros(isSmoothly=True, isRecording=isRecordingFlag, appendix="{}".format(k), steps=steps) # isSmoothly = True ,isRecording = True
+        rb.connect_ros(True, False, appendix="{}".format(k), steps=steps) # isSmoothly = True ,isRecording = True
 
     # Return to Standard Pose
     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
     rb.connect_ros(True, False)
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+def scaled_sigmoid(x):
+    # x ~ [-3,3], y ~ [-1, 1]
+    return -0.052 + 1.105 * sigmoid(x)
 
 def get_target(emotion_name):
     # Anger, Disgust, Fear, Happiness, Sadness, Surprise, Neutral
@@ -617,19 +698,21 @@ def get_target(emotion_name):
         return 6
 
 def py_feat_analysis(img, target_emotion, is_save_csv=True):
+    from feat import Detector
     '''
         @img: file name 
         @target_emotion: Anger, Disgust, Fear, Happiness, Sadness, Surprise
     '''
     global detector
+
     image_prediction = detector.detect_image(img)
     df = image_prediction.head()
-    if FEATVERSION == 0:
+    if FEAT_VERSION == 0:
         emo_df = df.iloc[-1:,-8:] # feat 0.3.7
-    elif FEATVERSION == 1:
+    elif FEAT_VERSION == 1:
         emo_df = df.iloc[-1:,-9:-1] # feat 0.5.0
     else:
-        raise Exception("FEATVERSION is not correct")
+        raise Exception("FEAT_VERSION is not correct")
 
     if is_save_csv:
         csv_name = img[:-4]+".csv"
@@ -649,8 +732,11 @@ def checkParameters(robotParams):
     # When axis 8 has value, we should make sure axis 9 is set to 0. 
     if robotParams[8-1] * robotParams[9-1] != 0:
         robotParams[np.random.choice([8-1, 9-1])] = 0
-    if robotParams[12-1] * robotParams[13-1] != 0:
-        robotParams[np.random.choice([12-1, 13-1])] = 0
+    # x12 = x8, # x13 = x9, no need to be different
+    robotParams[12-1] = robotParams[8-1]
+    robotParams[13-1] = robotParams[9-1]
+    # if robotParams[12-1] * robotParams[13-1] != 0:
+    #     robotParams[np.random.choice([12-1, 13-1])] = 0
     if robotParams[18-1] * robotParams[19-1] != 0:
         robotParams[np.random.choice([18-1, 19-1])] = 0
 
@@ -659,8 +745,8 @@ def checkParameters(robotParams):
     #     robotParams[np.random.choice([22-1, 23-1])] = 0
         
     # x22 = x18, x23 = x19
-    robotParams[21] = robotParams[17]
-    robotParams[22] = robotParams[18]
+    robotParams[22-1] = robotParams[18-1]
+    robotParams[23-1] = robotParams[19-1]
 
 
     assert robotParams[8-1] * robotParams[9-1] == 0
@@ -668,6 +754,35 @@ def checkParameters(robotParams):
     assert robotParams[18-1] * robotParams[19-1] == 0
     assert robotParams[22-1] * robotParams[23-1] == 0
     return robotParams
+
+def fix_robot_param(fixedrobotcode):
+    # x2 = x1, use one axis for eyes upper lid
+    # fixedrobotcode[0] = 0
+    fixedrobotcode[1] = fixedrobotcode[0]
+    # x7 = x6, use one axis for eyes lower lid
+    fixedrobotcode[6] = fixedrobotcode[5]
+    # x12 = x8
+    fixedrobotcode[11] = fixedrobotcode[7]
+    # x13 = x9
+    fixedrobotcode[12] = fixedrobotcode[8]
+    # x14  = x10
+    fixedrobotcode[13] = fixedrobotcode[9]
+    # x17 = x16
+    fixedrobotcode[16] = fixedrobotcode[15]
+    # x22 = x18
+    fixedrobotcode[21] = fixedrobotcode[17]
+    # x23 = x19
+    fixedrobotcode[22] = fixedrobotcode[18]
+    # x24 = x20
+    fixedrobotcode[23] = fixedrobotcode[19]
+    # To open all axes
+    # x4 = x3
+    fixedrobotcode[3] = fixedrobotcode[2]
+    # x15 = x11
+    fixedrobotcode[14] = fixedrobotcode[10]
+    fixedrobotcode = checkParameters(fixedrobotcode)
+
+    return fixedrobotcode
 
 # BO
 def target_function(**kwargs):
@@ -681,8 +796,12 @@ def target_function(**kwargs):
     kwargs = kwargs["kwargs"]
     
 
+
     # Get robot parameters
     neutral = [86, 86, 128, 128, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 128, 122]
+    if headYaw_fix_flag:
+        # modify the headYaw if we need to fix it
+        neutral[-1] = headYaw_fix
     fixedrobotcode = copy.copy(neutral)
     
     # dict = {}
@@ -691,48 +810,13 @@ def target_function(**kwargs):
         if "x" in k:
             fixedrobotcode[int(k[1:])-1] = round(v)
 
-    # x2 = x1, use one axis for eyes upper lid
-    # fixedrobotcode[0] = 0
-    fixedrobotcode[1] = fixedrobotcode[0]
+    # Happy Constraints
+    if fixedrobotcode[0] + fixedrobotcode[5] > 255 + 86 + 10:
+        # if the upper lid and lower lid are too close to each other, we should return 0
+        print("[INFO]Happy Constraints, give 0 score.")
+        return 0
 
-    # x7 = x6, use one axis for eyes lower lid
-    fixedrobotcode[6] = fixedrobotcode[5]
-
-    # x12 = x8
-    fixedrobotcode[11] = fixedrobotcode[7]
-
-    # x13 = x9
-    fixedrobotcode[12] = fixedrobotcode[8]
-
-    # x14  = x10
-    fixedrobotcode[13] = fixedrobotcode[9]
-
-
-    # x17 = x16
-    fixedrobotcode[16] = fixedrobotcode[15]
-
-    # x22 = x18
-    fixedrobotcode[21] = fixedrobotcode[17]
-
-    # x23 = x19
-    fixedrobotcode[22] = fixedrobotcode[18]
-
-    # x24 = x20
-    fixedrobotcode[23] = fixedrobotcode[19]
-
-    # To open all axes
-    # x4 = x3
-    fixedrobotcode[3] = fixedrobotcode[2]
-
-    # x15 = x11
-    fixedrobotcode[14] = fixedrobotcode[10]
-
-    # ban x21 x25
-    # ban x26 x27 
-    # ban 31 34 33 35
-
-    # check parameters
-    fixedrobotcode = checkParameters(fixedrobotcode)
+    fixedrobotcode = fix_robot_param(fixedrobotcode)
     
     # control robot 
     if DEBUG > 0:
@@ -758,6 +842,7 @@ def target_function(**kwargs):
     if loopFlag == 0:
         # Take photo using cv2
         rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, COUNTER), folder=target_emotion)
+        
         # ------------------ deprecated ----------------
         # Take photo using ffmpeg (deprecated)
         # process = rb.take_picture(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, COUNTER), folder=target_emotion)
@@ -776,16 +861,23 @@ def target_function(**kwargs):
         # Py-feat Analysis
         print('[INFO]The {}th trial'.format(str(COUNTER + 1)))
         print('[INFO]target_emotion', target_emotion)
-        temp_pyfeat_result = py_feat_analysis(img=rb.readablefileName, target_emotion=target_emotion)
-        output = temp_pyfeat_result
-        if CURBEST[1] < output:
-            CURBEST[0] = rb.readablefileName
-            CURBEST[1] = output
-        print('[INFO]Current Best: {}, {}'.format(CURBEST[1], CURBEST[0]))
+
+        # Use Py-Feat 0.3.7
+        output = py_feat_analysis(img=rb.readablefileName, target_emotion=target_emotion)
+
+        # Use SiameseRankNet
+        # output = SiameseRankNet_analysis(img=rb.readablefileName, target_emotion=target_emotion)
+
+        
+        # if CURBEST[1] < output:
+        #     CURBEST[0] = rb.readablefileName
+        #     CURBEST[1] = output
+        # print('[INFO]Current Best: {}, {}'.format(CURBEST[1], CURBEST[0]))
+
         # Save every parameters
         # construct the DataFrame
         df_dic = {}
-        df_dic[target_emotion] = [temp_pyfeat_result]
+        df_dic[target_emotion] = [output]
         for k,v in kwargs.items():
             df_dic[k] = [v]
         print('[INFO]df_dic', df_dic)
@@ -793,6 +885,13 @@ def target_function(**kwargs):
         df_name = rb.readablefileName[:-4]+"_axes_data.csv"
 
         df.to_csv(df_name, index=False, sep=',')
+
+        # save robot param data
+        robot_param = pd.DataFrame(fixedrobotcode, index=[0]) # save the fixedrobotcode rather than rb.robotParams
+        robot_param_name = rb.readablefileName[:-4]+"_rb_paramdata.csv"
+        robot_param.to_csv(robot_param_name, index=False, sep=',')
+
+
     
     # Human optimization output case
     elif loopFlag == 1:
@@ -863,7 +962,13 @@ def target_function(**kwargs):
         # if rating.lower() == 'p':
         #     newimg = rb.readablefileName
         #     rb.bestImg = newimg
-            
+
+
+    # --- TEST return to normal state every time---
+    rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    rb.connect_ros(True, False, steps=3)
+    # --- TEST END ---  
+
     return output
 
 
@@ -872,13 +977,17 @@ def bayesian_optimization(baseline, target_emotion, robot):
     def middle_function(**kwargs):
         return target_function(robot=robot, target_emotion=target_emotion, kwargs=kwargs)
 
-    def generate_pbounds(axes):
+    def generate_pbounds(axes, target_emotion):
         pbounds_dic = {}
         for i in axes:
-            if i in [6, 7]:
-                pbounds_dic['x{}'.format(i)] = (0, 140)
-            else:
-                pbounds_dic['x{}'.format(i)] = (0, 255)
+            if target_emotion == 'happiness' and i in [0, 1]:
+                # TODO need to verify
+                happy_upper = 120
+                pbounds_dic['x{}'.format(i)] = (0, happy_upper)
+            # elif i in [0, 1]:
+            #     pbounds_dic['x{}'.format(i)] = (0, 160)
+            # else:
+            pbounds_dic['x{}'.format(i)] = (0, 255)
 
         return pbounds_dic
 
@@ -912,7 +1021,7 @@ def bayesian_optimization(baseline, target_emotion, robot):
     # pbounds = generate_pbounds(axes_for_emotions[code])
     
     # open all axes
-    pbounds = generate_pbounds(all_axes_for_emotions)
+    pbounds = generate_pbounds(all_axes_for_emotions, target_emotion)
 
 
     # TODO SequentialDomainReductionTransformer
@@ -972,8 +1081,9 @@ def bayesian_optimization(baseline, target_emotion, robot):
 
         random_state=1,
         verbose=2)
-    # 2个初始化点和10轮优化，共12轮
-
+    # random_state is like set seed
+    # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent
+    
     # initialization of pre-define facial expression
     neutral_baseline = defaultPose.prototypeFacialExpressions["neutral"]
     subtract = abs(np.array(neutral_baseline) - np.array(baseline)) 
@@ -987,7 +1097,7 @@ def bayesian_optimization(baseline, target_emotion, robot):
                 probe_param["x{}".format(i+1)] = subtract[i]
         # print(probe_param)
 
-    # Logger
+    # logger
     logger = JSONLogger(path="./image_analysis/"+ target_emotion + "/logs.json")
     optimizer.subscribe(Events.OPTIMIZATION_STEP, logger)
 
@@ -1030,15 +1140,13 @@ def bayesian_optimization(baseline, target_emotion, robot):
     # if target_emotion == 'surprise':
     #     # surprise
     #     optimizer.probe(params={'x1': 0, 'x8': 255, 'x10': 128,}, lazy=True,)
-    
     # --------------------------------------
 
-    # # Happiness
-    # optimizer.probe(
-    #     params={
-    #         'x6': 255, 'x9': 255, 'x16': 255, 'x18': 255, 'x28': 255, 'x29': 255, 'x32': 255},
-    #     lazy=True,
-    # )
+    # Happiness prototype
+    #     optimizer.probe(
+    #         params={'x1': 86, 'x6': 255, 'x8': 0, 'x9': 255, 'x10': 0, 'x11': 0, 'x16': 255, 'x18': 255, 'x19': 0, 'x20': 0, 'x28': 255, 'x29': 255, 'x30': 0, 'x32': 0},
+    #         lazy=False,
+    #     )
 
     # Anger
     # optimizer.probe(
@@ -1063,10 +1171,307 @@ def check_folder(folderName):
         except Exception as e:
             print(e)
 
+def get_param_from_csv(csv_name):
+    df = pd.read_csv(csv_name)
+    neutral = [86, 86, 128, 128, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 128, headYaw_fix]
+    fixedrobotcode = copy.copy(neutral)
+
+    for k,v in df.to_dict().items():
+        if "x" in k:
+            fixedrobotcode[int(k[1:])-1] = round(v[0])
+    fixedrobotcode = fix_robot_param(fixedrobotcode)
+
+    return fixedrobotcode
+            
+def recover_param_from_csv(csv_name, steps=15):
+    # move robot to the csv state
+    df = pd.read_csv(csv_name)
+
+    neutral = [86, 86, 128, 128, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 128, headYaw_fix]
+    fixedrobotcode = copy.copy(neutral)
+    # dict = {}
+    for k,v in df.to_dict().items():
+    #     print('k,v', k,v)
+        if "x" in k:
+            fixedrobotcode[int(k[1:])-1] = round(v[0])
+    
+    fixedrobotcode = fix_robot_param(fixedrobotcode)
+
+    # control robot
+    rb.switch_to_customizedPose(fixedrobotcode)
+    global smoothSleepTime
+    # smoothSleepTime = 0.025
+    returncode = rb.connect_ros(isSmoothly=True, isRecording=False, steps=steps) # isSmoothly = True ,isRecording = True
+    time.sleep(0.5)
+
+def eyeblink(rb, stop_event):
+    # only available in IDLE mode
+    try:
+        while not stop_event.is_set():
+            global smoothSleepTime
+            smoothSleepTime = 0.025
+            
+
+            itvl = round(random.uniform(0.5, 3), 3)
+            time.sleep(itvl) # interval
+
+            # close eye
+            rb.nextState[1-1] = 250
+            rb.nextState[2-1] = 250
+            time.sleep(smoothSleepTime)
+
+            # open eye
+            rb.nextState[1-1] = 86
+            rb.nextState[2-1] = 86
+
+    except KeyboardInterrupt:
+        print("eyeblink stopped.")
+    finally:
+        print('[INFO] eyeblink end')
+
+
+
+def idle_behavior(rb):
+    # need testing
+    # TODO randomly insert eye blinking 
+    # TODO open and close idle behavior is necessary. Use something like threading
+    # First choose the start state and end state, and use another thread for randomly insert eye blinking 
+    # Before sending command to ros, combine eye and the interval state (let the eye parts always equal to the eye threading)
+    pp = [[83, 180], [2, 152], [193, 91], [133, 162], [145, 91], [71, 91], [182, 20]]
+    import copy, time
+
+    # start_taking_v(appendix='idle_behavior', folder='')
+    time.sleep(1)
+
+    # eyeblink_stop_event = threading.Event()
+
+    # eyeBlinkThread = threading.Thread(target=eyeblink, args=(rb, eyeblink_stop_event))
+    # eyeBlinkThread.start()
+
+    for i in pp:
+        # mypose = copy.deepcopy(defaultPose.prototypeFacialExpressions['happiness'])
+        mypose = copy.deepcopy(defaultPose.actionUnitParams['StandardPose'])
+        mypose[33] = i[0]
+        mypose[34] = i[1]
+
+        rb.switch_to_customizedPose(mypose)
+        rb.connect_ros(True, False, steps=200, isUsingSigmoid=False, sigmoid_factor=5, debugmode=False)
+
+        time.sleep(3)
+
+    # eyeblink_stop_event.set()  # Signal the listener thread to stop
+    # eyeBlinkThread.join()  # Wait for the listener thread to finish
+
+    # mypose = copy.deepcopy(defaultPose.actionUnitParams['StandardPose'])
+    # mypose[33] = 250
+    # mypose[34] = 
+    # rb.switch_to_customizedPose(mypose)
+    # rb.connect_ros(True, False, steps=50, isUsingSigmoid=False, sigmoid_factor=5, debugmode=True)
+
+    # time.sleep(3)
+    rb.return_to_stable_state()
+    time.sleep(3)
+
+
+
+# Function to handle serial port communication
+def serial_port_listener(port, baud_rate, stop_event, expLogger, isPracticeTrial=True):
+    global smoothSleepTime
+    try:
+        ser = serial.Serial(port, baud_rate, timeout=0)
+        expLogger = expLogger
+        expLogger.info(f"Opened serial port {port}")
+        
+        # TODO check the expLogger
+
+        conditionsStep = range(39, 42)
+        conditionsType = range(0, 5)
+        # [(39, 0, 1), (39, 1, 2), (39, 2, 3), (39, 3, 4), (39, 4, 5), 
+        # (40, 0, 6), (40, 1, 7), (40, 2, 8), (40, 3, 9), (40, 4, 10), 
+        # (41, 0, 11), (41, 1, 12), (41, 2, 13), (41, 3, 14), (41, 4, 15)]
+        # conditions = list(conditionsStep, conditionsType, index)
+        conditionsProAnger = []
+        conditionsBOAnger = []
+        conditionsProHappy = []
+        conditionBOHappy = []
+
+        while not stop_event.is_set():
+            if ser.in_waiting > 0:
+                data = ser.readline()
+                # data = str(data)[-2]
+                # data = int(data)
+                data = int.from_bytes(data, 'big')
+                print(f"Received: {data}")
+
+                if data == 0:
+                    expLogger.info("Received the serial number 0, neutral state.")
+
+                    rb.switch_to_customizedPose(defaultPose.prototypeFacialExpressions['neutral'])
+                    rb.connect_ros(True, False, steps = 40)
+                    # time.sleep(1)
+
+                elif data == 1:
+                    # Prototype Anger
+                    # tmp_step = random.randint(39, 41)
+                    # tmp_anger_type = random.randint(0, 5)
+                    if not conditionsProAnger:
+                        proAngerTrialNum = 1
+                        conditionsProAnger = list(itertools.product(conditionsStep, conditionsType))
+                        for idx, v in enumerate(conditionsProAnger):
+                            d = (idx + 1,)
+                            conditionsProAnger[idx] = v + d
+                        practiceTrial = conditionsProAnger[0]
+                        random.shuffle(conditionsProAnger)
+                        if isPracticeTrial:
+                            conditionsProAnger.insert(0, practiceTrial)
+                        expLogger.info(f"Shuffle the conditionsProAnger: {conditionsProAnger}")
+                    curCondition = conditionsProAnger.pop(0)
+                    
+                    curAnger = mimicryExpParams.prototypeFacialExpressions['anger'][curCondition[1]]
+                    expLogger.info(f"Received the serial number 1, index {curCondition[2]}, trial number {proAngerTrialNum}, prototype anger, duration {round(curCondition[0] * smoothSleepTime * 1000)}ms, duration type {curCondition[0]}, exp type {curCondition[1]}")
+
+                    time.sleep(1)
+                    rb.switch_to_customizedPose(curAnger)
+                    rb.connect_ros(True, False, steps = curCondition[0], isUsingSigmoid=True)
+                    time.sleep(1)
+                    proAngerTrialNum += 1
+
+                    # recover
+                    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+                    # rb.connect_ros(True, False)
+                    # time.sleep(1)
+
+                elif data == 2:
+                    # BO Anger
+                    # tmp_step = random.randint(39, 41)
+                    # tmp_anger_type = random.randint(0, 5)
+                    if not conditionsBOAnger:
+                        BOAngerTrialNum = 1
+                        conditionsBOAnger = list(itertools.product(conditionsStep, conditionsType))
+                        for idx, v in enumerate(conditionsBOAnger):
+                            d = (idx + 1,)
+                            conditionsBOAnger[idx] = v + d
+                        practiceTrial = conditionsBOAnger[0]
+                        random.shuffle(conditionsBOAnger)
+                        if isPracticeTrial:
+                            conditionsBOAnger.insert(0, practiceTrial)
+                        expLogger.info(f"Shuffle the conditionsBOAnger: {conditionsBOAnger}")
+                    curCondition = conditionsBOAnger.pop(0)
+
+                    curAnger = mimicryExpParams.BOFacialExpressions['anger'][curCondition[1]]
+                    expLogger.info(f"Received the serial number 2, index {curCondition[2]}, trial number {BOAngerTrialNum}, BO anger, duration {round(curCondition[0] * smoothSleepTime * 1000)}ms, duration type {curCondition[0]}, exp type {curCondition[1]}")
+
+                    time.sleep(1)
+                    rb.switch_to_customizedPose(curAnger)
+                    rb.connect_ros(True, False, steps = curCondition[0], isUsingSigmoid=True)
+                    time.sleep(1)
+                    BOAngerTrialNum += 1
+
+                elif data == 3:
+                    # Prototype Happiness
+                    # tmp_step = random.randint(39, 41)
+                    # tmp_happy_type = random.randint(0, 5)
+                    if not conditionsProHappy:
+                        proHappyTrialNum = 1
+                        conditionsProHappy = list(itertools.product(conditionsStep, conditionsType))
+                        for idx, v in enumerate(conditionsProHappy):
+                            d = (idx + 1,)
+                            conditionsProHappy[idx] = v + d
+                        practiceTrial = conditionsProHappy[0]
+                        random.shuffle(conditionsProHappy)
+                        if isPracticeTrial:
+                            conditionsProHappy.insert(0, practiceTrial)
+                        expLogger.info(f"Shuffle the conditionsProHappy: {conditionsProHappy}")
+                    curCondition = conditionsProHappy.pop(0)
+
+                    curHappy = mimicryExpParams.prototypeFacialExpressions['happiness'][curCondition[1]] # exp variation
+                    expLogger.info(f"Received the serial number 3, index {curCondition[2]}, trial number {proHappyTrialNum}, prototype happiness, duration {round(curCondition[0] * smoothSleepTime * 1000)}ms, duration type {curCondition[0]}, exp type {curCondition[1]}")
+
+                    time.sleep(1)
+                    rb.switch_to_customizedPose(curHappy)
+                    rb.connect_ros(True, False, steps = curCondition[0], isUsingSigmoid=True)
+                    time.sleep(1)
+                    proHappyTrialNum += 1
+
+                elif data == 4:
+                    # BO Happiness
+                    # tmp_step = random.randint(39, 41)
+                    # tmp_happy_type = random.randint(0, 5)
+                    if not conditionBOHappy:
+                        BOHappyTrialNum = 1
+                        conditionBOHappy = list(itertools.product(conditionsStep, conditionsType))
+                        for idx, v in enumerate(conditionBOHappy):
+                            d = (idx + 1,)
+                            conditionBOHappy[idx] = v + d
+                        practiceTrial = conditionBOHappy[0]
+                        random.shuffle(conditionBOHappy)
+                        if isPracticeTrial:
+                            conditionBOHappy.insert(0, practiceTrial)
+                        expLogger.info(f"Shuffle the conditionBOHappy: {conditionBOHappy}")
+                    curCondition = conditionBOHappy.pop(0)
+                    
+                    curHappy = mimicryExpParams.BOFacialExpressions['happiness'][curCondition[1]] # exp variation
+                    expLogger.info(f"Received the serial number 4, index {curCondition[2]}, trial number {BOHappyTrialNum}, BO happiness, duration {round(curCondition[0] * smoothSleepTime * 1000)}ms, duration type {curCondition[0]}, exp type {curCondition[1]}")
+
+                    time.sleep(1)
+                    rb.switch_to_customizedPose(curHappy)
+                    rb.connect_ros(True, False, steps = curCondition[0], isUsingSigmoid=True)
+                    time.sleep(1)
+                    BOHappyTrialNum += 1
+
+                elif data == 5:
+                    print("Received the serial number 5, IDLE ON")
+
+                elif data == 6:
+                    print("Received the serial number 6, IDLE OFF")
+
+    except serial.SerialException as e:
+        print(f"Error opening serial port {port}: {e}")
+    except KeyboardInterrupt:
+        print("Serial port listener stopped.")
+    finally:
+        ser.close()
+        print(f"Closed serial port {port}")
+    
+def setup_logger(level=logging.INFO, participantsID = 0):
+    logger = logging.getLogger('my_logger')
+    logger.setLevel(level)
+
+    if not os.path.exists('mimicryExpLogs'):
+        os.makedirs('mimicryExpLogs')
+    
+    expDate = datetime.now().strftime('%Y%m%d')
+    expDateFolder = 'mimicryExpLogs/' + expDate
+    if not os.path.exists(expDateFolder):
+        os.makedirs(expDateFolder)
+
+    # Function to check if handler already exists
+    def handler_exists(hdlr_type):
+        return any(isinstance(h, hdlr_type) for h in logger.handlers)
+
+    formatter = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s')
+
+    # Add file handler if it doesn't exists
+    if not handler_exists(logging.FileHandler):
+        log_file = os.path.join(expDateFolder, '{}_p{}.log'.format(datetime.now().strftime('%Y_%m_%d_%H_%M_%S'), participantsID))
+        print(f'Add FileHandler  {log_file}')
+        file_handler = logging.FileHandler(log_file)
+        file_handler.setLevel(logging.DEBUG)
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+    
+        print(f'Add StreamHandler')
+        stdout_handler = logging.StreamHandler()
+        stdout_handler.setLevel(logging.DEBUG)
+        stdout_handler.setFormatter(formatter)
+        logger.addHandler(stdout_handler)
+
+    return logger
+
 # main
 def main():
-    # global rb
-    rb = robot(duration=2)
+    global rb
+    rb = robot(duration=2, webcam=False)
     assert rb.connection == True
     global COUNTER
     COUNTER = 0
@@ -1076,18 +1481,25 @@ def main():
     # init_points = 2
     # n_iter = 2
     init_points = 10
-    n_iter = 490
+    n_iter = 90
+
+    # set headYaw_fix_flag
+    global headYaw_fix_flag
+    headYaw_fix_flag = True
     # set how much steps Nikola need to shift the axes from one to another
-    MYSTEPS = 15
+    MYSTEPS = 40
     # change workdir
     workdir = "/home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package/scripts"
     os.chdir(workdir)
     rb.bestImg = workdir + '/image_analysis/temp/neutral.png'
     assert os.getcwd() == workdir, print(os.getcwd())
-    global detector
-    # landmark_model should be set to mobilefacenet in case you want to use pyfeat 0.3.7
-    detector = Detector(emotion_model = "resmasknet", landmark_model='mobilefacenet')
-
+    
+    # global detector
+    # landmark_model should be set to mobilefacenet in case you want to use pyfeat 0.3.7/0.5.0/0.6.1
+    # Be care of FEAT_VERSION
+    # detector = Detector(emotion_model = "resmasknet", landmark_model='mobilefacenet')
+    
+    global smoothSleepTime
     # res = subprocess.Popen("ls", cwd="/home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package/scripts")
     # print(res)
 
@@ -1097,6 +1509,444 @@ def main():
     # anger, disgust, fear, happiness, sadness, surprise
     # defaultPose.prototypeFacialExpressions
 
+    # Exp 22: eyeblink test
+
+    # idle_behavior(rb)
+
+
+    # Exp 21: test serial number
+
+    # '''
+    # prepare logger
+    check_folder('mimicryExpLogs')
+    participantsID = 26
+    expLogger = setup_logger(logging.INFO, participantsID)
+
+    port_name = '/dev/ttyUSB1'  # Update to your serial port name
+    baud_rate = 115200  # Update to your baud rate
+    stop_event = threading.Event()
+
+    # -------------------------
+    # if the experiment crushed in the middle and we need to do it again, we can set isPracticeTrial to False
+    # recover it before the next experiment
+    isPracticeTrial = True 
+
+    # -------------------------
+
+    # Start the serial port listener in a separate thread
+    serialThread = threading.Thread(target=serial_port_listener, args=(port_name, baud_rate, stop_event, expLogger, isPracticeTrial))
+    serialThread.start()
+
+    try:
+        while True:
+            time.sleep(1)  # Main thread is free to do anything else or just sleep
+    except KeyboardInterrupt:
+        print("Serial port listener Program terminated by user.")
+        stop_event.set()  # Signal the listener thread to stop
+        serialThread.join()  # Wait for the listener thread to finish
+
+    print("Experiment ended.")
+    # '''
+
+
+    # -----
+    # Exp 20: writing the Main Framework of Experiment
+    
+
+    def startVoice():
+        #「行きます」instruction voice
+        print("[INFO]Nikola speaks 行きます")
+        pass
+
+    
+
+    def raiseHead():
+        # raise the head
+        pass
+
+    def lowerHead():
+        # lower the head
+        pass
+
+    def makeFacialExpression():
+        # make a facial expression
+        pass
+
+    def turnToNormalState():
+        # turn to normal state
+        pass
+
+    def turnToOffState():
+        # turn to OFF state
+        pass
+
+    def turnToOnState():    
+        # turn to ON state
+        pass
+
+    # Between trials, Nikola looked down, closed his eyes, and made subtle motions.
+    def idle_off():
+        # turn OFF idle state
+        pass
+    def idle_on():
+        # turn ON idle state
+        pass
+
+    # Participants should watch Nikola’s face and give ratings by keyboard (fake target)
+
+    def run_exp2():
+        # Step 1: In each trial, during the「行きます」instruction voice
+        turnToOffState()
+        startVoice()
+
+
+        # Step 2: Nikola will open the eyes, raise his head (500ms).
+        # Step 3: Then Nikola will make a facial expression (500ms). Hold for about 2000ms, and turn to normal state
+        # Step 4: turn to OFF state(heads down, close eye). 
+
+        # for k,v in defaultPose.prototypeFacialExpressions.items():
+        #     if k == 'neutral':
+        #         continue
+        #     rb.start_taking_video(appendix=k)
+        #     time.sleep(1)
+
+            
+        #     smoothSleepTime = 0.02
+        #     rb.switch_to_customizedPose(v)
+        #     rb.connect_ros(True, False, steps=25, isUsingSigmoid=False) # isSmoothly = True ,isRecording = True
+        #     # rb.connect_ros(True, False, steps=25, isUsingSigmoid=True, sigmoid_factor=7) # isSmoothly = True ,isRecording = True
+
+        #     time.sleep(2)
+        #     rb.stop_taking_video()
+            
+        #     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+        #     rb.connect_ros(True, False)
+        #     time.sleep(1)
+    
+    
+    
+    # After we received the keyboard feedback, we can continue the next step.
+
+
+
+
+
+    # ----
+
+
+    # Exp 19: test the head movement
+    # collect data again confirming details
+    # for k,v in defaultPose.prototypeFacialExpressions.items():
+    #     # if k != 'surprise':
+    #     #     continue
+    #     if k == 'neutral':
+    #         continue
+    #     rb.start_taking_video(appendix=k)
+    #     time.sleep(1)
+
+        
+    #     smoothSleepTime = 0.02
+    #     rb.switch_to_customizedPose(v)
+    #     rb.connect_ros(True, False, steps=25, isUsingSigmoid=True, sigmoid_factor=7) # isSmoothly = True ,isRecording = True
+
+    #     time.sleep(2)
+    #     rb.stop_taking_video()
+        
+    #     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    #     rb.connect_ros(True, False)
+    #     time.sleep(1)
+
+    # for k,v in defaultPose.hotExpressions.items():
+    #     # if k != 'hotSurprise':
+    #     #     continue
+    #     if k == 'neutral':
+    #         continue
+    #     rb.start_taking_video(appendix=k)
+    #     time.sleep(1)
+
+        
+    #     smoothSleepTime = 0.02
+    #     rb.switch_to_customizedPose(v)
+    #     rb.connect_ros(True, False, steps=25, isUsingSigmoid=True, sigmoid_factor=10) # isSmoothly = True ,isRecording = True
+
+    #     time.sleep(2)
+    #     rb.stop_taking_video()
+        
+    #     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    #     rb.connect_ros(True, False)
+    #     time.sleep(1)
+
+    
+    # Exp 18: new environment basic video, sigmoid function
+    # 
+    # # record prototype video and prototype with mouth opening
+    
+    # for k,v in defaultPose.prototypeFacialExpressions.items():
+    #     if k == 'neutral':
+    #         continue
+    #     rb.start_taking_video(appendix=k)
+    #     time.sleep(1)
+
+        
+    #     smoothSleepTime = 0.04
+    #     rb.switch_to_customizedPose(v)
+    #     rb.connect_ros(True, False, steps=25, isUsingSigmoid=True) # isSmoothly = True ,isRecording = True
+
+    #     time.sleep(2)
+    #     rb.stop_taking_video()
+        
+    #     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    #     rb.connect_ros(True, False)
+    #     time.sleep(1)
+    
+    # for k,v in defaultPose.hotExpressions.items():
+    #     if k == 'neutral':
+    #         continue
+    #     rb.start_taking_video(appendix=k)
+    #     time.sleep(1)
+
+    #     # global smoothSleepTime
+    #     smoothSleepTime = 0.03
+    #     rb.switch_to_customizedPose(v)
+    #     rb.connect_ros(True, False, steps=20, isUsingSigmoid=True) # isSmoothly = True ,isRecording = True
+
+    #     time.sleep(2)
+    #     rb.stop_taking_video()
+        
+    #     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    #     rb.connect_ros(True, False)
+    #     time.sleep(1) 
+
+
+    # Exp 17: record video, record prototype images
+    # fl = os.listdir("image_analysis/231225Exp17NewFeat/top50anger")
+    # fl = sorted(fl, key=lambda x: int(x.split('_')[0]))
+    # for file in fl:
+    #     # print(file)
+    #     if file.endswith(".csv"):
+    #         print(file)
+    #         rb.start_taking_video(appendix=file[:-14])
+    #         time.sleep(1)
+    #         recover_param_from_csv("image_analysis/231225Exp17NewFeat/top50anger/" + file, 25)
+    #         time.sleep(2)
+    #         rb.stop_taking_video()
+            
+    #         rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    #         rb.connect_ros(True, False)
+    #         time.sleep(1)
+
+
+    # # record prototype video and prototype with mouth opening
+    # global smoothSleepTime
+    # for k,v in defaultPose.prototypeFacialExpressions.items():
+    #     if k == 'neutral':
+    #         continue
+    #     rb.start_taking_video(appendix=k)
+    #     time.sleep(1)
+
+        
+    #     smoothSleepTime = 0.02
+    #     rb.switch_to_customizedPose(v)
+    #     rb.connect_ros(True, False, steps=25) # isSmoothly = True ,isRecording = True
+
+    #     time.sleep(2)
+    #     rb.stop_taking_video()
+        
+    #     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    #     rb.connect_ros(True, False)
+    #     time.sleep(1)
+    
+    
+    # for k,v in defaultPose.hotExpressions.items():
+    #     if k == 'neutral':
+    #         continue
+    #     rb.start_taking_video(appendix=k)
+    #     time.sleep(1)
+
+    #     # global smoothSleepTime
+    #     smoothSleepTime = 0.02
+    #     rb.switch_to_customizedPose(v)
+    #     rb.connect_ros(True, False, steps=25) # isSmoothly = True ,isRecording = True
+
+    #     time.sleep(2)
+    #     rb.stop_taking_video()
+        
+    #     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    #     rb.connect_ros(True, False)
+    #     time.sleep(1)
+    
+    # record prototype with mouth opening video
+    
+
+            # break
+    # ---------------------
+    # prototype
+    # ---------------------
+    # for k,v in defaultPose.prototypeFacialExpressions.items():
+    #     if k == 'neutral':
+    #         continue
+    #     print("switch to: ", k)
+    #     # print(v)
+    #     rb.switch_to_customizedPose(v)
+    #     rb.connect_ros(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+    #     rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(k, 'test'), folder=k)
+    #     time.sleep(3)
+    #     test = py_feat_analysis(rb.fileName, k)
+    #     print("py_feat_analysis result is: ", test)
+        
+    #     # save robot param data
+    #     robot_param = pd.DataFrame(rb.robotParams, index=[0])
+    #     print(robot_param)
+    #     robot_param_name = rb.readablefileName[:-4]+"_rb_paramdata.csv"
+    #     robot_param.to_csv(robot_param_name, index=False, sep=',')
+
+    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    # rb.connect_ros(True, False)
+
+    # ------------------------------------
+    # Prototype with mouth opening
+    # ------------------------------------
+    # for k,v in defaultPose.hotExpressions.items():
+    #     if k == 'neutral':
+    #         continue
+    #     print("switch to: ", k)
+    #     # print(v)
+    #     rb.switch_to_customizedPose(v)
+    #     rb.connect_ros(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+    #     rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(k, 'test'), folder=k)
+    #     time.sleep(3)
+    # print("py_feat_analysis result is: ", py_feat_analysis(rb.fileName, k[3:].lower()))
+
+    #     # save robot param data
+    #     robot_param = pd.DataFrame({k:[v] for k, v in rb.robotParams.items()})
+    #     robot_param_name = rb.readablefileName[:-4]+"_rb_paramdata.csv"
+    #     robot_param.to_csv(robot_param_name, index=False, sep=',')
+
+    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    # rb.connect_ros(True, False)
+    
+
+
+    # Exp 16: Use Py-Feat 0.6.1 for Nikola, with happy eye restriction
+    # for target_emotion in ['happiness']:
+    #     check_folder(target_emotion)
+    #     COUNTER = 0
+    #     print(target_emotion)
+    #     global CURBEST
+    #     CURBEST = ['', 0]
+    #     # test photo
+    #     rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, 'test'), folder=target_emotion)
+    #     optimizer = bayesian_optimization(
+    #         baseline=defaultPose.prototypeFacialExpressions[target_emotion],
+    #         target_emotion=target_emotion,
+    #         robot=rb)
+    #     print('\n')
+    #     print("Current target emotion is: ", target_emotion, optimizer.res)
+    #     print('\n')
+    #     print(f"Best {target_emotion} is: {CURBEST[1]}, {CURBEST[0]}")
+    #     print('\n')
+    #     # Return to normal
+    #     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    #     rb.connect_ros(True, False)
+
+    # Exp 15: Use Py-Feat 0.6.1 for Nikola
+    # for target_emotion in ['sadness', 'surprise', 'disgust', 'fear']:
+    # for target_emotion in ['anger']:
+    #     check_folder(target_emotion)
+    #     COUNTER = 0
+    #     print(target_emotion)
+    #     global CURBEST
+    #     CURBEST = ['', 0]
+    #     # test photo
+    #     rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, 'test'), folder=target_emotion)
+    #     optimizer = bayesian_optimization(
+    #         baseline=defaultPose.prototypeFacialExpressions[target_emotion],
+    #         target_emotion=target_emotion,
+    #         robot=rb)
+    #     print('\n')
+    #     print("Current target emotion is: ", target_emotion, optimizer.res)
+    #     print('\n')
+    #     print(f"Best {target_emotion} is: {CURBEST[1]}, {CURBEST[0]}")
+    #     print('\n')
+    #     # Return to normal
+    #     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    #     rb.connect_ros(True, False)
+
+
+
+
+    # Exp 14: Use SiameseRanknet model for Nikola
+    # Setup: lighting system, webcam, tripot,
+    # Contents: BORFEO 100 trials, Prototype, Prototype with mouth opening
+
+    # ---------------------
+    # exp 14-1 prototype
+    # ---------------------
+    # for k,v in defaultPose.prototypeFacialExpressions.items():
+    #     print("switch to: ", k)
+    #     # print(v)
+    #     rb.switch_to_customizedPose(v)
+    #     rb.connect_ros(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+    #     rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(k, 'test'), folder=k)
+    #     time.sleep(3)
+    #     print("py_feat_analysis result is: ", py_feat_analysis(rb.fileName, k))
+    #     print("SiameseRankNet result is: ", SiameseRankNet_analysis(rb.fileName, k))
+
+    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    # rb.connect_ros(True, False)
+
+    # ------------------------------------
+    # exp 14-2 prototype with mouth opening
+    # ------------------------------------
+    # for k,v in defaultPose.hotExpressions.items():
+    #     print("switch to: ", k)
+    #     # print(v)
+    #     rb.switch_to_customizedPose(v)
+    #     rb.connect_ros(isSmoothly=True, isRecording=False) # isSmoothly = True ,isRecording = True
+    #     rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(k, 'test'), folder=k)
+    #     time.sleep(3)
+    #     # print("py_feat_analysis result is: ", py_feat_analysis(rb.fileName, k))
+    #     print("SiameseRankNet result is: ", SiameseRankNet_analysis(rb.fileName, k))
+
+    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    # rb.connect_ros(True, False)
+
+    # -------------------------------------
+    # exp 14-3 BORFEO using SiameseRankNet
+    # -------------------------------------
+
+    # for target_emotion in ['anger']:
+    #     check_folder(target_emotion)
+    #     COUNTER = 0
+    #     print(target_emotion)
+    #     global CURBEST
+    #     CURBEST = ['', 0]
+    #     # test photo
+    #     rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, 'test'), folder=target_emotion)
+    #     optimizer = bayesian_optimization(
+    #         baseline=defaultPose.prototypeFacialExpressions[target_emotion],
+    #         target_emotion=target_emotion,
+    #         robot=rb)
+    #     print('\n')
+    #     print("Current target emotion is: ", target_emotion, optimizer.res)
+    #     print('\n')
+    #     # Return to normal
+    #     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    #     rb.connect_ros(True, False)
+
+    # # Return to normal
+    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    # rb.connect_ros(True, False)
+    # time.sleep(2)
+    # rb.webcam_stream_widget.stop()
+    # try:
+    #     rb.webcam_stream_widget.vthread.join()
+    # except Exception as e:
+    #     print(e)
+
+
+
+
     
     # Exp 11 & 12: Use new threading for cv2 and do BORFEO for 500 trials
     # Exp 13: Use new lighting system and do BORFEO for 500 trials
@@ -1104,6 +1954,7 @@ def main():
     # sadness, surprise, neutral
     # for target_emotion in ['anger', 'disgust', 'fear', 'happiness', 'sadness', 'surprise', 'neutral']:
     # for target_emotion in ['anger', 'disgust', 'fear', 'happiness', 'sadness', 'surprise']:
+    '''
     for target_emotion in ['anger']:
         check_folder(target_emotion)
         COUNTER = 0
@@ -1132,8 +1983,10 @@ def main():
         rb.webcam_stream_widget.vthread.join()
     except Exception as e:
         print(e)
+    '''
 
     # Exp 10 end with bug
+
 
     # TODO
     # Exp 9: Psycho-physical optimization 100 trials Saori San 
@@ -1767,9 +2620,11 @@ if __name__ == '__main__':
     except Exception as e:
         print(e)
     finally:
-        rb = robot(duration=2)
+        global rb
         rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
         rb.connect_ros(True, False)
+        if rb.webcam:
+            rb.webcam_stream_widget.stop()
 
 
 

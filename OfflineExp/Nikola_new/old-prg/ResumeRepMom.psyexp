@@ -1,0 +1,885 @@
+﻿<?xml version="1.0" ?>
+<PsychoPy2experiment encoding="utf-8" version="2022.2.5">
+  <Settings>
+    <Param val="use prefs" valType="str" updates="None" name="Audio latency priority"/>
+    <Param val="use prefs" valType="str" updates="None" name="Audio lib"/>
+    <Param val="" valType="str" updates="None" name="Completed URL"/>
+    <Param val="auto" valType="str" updates="None" name="Data file delimiter"/>
+    <Param val="u'data/%s_%s_%s' % (expInfo['participant'], expName, expInfo['date'])" valType="code" updates="None" name="Data filename"/>
+    <Param val="True" valType="bool" updates="None" name="Enable Escape"/>
+    <Param val="{'participant': 'f&quot;{randint(0, 999999):06.0f}&quot;', 'session': '001'}" valType="code" updates="None" name="Experiment info"/>
+    <Param val="True" valType="bool" updates="None" name="Force stereo"/>
+    <Param val="False" valType="bool" updates="None" name="Full-screen window"/>
+    <Param val="" valType="str" updates="None" name="HTML path"/>
+    <Param val="" valType="str" updates="None" name="Incomplete URL"/>
+    <Param val="testMonitor" valType="str" updates="None" name="Monitor"/>
+    <Param val="[]" valType="list" updates="None" name="Resources"/>
+    <Param val="False" valType="bool" updates="None" name="Save csv file"/>
+    <Param val="False" valType="bool" updates="None" name="Save excel file"/>
+    <Param val="False" valType="bool" updates="None" name="Save hdf5 file"/>
+    <Param val="True" valType="bool" updates="None" name="Save log file"/>
+    <Param val="True" valType="bool" updates="None" name="Save psydat file"/>
+    <Param val="True" valType="bool" updates="None" name="Save wide csv file"/>
+    <Param val="1" valType="num" updates="None" name="Screen"/>
+    <Param val="True" valType="bool" updates="None" name="Show info dlg"/>
+    <Param val="False" valType="bool" updates="None" name="Show mouse"/>
+    <Param val="height" valType="str" updates="None" name="Units"/>
+    <Param val="" valType="str" updates="None" name="Use version"/>
+    <Param val="[720, 480]" valType="list" updates="None" name="Window size (pixels)"/>
+    <Param val="avg" valType="str" updates="None" name="blendMode"/>
+    <Param val="$[0,0,0]" valType="color" updates="None" name="color"/>
+    <Param val="rgb" valType="str" updates="None" name="colorSpace"/>
+    <Param val="100.1.1.1" valType="str" updates="None" name="elAddress"/>
+    <Param val="FILTER_LEVEL_2" valType="str" updates="None" name="elDataFiltering"/>
+    <Param val="FILTER_LEVEL_OFF" valType="str" updates="None" name="elLiveFiltering"/>
+    <Param val="EYELINK 1000 DESKTOP" valType="str" updates="None" name="elModel"/>
+    <Param val="ELLIPSE_FIT" valType="str" updates="None" name="elPupilAlgorithm"/>
+    <Param val="PUPIL_AREA" valType="str" updates="None" name="elPupilMeasure"/>
+    <Param val="1000" valType="num" updates="None" name="elSampleRate"/>
+    <Param val="False" valType="bool" updates="None" name="elSimMode"/>
+    <Param val="RIGHT_EYE" valType="str" updates="None" name="elTrackEyes"/>
+    <Param val="PUPIL_CR_TRACKING" valType="str" updates="None" name="elTrackingMode"/>
+    <Param val="Resume Gaze" valType="str" updates="None" name="expName"/>
+    <Param val="on Sync" valType="str" updates="None" name="exportHTML"/>
+    <Param val="None" valType="str" updates="None" name="eyetracker"/>
+    <Param val="127.0.0.1" valType="str" updates="None" name="gpAddress"/>
+    <Param val="4242" valType="num" updates="None" name="gpPort"/>
+    <Param val="ioHub" valType="str" updates="None" name="keyboardBackend"/>
+    <Param val="exp" valType="code" updates="None" name="logging level"/>
+    <Param val="('MIDDLE_BUTTON',)" valType="list" updates="None" name="mgBlink"/>
+    <Param val="CONTINUOUS" valType="str" updates="None" name="mgMove"/>
+    <Param val="0.5" valType="num" updates="None" name="mgSaccade"/>
+    <Param val="0.6" valType="num" updates="None" name="plConfidenceThreshold"/>
+    <Param val="True" valType="bool" updates="None" name="plPupilCaptureRecordingEnabled"/>
+    <Param val="" valType="str" updates="None" name="plPupilCaptureRecordingLocation"/>
+    <Param val="127.0.0.1" valType="str" updates="None" name="plPupilRemoteAddress"/>
+    <Param val="50020" valType="num" updates="None" name="plPupilRemotePort"/>
+    <Param val="1000" valType="num" updates="None" name="plPupilRemoteTimeoutMs"/>
+    <Param val="False" valType="bool" updates="None" name="plPupillometryOnly"/>
+    <Param val="psychopy_iohub_surface" valType="str" updates="None" name="plSurfaceName"/>
+    <Param val="" valType="str" updates="None" name="tbLicenseFile"/>
+    <Param val="" valType="str" updates="None" name="tbModel"/>
+    <Param val="60" valType="num" updates="None" name="tbSampleRate"/>
+    <Param val="" valType="str" updates="None" name="tbSerialNo"/>
+  </Settings>
+  <Routines>
+    <Routine name="Init">
+      <TextComponent name="init">
+        <Param val="white" valType="color" updates="constant" name="color"/>
+        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
+        <Param val="1" valType="num" updates="constant" name="contrast"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="None" valType="str" updates="constant" name="flip"/>
+        <Param val="Open Sans" valType="str" updates="constant" name="font"/>
+        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
+        <Param val="0.05" valType="num" updates="constant" name="letterHeight"/>
+        <Param val="init" valType="code" updates="None" name="name"/>
+        <Param val="" valType="num" updates="constant" name="opacity"/>
+        <Param val="0" valType="num" updates="constant" name="ori"/>
+        <Param val="(0, 0)" valType="list" updates="constant" name="pos"/>
+        <Param val="False" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="5.0" valType="code" updates="constant" name="stopVal"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="実験プログラムを起動しています。&amp;#10;暫くお待ちください。" valType="str" updates="constant" name="text"/>
+        <Param val="from exp settings" valType="str" updates="None" name="units"/>
+        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
+      </TextComponent>
+      <CodeComponent name="init_variable_2">
+        <Param val="# Stop idle behavior&amp;#10;import roslibpy&amp;#10;import json&amp;#10;import time&amp;#10;import socket&amp;#10;import threading&amp;#10;&amp;#10;#  server setting&amp;#10;HOST = &quot;nikola-control.ad180.riken.go.jp&quot;&amp;#10;PORT1 = 21000&amp;#10;PORT2 = 20000&amp;#10;BUFSIZE = 4096&amp;#10;&amp;#10;# create socket&amp;#10;client1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)&amp;#10;client2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)&amp;#10;&amp;#10;# connect server&amp;#10;client1.connect((HOST, PORT1))&amp;#10;client2.connect((HOST, PORT2))&amp;#10;&amp;#10;# roslibpy server setting&amp;#10;client = roslibpy.Ros(host=&quot;nikola-master.local&quot;, port=9099)&amp;#10;client.run() # connect roslibpy &amp;#10;&amp;#10;# roslibpy topic &amp;#10;dib_topic = roslibpy.Topic(client, '/do_idle_behavior', 'std_msgs/String')&amp;#10;tts_topic = roslibpy.Topic(client, '/tts', 'std_msgs/String')&amp;#10;&amp;#10;# Volume&amp;#10;Master_Volume = 1.3&amp;#10;&amp;#10;# roslibpy message&amp;#10;compoff_true = {&quot;completely_off&quot;: True}   # stop idle behavior&amp;#10;compoff_false = {&quot;completely_off&quot;: False} # start idle behavior&amp;#10;&amp;#10;json_idleoff = json.dumps(compoff_true)&amp;#10;json_idleon = json.dumps(compoff_false)&amp;#10;&amp;#10;message_idleoff = roslibpy.Message({'data': json_idleoff})&amp;#10;message_idleon = roslibpy.Message({'data': json_idleon})&amp;#10;&amp;#10;# init cmd&amp;#10;head_cmd0_1 = &quot;HeadController={\&quot;id\&quot;:\&quot;HeadController\&quot;, \&amp;#10;            \&quot;motionTowardObject\&quot;:\&quot;\&quot;, \&amp;#10;            \&quot;targetMotionMode\&quot;:2, \&amp;#10;            \&quot;targetPoint\&quot;:{\&quot;x\&quot;:0.0,\&quot;y\&quot;:0.5,\&quot;z\&quot;:1.5}, \&amp;#10;            \&quot;translateSpeed\&quot;:1.0}\n&quot;&amp;#10;            &amp;#10;head_cmd0_2 = &quot;HeadController={\&quot;id\&quot;:\&quot;HeadController\&quot;, \&amp;#10;            \&quot;motionTowardObject\&quot;:\&quot;\&quot;, \&amp;#10;            \&quot;targetMotionMode\&quot;:2, \&amp;#10;            \&quot;targetPoint\&quot;:{\&quot;x\&quot;:0.0,\&quot;y\&quot;:0.5,\&quot;z\&quot;:1.5}, \&amp;#10;            \&quot;translateSpeed\&quot;:2.0}\n&quot;&amp;#10;            &amp;#10;head_cmd1_1 = &quot;HeadController={\&quot;id\&quot;:\&quot;HeadController\&quot;, \&amp;#10;            \&quot;motionTowardObject\&quot;:\&quot;\&quot;, \&amp;#10;            \&quot;targetMotionMode\&quot;:2, \&amp;#10;            \&quot;targetPoint\&quot;:{\&quot;x\&quot;:0.0,\&quot;y\&quot;:1.2,\&quot;z\&quot;:1.5}, \&amp;#10;            \&quot;translateSpeed\&quot;:1.0}\n&quot;&amp;#10;            &amp;#10;head_cmd1_2 = &quot;HeadController={\&quot;id\&quot;:\&quot;HeadController\&quot;, \&amp;#10;            \&quot;motionTowardObject\&quot;:\&quot;\&quot;, \&amp;#10;            \&quot;targetMotionMode\&quot;:2, \&amp;#10;            \&quot;targetPoint\&quot;:{\&quot;x\&quot;:0.0,\&quot;y\&quot;:1.2,\&quot;z\&quot;:1.5}, \&amp;#10;            \&quot;translateSpeed\&quot;:2.0}\n&quot;&amp;#10;            &amp;#10;head_cmd3_1 = &quot;HeadController={\&quot;id\&quot;:\&quot;HeadController\&quot;, \&amp;#10;            \&quot;motionTowardObject\&quot;:\&quot;\&quot;, \&amp;#10;            \&quot;targetMotionMode\&quot;:2, \&amp;#10;            \&quot;targetPoint\&quot;:{\&quot;x\&quot;:0.0,\&quot;y\&quot;:0.9,\&quot;z\&quot;:1.5}, \&amp;#10;            \&quot;translateSpeed\&quot;:1.0}\n&quot;&amp;#10;&amp;#10;eye_cmd0_1 = &quot;EyeController={\&quot;id\&quot;:\&quot;EyeController\&quot;, \&amp;#10;            \&quot;motionTowardObject\&quot;:\&quot;\&quot;, \&amp;#10;            \&quot;targetMotionMode\&quot;:2, \&amp;#10;            \&quot;targetPoint\&quot;:{\&quot;x\&quot;:0.0,\&quot;y\&quot;:0.5,\&quot;z\&quot;:1.5}, \&amp;#10;            \&quot;translateSpeed\&quot;:1.0}\n&quot;&amp;#10;&amp;#10;eye_cmd0_2 = &quot;EyeController={\&quot;id\&quot;:\&quot;EyeController\&quot;, \&amp;#10;            \&quot;motionTowardObject\&quot;:\&quot;\&quot;, \&amp;#10;            \&quot;targetMotionMode\&quot;:2, \&amp;#10;            \&quot;targetPoint\&quot;:{\&quot;x\&quot;:0.0,\&quot;y\&quot;:0.5,\&quot;z\&quot;:1.5}, \&amp;#10;            \&quot;translateSpeed\&quot;:2.0}\n&quot;&amp;#10;&amp;#10;eye_cmd1_1 = &quot;EyeController={\&quot;id\&quot;:\&quot;EyeController\&quot;, \&amp;#10;            \&quot;motionTowardObject\&quot;:\&quot;\&quot;, \&amp;#10;            \&quot;targetMotionMode\&quot;:2, \&amp;#10;            \&quot;targetPoint\&quot;:{\&quot;x\&quot;:0.0,\&quot;y\&quot;:1.2,\&quot;z\&quot;:1.5}, \&amp;#10;            \&quot;translateSpeed\&quot;:1.0}\n&quot;&amp;#10;&amp;#10;eye_cmd1_2 = &quot;EyeController={\&quot;id\&quot;:\&quot;EyeController\&quot;, \&amp;#10;            \&quot;motionTowardObject\&quot;:\&quot;\&quot;, \&amp;#10;            \&quot;targetMotionMode\&quot;:2, \&amp;#10;            \&quot;targetPoint\&quot;:{\&quot;x\&quot;:0.0,\&quot;y\&quot;:1.2,\&quot;z\&quot;:1.5}, \&amp;#10;            \&quot;translateSpeed\&quot;:2.0}\n&quot;&amp;#10;            &amp;#10;facs_cmd0 = &quot;facs InnerBrow 0 \&amp;#10;             Outerbrow 0 \&amp;#10;             UpperLid -1 \&amp;#10;             LowerLid 1 \&amp;#10;             Cheek 0 \&amp;#10;             NoseWrinkler 0 \&amp;#10;             UpperLip 0 \&amp;#10;             LipCorner 0 \&amp;#10;             MouthCornerStickout 0 \&amp;#10;             MouthOpen 0 \&amp;#10;             JawDrop 0\n&quot;&amp;#10;             &amp;#10;facs_cmd1 = &quot;facs InnerBrow 0 \&amp;#10;             Outerbrow 0 \&amp;#10;             UpperLid 0 \&amp;#10;             LowerLid 0 \&amp;#10;             Cheek 0 \&amp;#10;             NoseWrinkler 0 \&amp;#10;             UpperLip 0 \&amp;#10;             LipCorner 0 \&amp;#10;             MouthCornerStickout 0 \&amp;#10;             MouthOpen 0 \&amp;#10;             JawDrop 0\n&quot;" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="# Define JSON data&amp;#10;json_data = {&amp;#10;    &quot;completely_off&quot;: False&amp;#10;}&amp;#10;json_string = json.dumps(json_data)&amp;#10;&amp;#10;# Define topic and message types&amp;#10;topic = roslibpy.Topic(client, '/do_idle_behavior', 'std_msgs/String')&amp;#10;&amp;#10;# Send messages&amp;#10;message = roslibpy.Message({'data': json_string})&amp;#10;# time.sleep(1)&amp;#10;topic.publish(message)&amp;#10;# time.sleep(1)&amp;#10;&amp;#10;# Terminate connection&amp;#10;client.terminate()&amp;#10;&amp;#10;# socket client close&amp;#10;client1.close()&amp;#10;client2.close()" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="init_variable_2" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+      <CodeComponent name="init_text">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="json_data_ikimasu = {&amp;#10;    &quot;Command&quot;: &quot;ttsPlaywithParam&quot;,&amp;#10;    &quot;TtsID&quot;: 1023,&amp;#10;    &quot;Text&quot;: &quot;いきます。&quot;,&amp;#10;    &quot;Volume&quot;: 1.0,&amp;#10;    &quot;Rate&quot;: 1.0,&amp;#10;    &quot;Pitch&quot;: 1.0,&amp;#10;    &quot;Emphasis&quot;: 1.0,&amp;#10;    &quot;Emotion&quot;:&amp;#10;    {&amp;#10;        &quot;Joy&quot;: 0.0,&amp;#10;        &quot;Angry&quot;: 0.0,&amp;#10;        &quot;Sad&quot;: 0.0&amp;#10;    }&amp;#10;}&amp;#10;&amp;#10;json_ikimasu = json.dumps(json_data_ikimasu)&amp;#10;message_ikimasu = roslibpy.Message({'data': json_ikimasu})" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="init_text" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+      <CodeComponent name="init_stim">
+        <Param val="peakframe_ = 100.0 # 8 or 10&amp;#10;&amp;#10;# facs init value&amp;#10;iBrow   = 0.0 #innerBrow&amp;#10;oBrow   = 0.0 #outerbrow&amp;#10;uLid    = 0.0 #upperLid&amp;#10;lLid    = 0.0 #lowerLid&amp;#10;cheek   = 0.0 #cheek&amp;#10;nWrink  = 0.0 #noseWrinkler&amp;#10;uLip    = 0.0 #upperLip&amp;#10;lCorner = 0.0 #lipCorner&amp;#10;mCS     = 0.0 #mouthCornerStickout&amp;#10;oMouth  = 0.0 #mouthOpen&amp;#10;jDrop  = 0.0 #jawDrop&amp;#10;&amp;#10;# positive value&amp;#10;iBrow_p    = 1.0 #innerBrow&amp;#10;oBrow_p    = 0.5 #outerbrow&amp;#10;uLid_p     = 0.3 #upperLid&amp;#10;lLid_p     = 1.0 #lowerLid&amp;#10;cheek_p    = 1.0 #cheek&amp;#10;nWrink_p   = 0.0 #noseWrinkler&amp;#10;uLip_p     = 0.0 #upperLip&amp;#10;lCorner_p  = 0.5 #lipCorner&amp;#10;mCS_p      = 0.5 #mouthCornerStickout&amp;#10;oMouth_p   = 0.0 #mouthOpen&amp;#10;jDrop_p    = 0.0 #jawDrop&amp;#10;&amp;#10;# negative value&amp;#10;iBrow_n   = 1.0 #innerBrow&amp;#10;oBrow_n   = 0.0 #outerbrow&amp;#10;uLid_n    = -0.8 #upperLid&amp;#10;lLid_n    = 0.0 #lowerLid&amp;#10;cheek_n   = 0.0 #cheek&amp;#10;nWrink_n  = 0.0 #noseWrinkler&amp;#10;uLip_n    = 0.0 #upperLip&amp;#10;lCorner_n = -0.9 #lipCorner&amp;#10;mCS_n     = 0.0 #mouthCornerStickout&amp;#10;oMouth_n  = 0.0 #mouthOpen&amp;#10;jDrop_n   = 0.0 #jawDrop" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="iBrow_p_1   = iBrow_p   / peakframe_&amp;#10;oBrow_p_1   = oBrow_p   / peakframe_&amp;#10;uLid_p_1    = uLid_p    / peakframe_&amp;#10;lLid_p_1    = lLid_p    / peakframe_&amp;#10;cheek_p_1   = cheek_p   / peakframe_&amp;#10;nWrink_p_1  = nWrink_p  / peakframe_&amp;#10;uLip_p_1    = uLip_p    / peakframe_&amp;#10;lCorner_p_1 = lCorner_p / peakframe_&amp;#10;mCS_p_1     = mCS_p     / peakframe_&amp;#10;oMouth_p_1  = oMouth_p  / peakframe_&amp;#10;jDrop_p_1   = jDrop_p   / peakframe_&amp;#10;&amp;#10;iBrow_n_1   = iBrow_n   / peakframe_&amp;#10;oBrow_n_1   = oBrow_n   / peakframe_&amp;#10;uLid_n_1    = uLid_n    / peakframe_&amp;#10;lLid_n_1    = lLid_n    / peakframe_&amp;#10;cheek_n_1   = cheek_n   / peakframe_&amp;#10;nWrink_n_1  = nWrink_n  / peakframe_&amp;#10;uLip_n_1    = uLip_n    / peakframe_&amp;#10;lCorner_n_1 = lCorner_n / peakframe_&amp;#10;mCS_n_1     = mCS_n     / peakframe_&amp;#10;oMouth_n_1  = oMouth_n  / peakframe_&amp;#10;jDrop_n_1   = jDrop_n   / peakframe_" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="init_stim" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+    </Routine>
+    <Routine name="Idleoff">
+      <CodeComponent name="idle_off">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="# stop idle behavior&amp;#10;dib_topic.publish(message_idleoff)&amp;#10;time.sleep(1)" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="idle_off" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+    </Routine>
+    <Routine name="Explanation">
+      <TextComponent name="explanaton_1">
+        <Param val="white" valType="color" updates="constant" name="color"/>
+        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
+        <Param val="1" valType="num" updates="constant" name="contrast"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="None" valType="str" updates="constant" name="flip"/>
+        <Param val="Open Sans" valType="str" updates="constant" name="font"/>
+        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
+        <Param val="0.04" valType="num" updates="constant" name="letterHeight"/>
+        <Param val="explanaton_1" valType="code" updates="None" name="name"/>
+        <Param val="" valType="num" updates="constant" name="opacity"/>
+        <Param val="0" valType="num" updates="constant" name="ori"/>
+        <Param val="(0, 0.25)" valType="list" updates="constant" name="pos"/>
+        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="" valType="code" updates="constant" name="stopVal"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="実験を行います。&amp;#10;最初に、行きますの掛け声の後アンドロイドが表情を作成します。&amp;#10;その後、3つの表情を表出するので、その表情に最も近い表情を&amp;#10;キーボードの１～３で選択してください。" valType="str" updates="constant" name="text"/>
+        <Param val="from exp settings" valType="str" updates="None" name="units"/>
+        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
+      </TextComponent>
+      <MouseComponent name="routine_end_1">
+        <Param val="" valType="list" updates="constant" name="clickable"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="any click" valType="str" updates="constant" name="forceEndRoutineOnPress"/>
+        <Param val="routine_end_1" valType="code" updates="None" name="name"/>
+        <Param val="True" valType="bool" updates="constant" name="newClicksOnly"/>
+        <Param val="on click" valType="str" updates="None" name="saveMouseState"/>
+        <Param val="name," valType="list" updates="constant" name="saveParamsClickable"/>
+        <Param val="False" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="" valType="code" updates="constant" name="stopVal"/>
+        <Param val="False" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="mouse onset" valType="str" updates="constant" name="timeRelativeTo"/>
+      </MouseComponent>
+      <TextComponent name="disp_keyresp">
+        <Param val="white" valType="color" updates="constant" name="color"/>
+        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
+        <Param val="1" valType="num" updates="constant" name="contrast"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="None" valType="str" updates="constant" name="flip"/>
+        <Param val="Open Sans" valType="str" updates="constant" name="font"/>
+        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
+        <Param val="0.03" valType="num" updates="constant" name="letterHeight"/>
+        <Param val="disp_keyresp" valType="code" updates="None" name="name"/>
+        <Param val="" valType="num" updates="constant" name="opacity"/>
+        <Param val="0" valType="num" updates="constant" name="ori"/>
+        <Param val="(0, 0)" valType="list" updates="constant" name="pos"/>
+        <Param val="False" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="" valType="code" updates="constant" name="stopVal"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="" valType="str" updates="constant" name="text"/>
+        <Param val="from exp settings" valType="str" updates="None" name="units"/>
+        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
+      </TextComponent>
+      <KeyboardComponent name="keyresp">
+        <Param val="" valType="list" updates="constant" name="allowedKeys"/>
+        <Param val="" valType="str" updates="constant" name="correctAns"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="True" valType="bool" updates="constant" name="discard previous"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="False" valType="bool" updates="constant" name="forceEndRoutine"/>
+        <Param val="keyresp" valType="code" updates="None" name="name"/>
+        <Param val="False" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="" valType="code" updates="constant" name="stopVal"/>
+        <Param val="last key" valType="str" updates="constant" name="store"/>
+        <Param val="False" valType="bool" updates="constant" name="storeCorrect"/>
+        <Param val="False" valType="bool" updates="constant" name="syncScreenRefresh"/>
+      </KeyboardComponent>
+      <CodeComponent name="check_keyresp">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="displayText=''&amp;#10;text_=''" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="keys = keyresp.getKeys()&amp;#10;if keys:&amp;#10;    displayText = keys[-1].name&amp;#10;    if displayText == 'a' or displayText == '1':&amp;#10;        text_ = '1'&amp;#10;    elif displayText == 'b' or displayText == '2':&amp;#10;        text_ = '2'&amp;#10;    elif displayText == 'c' or displayText == '3':&amp;#10;        text_ = '3'&amp;#10;    else:&amp;#10;        text_ = &quot;左シフトか右シフトボタンを押してください。&quot;&amp;#10;    disp_keyresp.setText(text_)" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="check_keyresp" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+      <TextComponent name="explanation_2">
+        <Param val="white" valType="color" updates="constant" name="color"/>
+        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
+        <Param val="1" valType="num" updates="constant" name="contrast"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="None" valType="str" updates="constant" name="flip"/>
+        <Param val="Open Sans" valType="str" updates="constant" name="font"/>
+        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
+        <Param val="0.02" valType="num" updates="constant" name="letterHeight"/>
+        <Param val="explanation_2" valType="code" updates="None" name="name"/>
+        <Param val="" valType="num" updates="constant" name="opacity"/>
+        <Param val="0" valType="num" updates="constant" name="ori"/>
+        <Param val="(0, -0.25)" valType="list" updates="constant" name="pos"/>
+        <Param val="False" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="3" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="" valType="code" updates="constant" name="stopVal"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="マウスの左クリックを押して実験を開始します。" valType="str" updates="constant" name="text"/>
+        <Param val="from exp settings" valType="str" updates="None" name="units"/>
+        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
+      </TextComponent>
+    </Routine>
+    <Routine name="Test_init">
+      <CodeComponent name="init_variable">
+        <Param val="# Stop idle behavior&amp;#10;import roslibpy&amp;#10;import json&amp;#10;import time&amp;#10;import socket&amp;#10;import threading&amp;#10;&amp;#10;#  server setting&amp;#10;HOST = &quot;nikola-control.ad180.riken.go.jp&quot;&amp;#10;PORT1 = 21000&amp;#10;PORT2 = 20000&amp;#10;BUFSIZE = 4096&amp;#10;&amp;#10;# create socket&amp;#10;client1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)&amp;#10;client2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)&amp;#10;&amp;#10;# connect server&amp;#10;client1.connect((HOST, PORT1))&amp;#10;client2.connect((HOST, PORT2))&amp;#10;&amp;#10;# roslibpy server setting&amp;#10;client = roslibpy.Ros(host=&quot;nikola-master.local&quot;, port=9099)&amp;#10;client.run() # connect roslibpy &amp;#10;&amp;#10;# roslibpy topic &amp;#10;dib_topic = roslibpy.Topic(client, '/do_idle_behavior', 'std_msgs/String')&amp;#10;tts_topic = roslibpy.Topic(client, '/tts', 'std_msgs/String')&amp;#10;&amp;#10;# roslibpy message&amp;#10;compoff_true = {&quot;completely_off&quot;: True}   # stop idle behavior&amp;#10;compoff_false = {&quot;completely_off&quot;: False} # start idle behavior&amp;#10;&amp;#10;# init cmd&amp;#10;head_cmd0_1 = &quot;HeadController={\&quot;id\&quot;:\&quot;HeadController\&quot;, \&amp;#10;            \&quot;motionTowardObject\&quot;:\&quot;\&quot;, \&amp;#10;            \&quot;targetMotionMode\&quot;:2, \&amp;#10;            \&quot;targetPoint\&quot;:{\&quot;x\&quot;:0.0,\&quot;y\&quot;:0.5,\&quot;z\&quot;:1.5}, \&amp;#10;            \&quot;translateSpeed\&quot;:1.0}\n&quot;&amp;#10;            &amp;#10;head_cmd0_2 = &quot;HeadController={\&quot;id\&quot;:\&quot;HeadController\&quot;, \&amp;#10;            \&quot;motionTowardObject\&quot;:\&quot;\&quot;, \&amp;#10;            \&quot;targetMotionMode\&quot;:2, \&amp;#10;            \&quot;targetPoint\&quot;:{\&quot;x\&quot;:0.0,\&quot;y\&quot;:0.5,\&quot;z\&quot;:1.5}, \&amp;#10;            \&quot;translateSpeed\&quot;:2.0}\n&quot;&amp;#10;            &amp;#10;head_cmd1_1 = &quot;HeadController={\&quot;id\&quot;:\&quot;HeadController\&quot;, \&amp;#10;            \&quot;motionTowardObject\&quot;:\&quot;\&quot;, \&amp;#10;            \&quot;targetMotionMode\&quot;:2, \&amp;#10;            \&quot;targetPoint\&quot;:{\&quot;x\&quot;:0.0,\&quot;y\&quot;:1.2,\&quot;z\&quot;:1.5}, \&amp;#10;            \&quot;translateSpeed\&quot;:1.0}\n&quot;&amp;#10;            &amp;#10;head_cmd1_2 = &quot;HeadController={\&quot;id\&quot;:\&quot;HeadController\&quot;, \&amp;#10;            \&quot;motionTowardObject\&quot;:\&quot;\&quot;, \&amp;#10;            \&quot;targetMotionMode\&quot;:2, \&amp;#10;            \&quot;targetPoint\&quot;:{\&quot;x\&quot;:0.0,\&quot;y\&quot;:1.2,\&quot;z\&quot;:1.5}, \&amp;#10;            \&quot;translateSpeed\&quot;:2.0}\n&quot;&amp;#10;            &amp;#10;head_cmd3_1 = &quot;HeadController={\&quot;id\&quot;:\&quot;HeadController\&quot;, \&amp;#10;            \&quot;motionTowardObject\&quot;:\&quot;\&quot;, \&amp;#10;            \&quot;targetMotionMode\&quot;:2, \&amp;#10;            \&quot;targetPoint\&quot;:{\&quot;x\&quot;:0.0,\&quot;y\&quot;:0.9,\&quot;z\&quot;:1.5}, \&amp;#10;            \&quot;translateSpeed\&quot;:2.0}\n&quot;&amp;#10;&amp;#10;eye_cmd0_1 = &quot;EyeController={\&quot;id\&quot;:\&quot;EyeController\&quot;, \&amp;#10;            \&quot;motionTowardObject\&quot;:\&quot;\&quot;, \&amp;#10;            \&quot;targetMotionMode\&quot;:2, \&amp;#10;            \&quot;targetPoint\&quot;:{\&quot;x\&quot;:0.0,\&quot;y\&quot;:0.5,\&quot;z\&quot;:1.5}, \&amp;#10;            \&quot;translateSpeed\&quot;:1.0}\n&quot;&amp;#10;&amp;#10;eye_cmd0_2 = &quot;EyeController={\&quot;id\&quot;:\&quot;EyeController\&quot;, \&amp;#10;            \&quot;motionTowardObject\&quot;:\&quot;\&quot;, \&amp;#10;            \&quot;targetMotionMode\&quot;:2, \&amp;#10;            \&quot;targetPoint\&quot;:{\&quot;x\&quot;:0.0,\&quot;y\&quot;:0.5,\&quot;z\&quot;:1.5}, \&amp;#10;            \&quot;translateSpeed\&quot;:2.0}\n&quot;&amp;#10;&amp;#10;eye_cmd1_1 = &quot;EyeController={\&quot;id\&quot;:\&quot;EyeController\&quot;, \&amp;#10;            \&quot;motionTowardObject\&quot;:\&quot;\&quot;, \&amp;#10;            \&quot;targetMotionMode\&quot;:2, \&amp;#10;            \&quot;targetPoint\&quot;:{\&quot;x\&quot;:0.0,\&quot;y\&quot;:1.2,\&quot;z\&quot;:1.5}, \&amp;#10;            \&quot;translateSpeed\&quot;:1.0}\n&quot;&amp;#10;&amp;#10;eye_cmd1_2 = &quot;EyeController={\&quot;id\&quot;:\&quot;EyeController\&quot;, \&amp;#10;            \&quot;motionTowardObject\&quot;:\&quot;\&quot;, \&amp;#10;            \&quot;targetMotionMode\&quot;:2, \&amp;#10;            \&quot;targetPoint\&quot;:{\&quot;x\&quot;:0.0,\&quot;y\&quot;:1.2,\&quot;z\&quot;:1.5}, \&amp;#10;            \&quot;translateSpeed\&quot;:2.0}\n&quot;&amp;#10;            &amp;#10;facs_cmd0 = &quot;facs InnerBrow 0 \&amp;#10;             Outerbrow 0 \&amp;#10;             UpperLid -1 \&amp;#10;             LowerLid 1 \&amp;#10;             Cheek 0 \&amp;#10;             NoseWrinkler 0 \&amp;#10;             UpperLip 0 \&amp;#10;             LipCorner 0 \&amp;#10;             MouthCornerStickout 0 \&amp;#10;             MouthOpen 0 \&amp;#10;             JawDrop 0\n&quot;&amp;#10;             &amp;#10;facs_cmd1 = &quot;facs InnerBrow 0 \&amp;#10;             Outerbrow 0 \&amp;#10;             UpperLid 0 \&amp;#10;             LowerLid 0 \&amp;#10;             Cheek 0 \&amp;#10;             NoseWrinkler 0 \&amp;#10;             UpperLip 0 \&amp;#10;             LipCorner 0 \&amp;#10;             MouthCornerStickout 0 \&amp;#10;             MouthOpen 0 \&amp;#10;             JawDrop 0\n&quot;" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="# Define JSON data&amp;#10;json_data = {&amp;#10;    &quot;completely_off&quot;: False&amp;#10;}&amp;#10;json_string = json.dumps(json_data)&amp;#10;&amp;#10;# Define topic and message types&amp;#10;topic = roslibpy.Topic(client, '/do_idle_behavior', 'std_msgs/String')&amp;#10;&amp;#10;# Send messages&amp;#10;message = roslibpy.Message({'data': json_string})&amp;#10;# time.sleep(1)&amp;#10;topic.publish(message)&amp;#10;# time.sleep(1)&amp;#10;&amp;#10;# Terminate connection&amp;#10;client.terminate()&amp;#10;&amp;#10;# socket client close&amp;#10;client1.close()&amp;#10;client2.close()" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="True" valType="bool" updates="None" name="disabled"/>
+        <Param val="init_variable" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+      <CodeComponent name="idle_off__test">
+        <Param val="# stop idle behavior&amp;#10;dib_topic.publish(message_idleoff)&amp;#10;time.sleep(1)&amp;#10;&amp;#10;# close eye&amp;#10;client2.send(facs_cmd0.encode(&quot;utf-8&quot;))&amp;#10;time.sleep(1)" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="idle_off__test" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+      <CodeComponent name="Init_pose_test">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="# head and eye moves to init position&amp;#10;client1.send(head_cmd0_1.encode(&quot;utf-8&quot;))&amp;#10;client1.send(eye_cmd0_2.encode(&quot;utf-8&quot;))&amp;#10;time.sleep(3)" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="Init_pose_test" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+      <CodeComponent name="start_pose_test">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="client1.send(head_cmd1_1.encode(&quot;utf-8&quot;))&amp;#10;time.sleep(2)" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="start_pose_test" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+      <CodeComponent name="ikimasu_test">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="tts_topic.publish(message_ikimasu)&amp;#10;time.sleep(2)" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="ikimasu_test" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+      <CodeComponent name="ready_pose_test">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="client2.send(facs_cmd1.encode(&quot;utf-8&quot;))&amp;#10;client1.send(eye_cmd1_2.encode(&quot;utf-8&quot;))&amp;#10;time.sleep(2)" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="ready_pose_test" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+    </Routine>
+    <Routine name="Test_stim">
+      <CodeComponent name="stim_test">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="num_01 = method&amp;#10;num_02 = expression&amp;#10;num_03 = level_&amp;#10;&amp;#10;print(num_01, num_02, num_03)&amp;#10;&amp;#10;counter_ = 0&amp;#10;ratio_ = 0&amp;#10;&amp;#10;if num_03 == 1: # 60%&amp;#10;        ratio_ = 60&amp;#10;elif num_03 == 2: # 90%&amp;#10;        ratio_ = 90&amp;#10;        &amp;#10;# STATIC&amp;#10;if num_01 == 2:&amp;#10;    # NEGATIVE&amp;#10;    if num_02 == 1:&amp;#10;        # calc negative pose&amp;#10;        iBrow   = iBrow_n&amp;#10;        oBrow   = 0 #oBrow_n&amp;#10;        uLid    = uLid_n&amp;#10;        lLid    = 0 #lLid_n&amp;#10;        cheek   = 0 #cheek_n&amp;#10;        nWrink  = 0 #nWrink_n&amp;#10;        uLip    = 0 #uLip_n&amp;#10;        lCorner = lCorner_n&amp;#10;        mCS     = 0 #mCS_n&amp;#10;        oMouth  = 0 #oMouth_n&amp;#10;        jDrop   = 0 #jDrop_n&amp;#10;    # POSITIVE&amp;#10;    elif num_02 == 2:&amp;#10;        # calc positive pose&amp;#10;        iBrow   = iBrow_p&amp;#10;        oBrow   = oBrow_p&amp;#10;        uLid    = uLid_p&amp;#10;        lLid    = lLid_p&amp;#10;        cheek   = cheek_p&amp;#10;        nWrink  = 0 #nWrink_p&amp;#10;        uLip    = 0 #uLip_p&amp;#10;        lCorner = lCorner_p&amp;#10;        mCS     = mCS_p&amp;#10;        oMouth  = 0 #oMouth_p&amp;#10;        jDrop   = 0 #jDrop_p" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="print(counter_)&amp;#10;# DYNAMIC&amp;#10;if num_01 == 1:&amp;#10;    # NEGATIVE&amp;#10;    if num_02 == 1:&amp;#10;        # calc negative pose&amp;#10;        iBrow   = iBrow_n_1   * counter_&amp;#10;        oBrow   = 0 #oBrow_n_1   * counter_&amp;#10;        uLid    = uLid_n_1    * counter_&amp;#10;        lLid    = 0 #lLid_n_1    * counter_&amp;#10;        cheek   = 0 #cheek_n_1   * counter_&amp;#10;        nWrink  = 0 #nWrink_n_1  * counter_&amp;#10;        uLip    = 0 #uLip_n_1    * counter_&amp;#10;        lCorner = lCorner_n_1 * counter_&amp;#10;        mCS     = 0 #mCS_n_1     * counter_&amp;#10;        oMouth  = 0 #oMouth_n_1  * counter_&amp;#10;        jDrop   = 0 #jDrop_n_1   * counter_&amp;#10;        &amp;#10;    # POSITIVE&amp;#10;    elif num_02 == 2:&amp;#10;        # calc positive pose&amp;#10;        iBrow   = iBrow_p_1   * counter_&amp;#10;        oBrow   = oBrow_p_1   * counter_&amp;#10;        uLid    = uLid_p_1    * counter_&amp;#10;        lLid    = lLid_p_1    * counter_&amp;#10;        cheek   = cheek_p_1   * counter_&amp;#10;        nWrink  = 0 #nWrink_p_1  * counter_&amp;#10;        uLip    = 0 #uLip_p_1    * counter_&amp;#10;        lCorner = lCorner_p_1 * counter_&amp;#10;        mCS     = mCS_p_1     * counter_&amp;#10;        oMouth  = 0 #oMouth_p_1  * counter_&amp;#10;        jDrop   = 0 #jDrop_p_1   * counter_&amp;#10;&amp;#10;if ratio_ &gt;= counter_:&amp;#10;    cmd = &quot;facs InnerBrow &quot;       + str(iBrow) + \&amp;#10;          &quot; Outerbrow &quot;           + str(oBrow) + \&amp;#10;          &quot; UpperLid &quot;            + str(uLid) + \&amp;#10;          &quot; LowerLid &quot;            + str(lLid) + \&amp;#10;          &quot; Cheek &quot;               + str(cheek) + \&amp;#10;          &quot; NoseWrinkler &quot;        + str(0) + \&amp;#10;          &quot; UpperLip &quot;            + str(0) + \&amp;#10;          &quot; LipCorner &quot;           + str(lCorner) + \&amp;#10;          &quot; MouthCornerStickout &quot; + str(mCS) + \&amp;#10;          &quot; MouthOpen &quot;           + str(0) + \&amp;#10;          &quot; JawDrop &quot;             + str(0) + &quot;\n&quot;&amp;#10;    client2.send(cmd.encode(&quot;utf-8&quot;))&amp;#10;else:&amp;#10;    cmd = &quot;facs InnerBrow &quot;       + str(0) + \&amp;#10;          &quot; Outerbrow &quot;           + str(0) + \&amp;#10;          &quot; UpperLid &quot;            + str(0) + \&amp;#10;          &quot; LowerLid &quot;            + str(0) + \&amp;#10;          &quot; Cheek &quot;               + str(0) + \&amp;#10;          &quot; NoseWrinkler &quot;        + str(0) + \&amp;#10;          &quot; UpperLip &quot;            + str(0) + \&amp;#10;          &quot; LipCorner &quot;           + str(0) + \&amp;#10;          &quot; MouthCornerStickout &quot; + str(0) + \&amp;#10;          &quot; MouthOpen &quot;           + str(0) + \&amp;#10;          &quot; JawDrop &quot;             + str(0) + &quot;\n&quot;&amp;#10;    client2.send(cmd.encode(&quot;utf-8&quot;))&amp;#10;    time.sleep(0.5)&amp;#10;&amp;#10;counter_ = counter_ + 1" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="stim_test" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+    </Routine>
+    <Routine name="Test_fin">
+      <CodeComponent name="stim_end_test">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="client1.send(head_cmd1_1.encode(&quot;utf-8&quot;))&amp;#10;client1.send(eye_cmd1_2.encode(&quot;utf-8&quot;))&amp;#10;time.sleep(2)" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="stim_end_test" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+      <CodeComponent name="Init_pose_test_2">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="client1.send(head_cmd0_1.encode(&quot;utf-8&quot;))&amp;#10;client2.send(facs_cmd0.encode(&quot;utf-8&quot;))&amp;#10;client1.send(eye_cmd0_2.encode(&quot;utf-8&quot;))&amp;#10;time.sleep(3)" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="Init_pose_test_2" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+    </Routine>
+    <Routine name="Idleon">
+      <CodeComponent name="start_idle">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="dib_topic.publish(message_idleon)&amp;#10;time.sleep(1)&amp;#10;&amp;#10;client2.send(facs_cmd1.encode(&quot;utf-8&quot;))&amp;#10;time.sleep(1)" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="start_idle" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+    </Routine>
+    <Routine name="Emo">
+      <TextComponent name="explanation_emotion">
+        <Param val="white" valType="color" updates="constant" name="color"/>
+        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
+        <Param val="1" valType="num" updates="constant" name="contrast"/>
+        <Param val="True" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="None" valType="str" updates="constant" name="flip"/>
+        <Param val="Open Sans" valType="str" updates="constant" name="font"/>
+        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
+        <Param val="0.05" valType="num" updates="constant" name="letterHeight"/>
+        <Param val="explanation_emotion" valType="code" updates="None" name="name"/>
+        <Param val="" valType="num" updates="constant" name="opacity"/>
+        <Param val="0" valType="num" updates="constant" name="ori"/>
+        <Param val="(0, 0)" valType="list" updates="constant" name="pos"/>
+        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="" valType="code" updates="constant" name="stopVal"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="評価用の表情を表示します。" valType="str" updates="constant" name="text"/>
+        <Param val="from exp settings" valType="str" updates="None" name="units"/>
+        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
+      </TextComponent>
+      <CodeComponent name="start_pose_ichi">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="client2.send(facs_cmd1.encode(&quot;utf-8&quot;))&amp;#10;time.sleep(1)&amp;#10;&amp;#10;client1.send(head_cmd1_1.encode(&quot;utf-8&quot;))&amp;#10;time.sleep(2)" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="start_pose_ichi" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+      <CodeComponent name="ichi">
+        <Param val="json_data_ichi = {&amp;#10;    &quot;Command&quot;: &quot;ttsPlaywithParam&quot;,&amp;#10;    &quot;TtsID&quot;: 1023,&amp;#10;    &quot;Text&quot;: &quot;いち&quot;,&amp;#10;    &quot;Volume&quot;: Master_Volume,&amp;#10;    &quot;Rate&quot;: 1.0,&amp;#10;    &quot;Pitch&quot;: 1.0,&amp;#10;    &quot;Emphasis&quot;: 1.0,&amp;#10;    &quot;Emotion&quot;:&amp;#10;    {&amp;#10;        &quot;Joy&quot;: 0.0,&amp;#10;        &quot;Angry&quot;: 0.0,&amp;#10;        &quot;Sad&quot;: 0.0&amp;#10;    }&amp;#10;}" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="json_string = json.dumps(json_data_ichi)&amp;#10;message = roslibpy.Message({'data': json_string})&amp;#10;time.sleep(1)&amp;#10;&amp;#10;tts_topic.publish(message)&amp;#10;time.sleep(1)" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="ichi" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+      <CodeComponent name="emo_1">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="# FACS Piece Value&amp;#10;# NEGATIVE&amp;#10;iBrow_n_piece   = iBrow_n   / peakframe_ #innerBrow&amp;#10;oBrow_n_piece   = oBrow_n   / peakframe_ #outerbrow&amp;#10;uLid_n_piece    = uLid_n    / peakframe_ #upperLid&amp;#10;lLid_n_piece    = lLid_n    / peakframe_ #lowerLid&amp;#10;cheek_n_piece   = cheek_n   / peakframe_ #cheek&amp;#10;nWrink_n_piece  = 0 #nWrink_n  / peakframe_ #noseWrinkler&amp;#10;uLip_n_piece    = 0 #uLip_n    / peakframe_ #upperLip&amp;#10;lCorner_n_piece = lCorner_n / peakframe_ #lipCorner&amp;#10;mCS_n_piece     = mCS_n     / peakframe_ #mouthCornerStickout&amp;#10;oMouth_n_piece  = 0 #oMouth_n  / peakframe_ #mouthOpen&amp;#10;jDrop_n_piece   = 0 #jDrop_n   / peakframe_ #jawDrop&amp;#10;&amp;#10;# POSITIVE&amp;#10;iBrow_p_piece   = iBrow_p   / peakframe_ #innerBrow&amp;#10;oBrow_p_piece   = oBrow_p   / peakframe_ #outerbrow&amp;#10;uLid_p_piece    = uLid_p    / peakframe_ #upperLid&amp;#10;lLid_p_piece    = lLid_p    / peakframe_ #lowerLid&amp;#10;cheek_p_piece   = cheek_p   / peakframe_ #cheek&amp;#10;nWrink_p_piece  = 0 #nWrink_p  / peakframe_ #noseWrinkler&amp;#10;uLip_p_piece    = 0 #uLip_p    / peakframe_ #upperLip&amp;#10;lCorner_p_piece = lCorner_p / peakframe_ #lipCorner&amp;#10;mCS_p_piece     = mCS_p     / peakframe_ #mouthCornerStickout&amp;#10;oMouth_p_piece  = 0 #oMouth_p  / peakframe_ #mouthOpen&amp;#10;jDrop_p_piece   = 0 #jDrop_p   / peakframe_ #jawDrop" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="num_02 = expression&amp;#10;num_03 = level_&amp;#10;&amp;#10;magnification_1 = 5.5&amp;#10;magnification_2 = 8.5&amp;#10;&amp;#10;# NEGATIVE&amp;#10;if num_02 == 1:&amp;#10;    if num_03 == 1: # 60%&amp;#10;        iBrow   = iBrow_n_piece   * magnification_1&amp;#10;        oBrow   = oBrow_n_piece   * magnification_1&amp;#10;        uLid    = uLid_n_piece    * magnification_1&amp;#10;        lLid    = lLid_n_piece    * magnification_1&amp;#10;        cheek   = cheek_n_piece   * magnification_1&amp;#10;        nWrink  = 0 #nWrink_n_piece  * magnification_1&amp;#10;        uLip    = 0 #uLip_n_piece    * magnification_1&amp;#10;        lCorner = lCorner_n_piece * magnification_1&amp;#10;        mCS     = mCS_n_piece     * magnification_1&amp;#10;        oMouth  = 0 #oMouth_n_piece  * magnification_1&amp;#10;        jDrop   = 0 #jDrop_n_piece   * magnification_1&amp;#10;        &amp;#10;    elif num_03 == 2: # 90%&amp;#10;        iBrow   = iBrow_n_piece   * magnification_2&amp;#10;        oBrow   = oBrow_n_piece   * magnification_2&amp;#10;        uLid    = uLid_n_piece    * magnification_2&amp;#10;        lLid    = lLid_n_piece    * magnification_2&amp;#10;        cheek   = cheek_n_piece   * magnification_2&amp;#10;        nWrink  = 0 #nWrink_n_piece  * magnification_2&amp;#10;        uLip    = 0 #uLip_n_piece    * magnification_2&amp;#10;        lCorner = lCorner_n_piece * magnification_2&amp;#10;        mCS     = mCS_n_piece     * magnification_2&amp;#10;        oMouth  = 0 #oMouth_n_piece  * magnification_2&amp;#10;        jDrop   = 0 #jDrop_n_piece   * magnification_2&amp;#10;        &amp;#10;# POSITIVE&amp;#10;elif num_02 == 2:&amp;#10;    if num_03 == 1: # 60%&amp;#10;        iBrow   = iBrow_p_piece   * magnification_1&amp;#10;        oBrow   = oBrow_p_piece   * magnification_1&amp;#10;        uLid    = uLid_p_piece    * magnification_1&amp;#10;        lLid    = lLid_p_piece    * magnification_1&amp;#10;        cheek   = cheek_p_piece   * magnification_1&amp;#10;        nWrink  = 0 #nWrink_p_piece  * magnification_1&amp;#10;        uLip    = 0 #uLip_p_piece    * magnification_1&amp;#10;        lCorner = lCorner_p_piece * magnification_1&amp;#10;        mCS     = mCS_p_piece     * magnification_1&amp;#10;        oMouth  = 0 #oMouth_p_piece  * magnification_1&amp;#10;        jDrop   = 0 #jDrop_p_piece   * magnification_1&amp;#10;        &amp;#10;    elif num_03 == 2: # 90%&amp;#10;        iBrow   = iBrow_p_piece   * magnification_2&amp;#10;        oBrow   = oBrow_p_piece   * magnification_2&amp;#10;        uLid    = uLid_p_piece    * magnification_2&amp;#10;        lLid    = lLid_p_piece    * magnification_2&amp;#10;        cheek   = cheek_p_piece   * magnification_2&amp;#10;        nWrink  = 0 #nWrink_p_piece  * magnification_2&amp;#10;        uLip    = 0 #uLip_p_piece    * magnification_2&amp;#10;        lCorner = lCorner_p_piece * magnification_2&amp;#10;        mCS     = mCS_p_piece     * magnification_2&amp;#10;        oMouth  = 0 #oMouth_p_piece  * magnification_2&amp;#10;        jDrop   = 0 #jDrop_p_piece   * magnification_2&amp;#10;        &amp;#10;cmd = &quot;facs InnerBrow &quot;           + str(iBrow)   + \&amp;#10;          &quot; Outerbrow &quot;           + str(oBrow)   + \&amp;#10;          &quot; UpperLid &quot;            + str(uLid)    + \&amp;#10;          &quot; LowerLid &quot;            + str(lLid)    + \&amp;#10;          &quot; Cheek &quot;               + str(cheek)   + \&amp;#10;          &quot; NoseWrinkler &quot;        + str(0)       + \&amp;#10;          &quot; UpperLip &quot;            + str(0)       + \&amp;#10;          &quot; LipCorner &quot;           + str(lCorner) + \&amp;#10;          &quot; MouthCornerStickout &quot; + str(mCS)     + \&amp;#10;          &quot; MouthOpen &quot;           + str(0)       + \&amp;#10;          &quot; JawDrop &quot;             + str(0)       + &quot;\n&quot;&amp;#10;time.sleep(2)&amp;#10;&amp;#10;client2.send(cmd.encode(&quot;utf-8&quot;))&amp;#10;time.sleep(0.5)" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="emo_1" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+      <CodeComponent name="start_pose_ni">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="client2.send(facs_cmd1.encode(&quot;utf-8&quot;))&amp;#10;time.sleep(1)&amp;#10;&amp;#10;client1.send(head_cmd1_1.encode(&quot;utf-8&quot;))&amp;#10;time.sleep(2)" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="start_pose_ni" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+      <CodeComponent name="ni">
+        <Param val="json_data_ni = {&amp;#10;    &quot;Command&quot;: &quot;ttsPlaywithParam&quot;,&amp;#10;    &quot;TtsID&quot;: 1023,&amp;#10;    &quot;Text&quot;: &quot;に&quot;,&amp;#10;    &quot;Volume&quot;: Master_Volume,&amp;#10;    &quot;Rate&quot;: 1.0,&amp;#10;    &quot;Pitch&quot;: 1.0,&amp;#10;    &quot;Emphasis&quot;: 1.0,&amp;#10;    &quot;Emotion&quot;:&amp;#10;    {&amp;#10;        &quot;Joy&quot;: 0.0,&amp;#10;        &quot;Angry&quot;: 0.0,&amp;#10;        &quot;Sad&quot;: 0.0&amp;#10;    }&amp;#10;}" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="json_string = json.dumps(json_data_ni)&amp;#10;message = roslibpy.Message({'data': json_string})&amp;#10;time.sleep(1)&amp;#10;&amp;#10;tts_topic.publish(message)&amp;#10;time.sleep(1)" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="ni" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+      <CodeComponent name="emo_2">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="num_02 = expression&amp;#10;num_03 = level_&amp;#10;&amp;#10;magnification_1 = 6&amp;#10;magnification_2 = 9&amp;#10;&amp;#10;# NEGATIVE&amp;#10;if num_02 == 1:&amp;#10;    if num_03 == 1: # 60%&amp;#10;        iBrow   = iBrow_n_piece   * magnification_1&amp;#10;        oBrow   = oBrow_n_piece   * magnification_1&amp;#10;        uLid    = uLid_n_piece    * magnification_1&amp;#10;        lLid    = lLid_n_piece    * magnification_1&amp;#10;        cheek   = cheek_n_piece   * magnification_1&amp;#10;        nWrink  = 0 #nWrink_n_piece  * magnification_1&amp;#10;        uLip    = 0 #uLip_n_piece    * magnification_1&amp;#10;        lCorner = lCorner_n_piece * magnification_1&amp;#10;        mCS     = mCS_n_piece     * magnification_1&amp;#10;        oMouth  = 0 #oMouth_n_piece  * magnification_1&amp;#10;        jDrop   = 0 #jDrop_n_piece   * magnification_1&amp;#10;        &amp;#10;    elif num_03 == 2: # 90%&amp;#10;        iBrow   = iBrow_n_piece   * magnification_2&amp;#10;        oBrow   = oBrow_n_piece   * magnification_2&amp;#10;        uLid    = uLid_n_piece    * magnification_2&amp;#10;        lLid    = lLid_n_piece    * magnification_2&amp;#10;        cheek   = cheek_n_piece   * magnification_2&amp;#10;        nWrink  = 0 #nWrink_n_piece  * magnification_2&amp;#10;        uLip    = 0 #uLip_n_piece    * magnification_2&amp;#10;        lCorner = lCorner_n_piece * magnification_2&amp;#10;        mCS     = mCS_n_piece     * magnification_2&amp;#10;        oMouth  = 0 #oMouth_n_piece  * magnification_2&amp;#10;        jDrop   = 0 #jDrop_n_piece   * magnification_2&amp;#10;        &amp;#10;# POSITIVE&amp;#10;elif num_02 == 2:&amp;#10;    if num_03 == 1: # 60%&amp;#10;        iBrow   = iBrow_p_piece   * magnification_1&amp;#10;        oBrow   = oBrow_p_piece   * magnification_1&amp;#10;        uLid    = uLid_p_piece    * magnification_1&amp;#10;        lLid    = lLid_p_piece    * magnification_1&amp;#10;        cheek   = cheek_p_piece   * magnification_1&amp;#10;        nWrink  = 0 #nWrink_p_piece  * magnification_1&amp;#10;        uLip    = 0 #uLip_p_piece    * magnification_1&amp;#10;        lCorner = lCorner_p_piece * magnification_1&amp;#10;        mCS     = mCS_p_piece     * magnification_1&amp;#10;        oMouth  = 0 #oMouth_p_piece  * magnification_1&amp;#10;        jDrop   = 0 #jDrop_p_piece   * magnification_1&amp;#10;        &amp;#10;    elif num_03 == 2: # 90%&amp;#10;        iBrow   = iBrow_p_piece   * magnification_2&amp;#10;        oBrow   = oBrow_p_piece   * magnification_2&amp;#10;        uLid    = uLid_p_piece    * magnification_2&amp;#10;        lLid    = lLid_p_piece    * magnification_2&amp;#10;        cheek   = cheek_p_piece   * magnification_2&amp;#10;        nWrink  = 0 #nWrink_p_piece  * magnification_2&amp;#10;        uLip    = 0 #uLip_p_piece    * magnification_2&amp;#10;        lCorner = lCorner_p_piece * magnification_2&amp;#10;        mCS     = mCS_p_piece     * magnification_2&amp;#10;        oMouth  = 0 #oMouth_p_piece  * magnification_2&amp;#10;        jDrop   = 0 #jDrop_p_piece   * magnification_2&amp;#10;        &amp;#10;cmd = &quot;facs InnerBrow &quot;           + str(iBrow)   + \&amp;#10;          &quot; Outerbrow &quot;           + str(oBrow)   + \&amp;#10;          &quot; UpperLid &quot;            + str(uLid)    + \&amp;#10;          &quot; LowerLid &quot;            + str(lLid)    + \&amp;#10;          &quot; Cheek &quot;               + str(cheek)   + \&amp;#10;          &quot; NoseWrinkler &quot;        + str(0)       + \&amp;#10;          &quot; UpperLip &quot;            + str(0)       + \&amp;#10;          &quot; LipCorner &quot;           + str(lCorner) + \&amp;#10;          &quot; MouthCornerStickout &quot; + str(mCS)     + \&amp;#10;          &quot; MouthOpen &quot;           + str(0)       + \&amp;#10;          &quot; JawDrop &quot;             + str(0)       + &quot;\n&quot;&amp;#10;time.sleep(2)&amp;#10;&amp;#10;client2.send(cmd.encode(&quot;utf-8&quot;))&amp;#10;time.sleep(0.5)" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="emo_2" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+      <CodeComponent name="start_pose_san">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="client2.send(facs_cmd1.encode(&quot;utf-8&quot;))&amp;#10;time.sleep(1)&amp;#10;&amp;#10;client1.send(head_cmd1_1.encode(&quot;utf-8&quot;))&amp;#10;time.sleep(2)" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="start_pose_san" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+      <CodeComponent name="san">
+        <Param val="json_data_san = {&amp;#10;    &quot;Command&quot;: &quot;ttsPlaywithParam&quot;,&amp;#10;    &quot;TtsID&quot;: 1023,&amp;#10;    &quot;Text&quot;: &quot;さん&quot;,&amp;#10;    &quot;Volume&quot;: Master_Volume,&amp;#10;    &quot;Rate&quot;: 1.0,&amp;#10;    &quot;Pitch&quot;: 1.0,&amp;#10;    &quot;Emphasis&quot;: 1.0,&amp;#10;    &quot;Emotion&quot;:&amp;#10;    {&amp;#10;        &quot;Joy&quot;: 0.0,&amp;#10;        &quot;Angry&quot;: 0.0,&amp;#10;        &quot;Sad&quot;: 0.0&amp;#10;    }&amp;#10;}" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="json_string = json.dumps(json_data_san)&amp;#10;message = roslibpy.Message({'data': json_string})&amp;#10;time.sleep(1)&amp;#10;&amp;#10;tts_topic.publish(message)&amp;#10;time.sleep(1)" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="san" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+      <CodeComponent name="emo_3">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="num_02 = expression&amp;#10;num_03 = level_&amp;#10;&amp;#10;magnification_1 = 5.5&amp;#10;magnification_2 = 8.5&amp;#10;&amp;#10;# NEGATIVE&amp;#10;if num_02 == 1:&amp;#10;    if num_03 == 1: # 60%&amp;#10;        iBrow   = iBrow_n_piece   * magnification_1&amp;#10;        oBrow   = oBrow_n_piece   * magnification_1&amp;#10;        uLid    = uLid_n_piece    * magnification_1&amp;#10;        lLid    = lLid_n_piece    * magnification_1&amp;#10;        cheek   = cheek_n_piece   * magnification_1&amp;#10;        nWrink  = 0 #nWrink_n_piece  * magnification_1&amp;#10;        uLip    = 0 #uLip_n_piece    * magnification_1&amp;#10;        lCorner = lCorner_n_piece * magnification_1&amp;#10;        mCS     = mCS_n_piece     * magnification_1&amp;#10;        oMouth  = 0 #oMouth_n_piece  * magnification_1&amp;#10;        jDrop   = 0 #jDrop_n_piece   * magnification_1&amp;#10;        &amp;#10;    elif num_03 == 2: # 90%&amp;#10;        iBrow   = iBrow_n_piece   * magnification_2&amp;#10;        oBrow   = oBrow_n_piece   * magnification_2&amp;#10;        uLid    = uLid_n_piece    * magnification_2&amp;#10;        lLid    = lLid_n_piece    * magnification_2&amp;#10;        cheek   = cheek_n_piece   * magnification_2&amp;#10;        nWrink  = 0 #nWrink_n_piece  * magnification_2&amp;#10;        uLip    = 0 #uLip_n_piece    * magnification_2&amp;#10;        lCorner = lCorner_n_piece * magnification_2&amp;#10;        mCS     = mCS_n_piece     * magnification_2&amp;#10;        oMouth  = 0 #oMouth_n_piece  * magnification_2&amp;#10;        jDrop   = 0 #jDrop_n_piece   * magnification_2&amp;#10;        &amp;#10;# POSITIVE&amp;#10;elif num_02 == 2:&amp;#10;    if num_03 == 1: # 60%&amp;#10;        iBrow   = iBrow_p_piece   * magnification_1&amp;#10;        oBrow   = oBrow_p_piece   * magnification_1&amp;#10;        uLid    = uLid_p_piece    * magnification_1&amp;#10;        lLid    = lLid_p_piece    * magnification_1&amp;#10;        cheek   = cheek_p_piece   * magnification_1&amp;#10;        nWrink  = 0 #nWrink_p_piece  * magnification_1&amp;#10;        uLip    = 0 #uLip_p_piece    * magnification_1&amp;#10;        lCorner = lCorner_p_piece * magnification_1&amp;#10;        mCS     = mCS_p_piece     * magnification_1&amp;#10;        oMouth  = 0 #oMouth_p_piece  * magnification_1&amp;#10;        jDrop   = 0 #jDrop_p_piece   * magnification_1&amp;#10;        &amp;#10;    elif num_03 == 2: # 90%&amp;#10;        iBrow   = iBrow_p_piece   * magnification_2&amp;#10;        oBrow   = oBrow_p_piece   * magnification_2&amp;#10;        uLid    = uLid_p_piece    * magnification_2&amp;#10;        lLid    = lLid_p_piece    * magnification_2&amp;#10;        cheek   = cheek_p_piece   * magnification_2&amp;#10;        nWrink  = 0 #nWrink_p_piece  * magnification_2&amp;#10;        uLip    = 0 #uLip_p_piece    * magnification_2&amp;#10;        lCorner = lCorner_p_piece * magnification_2&amp;#10;        mCS     = mCS_p_piece     * magnification_2&amp;#10;        oMouth  = 0 #oMouth_p_piece  * magnification_2&amp;#10;        jDrop   = 0 #jDrop_p_piece   * magnification_2&amp;#10;        &amp;#10;cmd = &quot;facs InnerBrow &quot;           + str(iBrow)   + \&amp;#10;          &quot; Outerbrow &quot;           + str(oBrow)   + \&amp;#10;          &quot; UpperLid &quot;            + str(uLid)    + \&amp;#10;          &quot; LowerLid &quot;            + str(lLid)    + \&amp;#10;          &quot; Cheek &quot;               + str(cheek)   + \&amp;#10;          &quot; NoseWrinkler &quot;        + str(0)       + \&amp;#10;          &quot; UpperLip &quot;            + str(0)       + \&amp;#10;          &quot; LipCorner &quot;           + str(lCorner) + \&amp;#10;          &quot; MouthCornerStickout &quot; + str(mCS)     + \&amp;#10;          &quot; MouthOpen &quot;           + str(0)       + \&amp;#10;          &quot; JawDrop &quot;             + str(0)       + &quot;\n&quot;&amp;#10;time.sleep(2)&amp;#10;&amp;#10;client2.send(cmd.encode(&quot;utf-8&quot;))&amp;#10;time.sleep(0.5)" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="emo_3" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+      <CodeComponent name="start_pose_end">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="client2.send(facs_cmd1.encode(&quot;utf-8&quot;))&amp;#10;time.sleep(1)&amp;#10;&amp;#10;client1.send(head_cmd1_1.encode(&quot;utf-8&quot;))&amp;#10;time.sleep(2)" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="start_pose_end" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+    </Routine>
+    <Routine name="Check">
+      <TextComponent name="text_4">
+        <Param val="white" valType="color" updates="constant" name="color"/>
+        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
+        <Param val="1" valType="num" updates="constant" name="contrast"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="None" valType="str" updates="constant" name="flip"/>
+        <Param val="Open Sans" valType="str" updates="constant" name="font"/>
+        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
+        <Param val="0.02" valType="num" updates="constant" name="letterHeight"/>
+        <Param val="text_4" valType="code" updates="None" name="name"/>
+        <Param val="" valType="num" updates="constant" name="opacity"/>
+        <Param val="0" valType="num" updates="constant" name="ori"/>
+        <Param val="(0, 0.15)" valType="list" updates="constant" name="pos"/>
+        <Param val="False" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="" valType="code" updates="constant" name="stopVal"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="Nikolaの表出した表情の中で最も近い番号をキーボードの１～３で選択してください。" valType="str" updates="constant" name="text"/>
+        <Param val="from exp settings" valType="str" updates="None" name="units"/>
+        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
+      </TextComponent>
+      <KeyboardComponent name="key_resp_2">
+        <Param val="'1','2','3'" valType="list" updates="constant" name="allowedKeys"/>
+        <Param val="" valType="str" updates="constant" name="correctAns"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="True" valType="bool" updates="constant" name="discard previous"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="True" valType="bool" updates="constant" name="forceEndRoutine"/>
+        <Param val="key_resp_2" valType="code" updates="None" name="name"/>
+        <Param val="False" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="" valType="code" updates="constant" name="stopVal"/>
+        <Param val="last key" valType="str" updates="constant" name="store"/>
+        <Param val="False" valType="bool" updates="constant" name="storeCorrect"/>
+        <Param val="False" valType="bool" updates="constant" name="syncScreenRefresh"/>
+      </KeyboardComponent>
+    </Routine>
+    <Routine name="Start_Countdown">
+      <TextComponent name="count_sc">
+        <Param val="white" valType="color" updates="constant" name="color"/>
+        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
+        <Param val="1" valType="num" updates="constant" name="contrast"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="None" valType="str" updates="constant" name="flip"/>
+        <Param val="Open Sans" valType="str" updates="constant" name="font"/>
+        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
+        <Param val="0.1" valType="num" updates="constant" name="letterHeight"/>
+        <Param val="count_sc" valType="code" updates="None" name="name"/>
+        <Param val="" valType="num" updates="constant" name="opacity"/>
+        <Param val="0" valType="num" updates="constant" name="ori"/>
+        <Param val="(0, 0)" valType="list" updates="constant" name="pos"/>
+        <Param val="False" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="5" valType="code" updates="constant" name="stopVal"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="$str(5-int(t))" valType="str" updates="set every frame" name="text"/>
+        <Param val="from exp settings" valType="str" updates="None" name="units"/>
+        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
+      </TextComponent>
+    </Routine>
+    <Routine name="Finish">
+      <TextComponent name="shuryo">
+        <Param val="white" valType="color" updates="constant" name="color"/>
+        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
+        <Param val="1" valType="num" updates="constant" name="contrast"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="None" valType="str" updates="constant" name="flip"/>
+        <Param val="Open Sans" valType="str" updates="constant" name="font"/>
+        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
+        <Param val="0.05" valType="num" updates="constant" name="letterHeight"/>
+        <Param val="shuryo" valType="code" updates="None" name="name"/>
+        <Param val="" valType="num" updates="constant" name="opacity"/>
+        <Param val="0" valType="num" updates="constant" name="ori"/>
+        <Param val="(0, 0)" valType="list" updates="constant" name="pos"/>
+        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="10" valType="code" updates="constant" name="stopVal"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="実験を終了します。" valType="str" updates="constant" name="text"/>
+        <Param val="from exp settings" valType="str" updates="None" name="units"/>
+        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
+      </TextComponent>
+      <MouseComponent name="routine_end_2">
+        <Param val="" valType="list" updates="constant" name="clickable"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="any click" valType="str" updates="constant" name="forceEndRoutineOnPress"/>
+        <Param val="routine_end_2" valType="code" updates="None" name="name"/>
+        <Param val="True" valType="bool" updates="constant" name="newClicksOnly"/>
+        <Param val="on click" valType="str" updates="None" name="saveMouseState"/>
+        <Param val="name," valType="list" updates="constant" name="saveParamsClickable"/>
+        <Param val="False" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="" valType="code" updates="constant" name="stopVal"/>
+        <Param val="False" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="mouse onset" valType="str" updates="constant" name="timeRelativeTo"/>
+      </MouseComponent>
+    </Routine>
+    <Routine name="Test_Eyecatch">
+      <CodeComponent name="code">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="trialCounter = 1" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="text_2.setText(trialCounter)&amp;#10;trialCounter = trialCounter + 1" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="code" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+      <TextComponent name="text_2">
+        <Param val="white" valType="color" updates="constant" name="color"/>
+        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
+        <Param val="1" valType="num" updates="constant" name="contrast"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="None" valType="str" updates="constant" name="flip"/>
+        <Param val="Open Sans" valType="str" updates="constant" name="font"/>
+        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
+        <Param val="0.05" valType="num" updates="constant" name="letterHeight"/>
+        <Param val="text_2" valType="code" updates="None" name="name"/>
+        <Param val="" valType="num" updates="constant" name="opacity"/>
+        <Param val="0" valType="num" updates="constant" name="ori"/>
+        <Param val="(0, 0)" valType="list" updates="constant" name="pos"/>
+        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="1.0" valType="code" updates="constant" name="stopVal"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="" valType="str" updates="constant" name="text"/>
+        <Param val="from exp settings" valType="str" updates="None" name="units"/>
+        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
+      </TextComponent>
+    </Routine>
+    <Routine name="Eyecatch">
+      <TextComponent name="text">
+        <Param val="white" valType="color" updates="constant" name="color"/>
+        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
+        <Param val="1" valType="num" updates="constant" name="contrast"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="None" valType="str" updates="constant" name="flip"/>
+        <Param val="Open Sans" valType="str" updates="constant" name="font"/>
+        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
+        <Param val="0.05" valType="num" updates="constant" name="letterHeight"/>
+        <Param val="text" valType="code" updates="None" name="name"/>
+        <Param val="" valType="num" updates="constant" name="opacity"/>
+        <Param val="0" valType="num" updates="constant" name="ori"/>
+        <Param val="(0, 0)" valType="list" updates="constant" name="pos"/>
+        <Param val="False" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="1" valType="code" updates="constant" name="stopVal"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="準備しています．．．" valType="str" updates="constant" name="text"/>
+        <Param val="from exp settings" valType="str" updates="None" name="units"/>
+        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
+      </TextComponent>
+    </Routine>
+  </Routines>
+  <Flow>
+    <Routine name="Init"/>
+    <Routine name="Explanation"/>
+    <Routine name="Eyecatch"/>
+    <Routine name="Idleoff"/>
+    <Routine name="Start_Countdown"/>
+    <LoopInitiator loopType="TrialHandler" name="trials_2">
+      <Param name="Selected rows" updates="None" val="" valType="str"/>
+      <Param name="conditions" updates="None" val="[{'method': 1, 'expression': 1, 'level_': 1}, {'method': 1, 'expression': 1, 'level_': 2}, {'method': 1, 'expression': 2, 'level_': 1}, {'method': 1, 'expression': 2, 'level_': 2}, {'method': 2, 'expression': 1, 'level_': 1}, {'method': 2, 'expression': 1, 'level_': 2}, {'method': 2, 'expression': 2, 'level_': 1}, {'method': 2, 'expression': 2, 'level_': 2}]" valType="str"/>
+      <Param name="conditionsFile" updates="None" val="xlsx/ResumeRepMom .xlsx" valType="file"/>
+      <Param name="endPoints" updates="None" val="[0, 1]" valType="num"/>
+      <Param name="isTrials" updates="None" val="True" valType="bool"/>
+      <Param name="loopType" updates="None" val="random" valType="str"/>
+      <Param name="nReps" updates="None" val="1" valType="num"/>
+      <Param name="name" updates="None" val="trials_2" valType="code"/>
+      <Param name="random seed" updates="None" val="" valType="code"/>
+    </LoopInitiator>
+    <Routine name="Test_Eyecatch"/>
+    <Routine name="Test_init"/>
+    <Routine name="Test_stim"/>
+    <Routine name="Test_fin"/>
+    <Routine name="Emo"/>
+    <Routine name="Test_fin"/>
+    <Routine name="Check"/>
+    <LoopTerminator name="trials_2"/>
+    <Routine name="Idleon"/>
+    <Routine name="Finish"/>
+  </Flow>
+</PsychoPy2experiment>
