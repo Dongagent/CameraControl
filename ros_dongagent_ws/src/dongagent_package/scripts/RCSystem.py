@@ -41,6 +41,8 @@ import struct
 
 # ----- for new model -----
 # from SiameseRankNet import SiameseRankNet_analysis
+from intensityNet import * 
+
 # ----- for new model END -----
 SPACE = ' '
 LINUXVIDEOPATH = '/dev/video2' # ffplay # v4l2-ctl --list-devices
@@ -62,6 +64,10 @@ smoothSleepTime = 0.025
 # pyfeat
 from feat import Detector
 detector = ''
+
+# intensityModel
+global intensityModel
+intensityModel = ''
 
 class WebcamStreamWidget(object):
     def __init__(self, stream_id=0, width=1280, height=720):
@@ -150,12 +156,6 @@ class WebcamStreamWidget(object):
             self.video_thread.join()
 
 
-    
-
-    
-
-
-
 class robot:
     def __init__(self, duration=3, webcam=True, fps=60):
         # initialization of robot
@@ -213,7 +213,9 @@ class robot:
         if webcam:
             self.webcam_stream_widget = WebcamStreamWidget(self.DEVICE_ID, self.WIDTH, self.HEIGHT)
             self.webcam_stream_widget.start()
-            print("[INFO]robot and webcam initialized.")
+            print("[INFO]robot and webcam initialized. Saving test img...")
+            self.webcam_stream_widget.save_frame('image_analysis/temp/test.png')
+            print("[INFO]test img saved.")
         else:
             print("[INFO]robot initialized.")
 
@@ -559,7 +561,7 @@ class robot:
             print(axiswithpotentio)
 
     def connect_ros(self, isSmoothly=True, isRecording=False, appendix="", steps=20, timeIntervalBeforeExp=1, isUsingSigmoid=False, 
-        sigmoid_factor=10, useScaledSigmoid=True, debugmode=False):
+        sigmoid_factor=10, useScaledSigmoid=False, debugmode=False):
 
         if DEBUG == 2 or DEBUG == 4:
             print('you are DEBUGING')
@@ -725,6 +727,51 @@ def py_feat_analysis(img, target_emotion, is_save_csv=True):
     # return emo_df.iloc[0,targetID]
     return list(df[target_emotion])[0]
 
+def setIntensityModel(target_emotion):
+    global intensityModel
+    # Load the model
+    # ['anger', 'disgust', 'fear', 'happiness', 'sadness', 'surprise']
+    print("target_emotion:", target_emotion)
+    if target_emotion.lower() in ["anger", 'angry']:
+        model_path = "new_models/angry_fold3_epoch7.pt"
+    elif target_emotion.lower() in ["disgust"]:
+        model_path = "new_models/disgust_fold3_epoch7.pt"
+    elif target_emotion.lower() in ["fear"]:
+        model_path = "new_models/fear_fold3_epoch6.pt"
+    elif target_emotion.lower() in ["happiness", "happy"]:
+        model_path = "new_models/happy_fold2_epoch7.pt"
+    elif target_emotion.lower() in ["sadness", "sad"]:
+        model_path = "new_models/sad_fold2_epoch6.pt"
+    elif target_emotion.lower() in ["surprise"]:
+        model_path = "new_models/surprise_fold3_epoch5.pt"
+    else:
+        model_path = ""
+
+    intensityModel = IntensityNet_type1(model_path)
+    return 1
+
+
+def intensityNet_analysis(img, target_emotion, is_save_csv=True):
+    # remember to set it before doing analysis
+
+    global intensityModel
+    # use intensityModel to detect emo
+    detection_res = intensityModel.detect_emo(Image.open(img))
+    detection_res = detection_res.tolist()
+    output = detection_res[get_target(target_emotion)]
+
+    # create a pd dataframe
+    detection_res = pd.DataFrame([detection_res], columns=["angry", "disgust", "fear", "happy", "sad", "surprise", "neutral"])
+    # Create DataFrame
+
+    if is_save_csv:
+        csv_emotion_name = img[:-4]+"_intensitynet.csv"
+        detection_res.to_csv(csv_emotion_name)
+
+    # result = tmp_res[target_emotion]
+    return output
+
+
 def checkParameters(robotParams):
     # Axis (8, 9), (12, 13), (18, 19), (22, 23), 
     # we should use a * b = 0 for each group. 
@@ -824,7 +871,7 @@ def target_function(**kwargs):
     rb.switch_to_customizedPose(fixedrobotcode)
     global MYSTEPS
     returncode = rb.connect_ros(isSmoothly=True, isRecording=False, steps=MYSTEPS) # isSmoothly = True ,isRecording = True
-    time.sleep(0.5)
+    time.sleep(1.5)
     # the sleep inside rb is not working for outside.
 
     # -------------
@@ -863,10 +910,10 @@ def target_function(**kwargs):
         print('[INFO]target_emotion', target_emotion)
 
         # Use Py-Feat 0.3.7
-        output = py_feat_analysis(img=rb.readablefileName, target_emotion=target_emotion)
+        # output = py_feat_analysis(img=rb.readablefileName, target_emotion=target_emotion)
 
         # Use SiameseRankNet
-        # output = SiameseRankNet_analysis(img=rb.readablefileName, target_emotion=target_emotion)
+        output = intensityNet_analysis(img=rb.readablefileName, target_emotion=target_emotion)
 
         
         # if CURBEST[1] < output:
@@ -883,11 +930,11 @@ def target_function(**kwargs):
         print('[INFO]df_dic', df_dic)
         df = pd.DataFrame(df_dic)
         df_name = rb.readablefileName[:-4]+"_axes_data.csv"
-
         df.to_csv(df_name, index=False, sep=',')
 
         # save robot param data
-        robot_param = pd.DataFrame(fixedrobotcode, index=[0]) # save the fixedrobotcode rather than rb.robotParams
+        # print(f'fixedrobotcode: {fixedrobotcode}')
+        robot_param = pd.DataFrame(fixedrobotcode, columns=[0]) # save the fixedrobotcode rather than rb.robotParams
         robot_param_name = rb.readablefileName[:-4]+"_rb_paramdata.csv"
         robot_param.to_csv(robot_param_name, index=False, sep=',')
 
@@ -989,6 +1036,9 @@ def bayesian_optimization(baseline, target_emotion, robot):
             # else:
             pbounds_dic['x{}'.format(i)] = (0, 255)
 
+        # mouth
+        pbounds_dic['x32'] = (0, 110)
+        print(pbounds_dic)
         return pbounds_dic
 
     # x2 = x1, use one axis for eyes upper lid
@@ -1471,7 +1521,7 @@ def setup_logger(level=logging.INFO, participantsID = 0):
 # main
 def main():
     global rb
-    rb = robot(duration=2, webcam=False)
+    rb = robot(duration=2)
     assert rb.connection == True
     global COUNTER
     COUNTER = 0
@@ -1487,7 +1537,7 @@ def main():
     global headYaw_fix_flag
     headYaw_fix_flag = True
     # set how much steps Nikola need to shift the axes from one to another
-    MYSTEPS = 40
+    MYSTEPS = 10
     # change workdir
     workdir = "/home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package/scripts"
     os.chdir(workdir)
@@ -1509,6 +1559,94 @@ def main():
     # anger, disgust, fear, happiness, sadness, surprise
     # defaultPose.prototypeFacialExpressions
 
+    # Exp 23: test the bayesian optimization with new IntensityNet
+    # Conda env: py37pyfeat1
+    # Setup: lighting system, webcam, tripot,
+    # Contents: BORFEO 100 trials, Prototype, Prototype with mouth opening
+
+    # !! Make sure to change the start_x, start_y, end_x, end_y = 193, 114, 442, 363 in the SiameseRankNet.py
+
+    # ---------------------
+    # exp 23-1 prototype
+    # ---------------------
+    # for k,v in defaultPose.prototypeFacialExpressions.items():
+    #     print("switch to: ", k)
+    #     # print(v)
+    #     rb.switch_to_customizedPose(v)
+    #     rb.connect_ros(isSmoothly=True, steps=10, isRecording=False, isUsingSigmoid=False) # isSmoothly = True ,isRecording = True
+    #     time.sleep(2)
+    #     rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(k, 'test'), folder='prototype')
+    #     time.sleep(1)
+    #     print("py_feat_analysis result is: ", py_feat_analysis(rb.fileName, k))
+    #     print("IntensityNet result is: ", intensityNet_analysis(rb.fileName, k))
+
+    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    # rb.connect_ros(True, False)
+
+    # ------------------------------------
+    # exp 23-2 [DEPRECATED] prototype with mouth opening 
+    # ------------------------------------
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # DO NOT USE IT! Nikola's face is already broken.
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    # for k,v in defaultPose.hotExpressions.items():
+    #     print("switch to: ", k)
+    #     # print(v)
+    #     rb.switch_to_customizedPose(v)
+    #     rb.connect_ros(isSmoothly=True, isRecording=False, isUsingSigmoid=False) # isSmoothly = True ,isRecording = True
+    #     time.sleep(1.5)
+    #     rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(k, 'mouth_opening'), folder='hot')
+    #     time.sleep(1)
+    #     print("py_feat_analysis result is: ", py_feat_analysis(rb.fileName, k))
+    #     print("IntensityNet result is: ", intensityNet_analysis(rb.fileName, k))
+
+    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    # rb.connect_ros(True, False)
+
+    # -------------------------------------
+    # exp 23-3 BORFEO using IntensityNet
+    # -------------------------------------
+
+    for target_emotion in ['fear', 'happiness', 'sadness', 'surprise']:
+        check_folder(target_emotion)
+        COUNTER = 0
+        print(target_emotion)
+        setIntensityModel(target_emotion)
+
+        global CURBEST
+        CURBEST = ['', 0]
+        # test photo
+        rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, 'test'), folder=target_emotion)
+        optimizer = bayesian_optimization(
+            baseline=defaultPose.prototypeFacialExpressions[target_emotion],
+            target_emotion=target_emotion,
+            robot=rb)
+        print('\n')
+        # print("Current target emotion is: ", target_emotion, optimizer.res)
+        print('\n')
+        # Return to normal
+        rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+        rb.connect_ros(True, False)
+
+        # release after using it
+        global intensityModel
+        intensityModel = None
+
+    # # Return to normal
+    # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    # rb.connect_ros(True, False)
+    # time.sleep(2)
+    # rb.webcam_stream_widget.stop()
+    # try:
+    #     rb.webcam_stream_widget.vthread.join()
+    # except Exception as e:
+    #     print(e)
+
+
+    # ---------------------
+
+
     # Exp 22: eyeblink test
 
     # idle_behavior(rb)
@@ -1516,7 +1654,7 @@ def main():
 
     # Exp 21: test serial number
 
-    # '''
+    '''
     # prepare logger
     check_folder('mimicryExpLogs')
     participantsID = 26
@@ -1546,58 +1684,58 @@ def main():
         serialThread.join()  # Wait for the listener thread to finish
 
     print("Experiment ended.")
-    # '''
+    '''
 
 
     # -----
     # Exp 20: writing the Main Framework of Experiment
     
 
-    def startVoice():
-        #「行きます」instruction voice
-        print("[INFO]Nikola speaks 行きます")
-        pass
+    # def startVoice():
+    #     #「行きます」instruction voice
+    #     print("[INFO]Nikola speaks 行きます")
+    #     pass
 
     
 
-    def raiseHead():
-        # raise the head
-        pass
+    # def raiseHead():
+    #     # raise the head
+    #     pass
 
-    def lowerHead():
-        # lower the head
-        pass
+    # def lowerHead():
+    #     # lower the head
+    #     pass
 
-    def makeFacialExpression():
-        # make a facial expression
-        pass
+    # def makeFacialExpression():
+    #     # make a facial expression
+    #     pass
 
-    def turnToNormalState():
-        # turn to normal state
-        pass
+    # def turnToNormalState():
+    #     # turn to normal state
+    #     pass
 
-    def turnToOffState():
-        # turn to OFF state
-        pass
+    # def turnToOffState():
+    #     # turn to OFF state
+    #     pass
 
-    def turnToOnState():    
-        # turn to ON state
-        pass
+    # def turnToOnState():    
+    #     # turn to ON state
+    #     pass
 
-    # Between trials, Nikola looked down, closed his eyes, and made subtle motions.
-    def idle_off():
-        # turn OFF idle state
-        pass
-    def idle_on():
-        # turn ON idle state
-        pass
+    # # Between trials, Nikola looked down, closed his eyes, and made subtle motions.
+    # def idle_off():
+    #     # turn OFF idle state
+    #     pass
+    # def idle_on():
+    #     # turn ON idle state
+    #     pass
 
-    # Participants should watch Nikola’s face and give ratings by keyboard (fake target)
+    # # Participants should watch Nikola’s face and give ratings by keyboard (fake target)
 
-    def run_exp2():
-        # Step 1: In each trial, during the「行きます」instruction voice
-        turnToOffState()
-        startVoice()
+    # def run_exp2():
+    #     # Step 1: In each trial, during the「行きます」instruction voice
+    #     turnToOffState()
+    #     startVoice()
 
 
         # Step 2: Nikola will open the eyes, raise his head (500ms).

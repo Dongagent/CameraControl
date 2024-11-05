@@ -2,6 +2,7 @@
 # Notes for developing
 
 Current env: py37pyfeat1
+Python 3.7.12
 
 ## library version
 
@@ -21,7 +22,7 @@ Ubuntu 20.04
 
 ffmpeg
 
-Python 3.8.15
+Python 3.8.15 (?)
 
 v4l-utils
 
@@ -45,6 +46,8 @@ use ```v4l2-ctl --list-devices``` to check available webcams on Ubuntu
 
 > v4l2-ctl -d /dev/video2 --set-ctrl focus_auto=0 # cancel auto focus
 
+> v4l2-ctl -d /dev/video2 -V # check resolutions
+
 Setup the webcam
 use ```ffplay /dev/video2```
 
@@ -55,6 +58,7 @@ Please check the access permission of ```/dev/ttyUSB0```, better to use ```sudo 
 ### Initialize the Nikola on my laptop
 
 #### 1 connect cable
+```sudo chmod 777 /dev/ttyUSB0```
 
 #### 2 run roscore on one shell, 
 ```roscore```
