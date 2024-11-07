@@ -1,0 +1,176 @@
+[I 2024-11-05 14:33:59.467 ServerApp] Package jupyterlab took 0.0000s to import
+[I 2024-11-05 14:33:59.471 ServerApp] Package jupyter_server_terminals took 0.0034s to import
+[I 2024-11-05 14:33:59.471 ServerApp] Package nbclassic took 0.0000s to import
+[W 2024-11-05 14:33:59.472 ServerApp] A `_jupyter_server_extension_points` function was not found in nbclassic. Instead, a `_jupyter_server_extension_paths` function was found and will be used for now. This function name will be deprecated in future releases of Jupyter Server.
+[I 2024-11-05 14:33:59.473 ServerApp] Package notebook_shim took 0.0000s to import
+[W 2024-11-05 14:33:59.473 ServerApp] A `_jupyter_server_extension_points` function was not found in notebook_shim. Instead, a `_jupyter_server_extension_paths` function was found and will be used for now. This function name will be deprecated in future releases of Jupyter Server.
+[I 2024-11-05 14:33:59.475 ServerApp] jupyter_server_terminals | extension was successfully linked.
+[I 2024-11-05 14:33:59.478 ServerApp] jupyterlab | extension was successfully linked.
+[I 2024-11-05 14:33:59.481 ServerApp] nbclassic | extension was successfully linked.
+[I 2024-11-05 14:33:59.629 ServerApp] Package jupyter_nbextensions_configurator took 0.0026s to import
+[W 2024-11-05 14:33:59.629 ServerApp] A `_jupyter_server_extension_points` function was not found in jupyter_nbextensions_configurator. Instead, a `_jupyter_server_extension_paths` function was found and will be used for now. This function name will be deprecated in future releases of Jupyter Server.
+[I 2024-11-05 14:33:59.630 ServerApp] jupyter_nbextensions_configurator | extension was found and enabled by notebook_shim. Consider moving the extension to Jupyter Server's extension paths.
+[I 2024-11-05 14:33:59.630 ServerApp] jupyter_nbextensions_configurator | extension was successfully linked.
+[I 2024-11-05 14:33:59.630 ServerApp] notebook_shim | extension was successfully linked.
+[I 2024-11-05 14:33:59.664 ServerApp] notebook_shim | extension was successfully loaded.
+[W 2024-11-05 14:33:59.664 ServerApp] jupyter_nbextensions_configurator | extension failed loading with message: KeyError('nbextensions_path')
+    Traceback (most recent call last):
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/extension/manager.py", line 356, in load_extension
+        extension.load_all_points(self.serverapp)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/extension/manager.py", line 228, in load_all_points
+        return [self.load_point(point_name, serverapp) for point_name in self.extension_points]
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/extension/manager.py", line 228, in <listcomp>
+        return [self.load_point(point_name, serverapp) for point_name in self.extension_points]
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/extension/manager.py", line 219, in load_point
+        return point.load(serverapp)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/extension/manager.py", line 147, in load
+        return loader(serverapp)
+      File "/home/dongagent/anaconda3/lib/python3.8/site-packages/jupyter_nbextensions_configurator/__init__.py", line 247, in load_jupyter_server_extension
+        if static_files_path not in webapp.settings['nbextensions_path']:
+    KeyError: 'nbextensions_path'
+[I 2024-11-05 14:33:59.665 ServerApp] jupyter_server_terminals | extension was successfully loaded.
+[I 2024-11-05 14:33:59.666 LabApp] JupyterLab extension loaded from /home/dongagent/anaconda3/lib/python3.8/site-packages/jupyterlab
+[I 2024-11-05 14:33:59.666 LabApp] JupyterLab application directory is /home/dongagent/anaconda3/share/jupyter/lab
+[I 2024-11-05 14:33:59.668 ServerApp] jupyterlab | extension was successfully loaded.
+[I 2024-11-05 14:33:59.669 ServerApp] nbclassic | extension was successfully loaded.
+[I 2024-11-05 14:33:59.670 ServerApp] The port 8888 is already in use, trying another port.
+[I 2024-11-05 14:33:59.670 ServerApp] The port 8889 is already in use, trying another port.
+[I 2024-11-05 14:33:59.670 ServerApp] The port 8890 is already in use, trying another port.
+[I 2024-11-05 14:33:59.670 ServerApp] The port 8891 is already in use, trying another port.
+[I 2024-11-05 14:33:59.670 ServerApp] Serving notebooks from local directory: /home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package/scripts
+[I 2024-11-05 14:33:59.670 ServerApp] Jupyter Server 2.3.0 is running at:
+[I 2024-11-05 14:33:59.670 ServerApp] http://localhost:8892/lab?token=cc0edf7ccce376945d219518d7d2fe11820823595764ec2e
+[I 2024-11-05 14:33:59.670 ServerApp]     http://127.0.0.1:8892/lab?token=cc0edf7ccce376945d219518d7d2fe11820823595764ec2e
+[I 2024-11-05 14:33:59.670 ServerApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[C 2024-11-05 14:33:59.684 ServerApp] 
+    
+    To access the server, open this file in a browser:
+        file:///home/dongagent/.local/share/jupyter/runtime/jpserver-74340-open.html
+    Or copy and paste one of these URLs:
+        http://localhost:8892/lab?token=cc0edf7ccce376945d219518d7d2fe11820823595764ec2e
+        http://127.0.0.1:8892/lab?token=cc0edf7ccce376945d219518d7d2fe11820823595764ec2e
+[I 2024-11-05 14:34:00.775 LabApp] Generating new user for token-authenticated request: 14e6fcf8ca304039887bdddc6bee0c8b
+[I 2024-11-05 14:34:03.288 LabApp] Build is up to date
+[W 2024-11-05 14:34:03.968 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-05 14:34:04.622 ServerApp] Kernel started: 64b235ba-4e9a-49f7-884f-320c10c5496a
+[I 2024-11-05 14:34:04.631 ServerApp] Kernel started: 8d8a9f43-6931-466d-81a5-78ae053fdb8f
+[I 2024-11-05 14:34:05.125 ServerApp] Connecting to kernel 8d8a9f43-6931-466d-81a5-78ae053fdb8f.
+[I 2024-11-05 14:34:05.145 ServerApp] Connecting to kernel 64b235ba-4e9a-49f7-884f-320c10c5496a.
+[I 2024-11-05 14:34:05.159 ServerApp] Connecting to kernel 8d8a9f43-6931-466d-81a5-78ae053fdb8f.
+[I 2024-11-05 14:34:05.173 ServerApp] Connecting to kernel 8d8a9f43-6931-466d-81a5-78ae053fdb8f.
+
+  _   _          _      _
+ | | | |_ __  __| |__ _| |_ ___
+ | |_| | '_ \/ _` / _` |  _/ -_)
+  \___/| .__/\__,_\__,_|\__\___|
+       |_|
+                                                                           
+Read the migration plan to Notebook 7 to learn about the new features and the actions to take if you are using extensions.
+
+https://jupyter-notebook.readthedocs.io/en/latest/migrate_to_notebook7.html
+
+Please note that updating to Notebook 7 might break some of your extensions.
+
+-\|/-\|/-\|/-\|[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: 3e843ee3-f7c4-4736-b2ce-97195700b8f8
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: dc5f36a2-1c62-4090-a791-40d0511da647
+[I 2024-11-05 14:35:55.852 ServerApp] Kernel interrupted: 8d8a9f43-6931-466d-81a5-78ae053fdb8f
+[I 2024-11-05 14:36:04.520 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-05 14:36:04.521 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-05 14:40:04.561 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-05 14:40:04.561 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-05 14:42:04.596 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-05 14:42:04.597 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-05 14:45:57.174 ServerApp] Kernel shutdown: 64b235ba-4e9a-49f7-884f-320c10c5496a
+[I 2024-11-05 14:45:57.175 ServerApp] Kernel shutdown: 8d8a9f43-6931-466d-81a5-78ae053fdb8f
+[I 2024-11-05 14:51:52.994 ServerApp] Kernel started: edee047c-c5ba-490f-b301-f8fe9133e2b6
+[I 2024-11-05 14:51:53.430 ServerApp] Connecting to kernel edee047c-c5ba-490f-b301-f8fe9133e2b6.
+[I 2024-11-05 14:51:53.443 ServerApp] Connecting to kernel edee047c-c5ba-490f-b301-f8fe9133e2b6.
+[I 2024-11-05 14:51:53.456 ServerApp] Connecting to kernel edee047c-c5ba-490f-b301-f8fe9133e2b6.
+[W 2024-11-05 14:51:56.497 ServerApp] Got events for closed stream <zmq.eventloop.zmqstream.ZMQStream object at 0x7fd0b06c8df0>
+[I 2024-11-05 14:52:00.037 ServerApp] Kernel started: e1ff0167-56cc-497b-96b1-b3bc16c0179a
+[I 2024-11-05 14:52:00.478 ServerApp] Connecting to kernel e1ff0167-56cc-497b-96b1-b3bc16c0179a.
+[I 2024-11-05 14:52:06.836 ServerApp] Kernel started: eb6172b3-2654-40e1-af0e-14afcaf37b67
+[I 2024-11-05 14:52:07.419 ServerApp] Connecting to kernel eb6172b3-2654-40e1-af0e-14afcaf37b67.
+[I 2024-11-05 14:52:07.433 ServerApp] Connecting to kernel eb6172b3-2654-40e1-af0e-14afcaf37b67.
+[I 2024-11-05 14:52:07.446 ServerApp] Connecting to kernel eb6172b3-2654-40e1-af0e-14afcaf37b67.
+[W 2024-11-05 14:52:10.459 ServerApp] Got events for closed stream <zmq.eventloop.zmqstream.ZMQStream object at 0x7fd0a8d7dd00>
+[I 2024-11-05 14:54:07.256 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-05 14:56:07.300 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-05 14:57:12.330 ServerApp] Saving file at /webcam_control.ipynb
+[W 2024-11-05 14:57:12.331 ServerApp] Notebook webcam_control.ipynb is not trusted
+[I 2024-11-05 14:57:12.936 ServerApp] Saving file at /webcam_control.ipynb
+[W 2024-11-05 14:57:12.936 ServerApp] Notebook webcam_control.ipynb is not trusted
+[I 2024-11-05 14:57:13.142 ServerApp] Saving file at /webcam_control.ipynb
+[W 2024-11-05 14:57:13.142 ServerApp] Notebook webcam_control.ipynb is not trusted
+[I 2024-11-05 14:57:13.249 ServerApp] Saving file at /webcam_control.ipynb
+[W 2024-11-05 14:57:13.250 ServerApp] Notebook webcam_control.ipynb is not trusted
+[I 2024-11-05 14:57:31.648 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-05 14:57:32.230 ServerApp] Starting buffering for edee047c-c5ba-490f-b301-f8fe9133e2b6:f138187c-11f5-4b92-905e-57dd3228db1e
+[I 2024-11-05 14:57:32.231 ServerApp] Starting buffering for eb6172b3-2654-40e1-af0e-14afcaf37b67:941bc125-5a47-4b4a-aa8c-db236b501c66
+[I 2024-11-05 14:57:32.231 ServerApp] Starting buffering for e1ff0167-56cc-497b-96b1-b3bc16c0179a:ff279db3-bdd4-4fe4-859e-afa4970cabce
+[I 2024-11-05 14:57:34.535 LabApp] Build is up to date
+[W 2024-11-05 14:57:34.912 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-05 14:57:35.671 ServerApp] Connecting to kernel edee047c-c5ba-490f-b301-f8fe9133e2b6.
+[I 2024-11-05 14:57:35.709 ServerApp] Connecting to kernel e1ff0167-56cc-497b-96b1-b3bc16c0179a.
+[I 2024-11-05 14:57:35.715 ServerApp] Kernel started: 80c7b0b7-3219-4760-bc2e-c3f7950505b6
+[I 2024-11-05 14:57:35.717 ServerApp] Kernel started: d92090a8-7070-4ecc-8de3-2ae19b597624
+[I 2024-11-05 14:57:35.727 ServerApp] Connecting to kernel eb6172b3-2654-40e1-af0e-14afcaf37b67.
+[I 2024-11-05 14:57:36.243 ServerApp] Connecting to kernel d92090a8-7070-4ecc-8de3-2ae19b597624.
+[I 2024-11-05 14:57:36.261 ServerApp] Connecting to kernel 80c7b0b7-3219-4760-bc2e-c3f7950505b6.
+[I 2024-11-05 14:57:36.274 ServerApp] Connecting to kernel d92090a8-7070-4ecc-8de3-2ae19b597624.
+[I 2024-11-05 14:57:36.287 ServerApp] Connecting to kernel d92090a8-7070-4ecc-8de3-2ae19b597624.
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: 3a607fc0-e890-49bc-8973-cdf6b9873cff
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: 2cd32fd9-8222-4e14-9b48-a6361a8caaad
+[I 2024-11-05 14:59:18.979 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-05 14:59:49.865 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-05 15:17:25.550 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-05 15:17:25.551 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-05 15:19:25.596 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-05 15:19:25.597 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-05 15:20:20.996 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-05 15:20:20.997 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-05 15:21:37.750 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-05 15:21:37.751 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-05 15:22:07.980 ServerApp] Kernel shutdown: edee047c-c5ba-490f-b301-f8fe9133e2b6
+[I 2024-11-05 15:22:07.982 ServerApp] Kernel shutdown: e1ff0167-56cc-497b-96b1-b3bc16c0179a
+[I 2024-11-05 15:22:07.982 ServerApp] Kernel shutdown: eb6172b3-2654-40e1-af0e-14afcaf37b67
+[I 2024-11-05 15:22:07.983 ServerApp] Kernel shutdown: 80c7b0b7-3219-4760-bc2e-c3f7950505b6
+[I 2024-11-05 15:22:07.983 ServerApp] Kernel shutdown: d92090a8-7070-4ecc-8de3-2ae19b597624
+[I 2024-11-05 15:22:28.535 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-05 15:22:28.536 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-05 15:22:39.020 ServerApp] Kernel started: 8309feb0-d75f-49e7-a384-1e6d7a327b39
+[I 2024-11-05 15:22:39.519 ServerApp] Connecting to kernel 8309feb0-d75f-49e7-a384-1e6d7a327b39.
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: 3589ce64-79dd-4d25-b275-54534055f441
+[I 2024-11-05 15:24:28.608 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-05 15:24:28.609 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-05 15:26:09.037 ServerApp] Kernel shutdown: 8309feb0-d75f-49e7-a384-1e6d7a327b39
+[I 2024-11-05 15:26:28.656 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-05 15:26:28.657 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-05 16:17:45.655 ServerApp] Kernel started: 359c3f7b-4ace-4972-884d-2152f053c942
+[I 2024-11-05 16:17:46.199 ServerApp] Connecting to kernel 359c3f7b-4ace-4972-884d-2152f053c942.
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: ec11701b-8500-4137-8cd3-13934ed48d32
+[I 2024-11-05 16:18:16.213 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-05 16:18:16.214 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-05 16:22:16.285 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-05 16:22:16.289 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-05 16:23:04.985 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-05 16:23:04.985 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-05 16:25:05.064 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-05 16:25:05.064 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-05 16:27:05.119 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-05 16:27:05.120 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-05 16:30:35.929 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-05 16:30:35.930 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-05 16:35:30.689 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-05 16:35:30.690 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-05 18:13:20.561 ServerApp] Starting buffering for 359c3f7b-4ace-4972-884d-2152f053c942:def6c3ae-03c6-4b7d-8bd9-62692bf7c21b
+[I 2024-11-05 18:13:20.604 ServerApp] Connecting to kernel 359c3f7b-4ace-4972-884d-2152f053c942.
+[I 2024-11-05 18:13:20.605 ServerApp] Restoring connection for 359c3f7b-4ace-4972-884d-2152f053c942:def6c3ae-03c6-4b7d-8bd9-62692bf7c21b
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: 2245f916-8244-4a12-803a-8c3f81b5b9bb
