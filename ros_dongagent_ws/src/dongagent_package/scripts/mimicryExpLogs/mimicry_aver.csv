@@ -1,4 +1,4 @@
-...1,participant_id,code,emotion_category,emotion_type,valence,arousal,humanlike
+index,participant_id,code,emotion_category,emotion_type,valence,arousal,humanlike
 0,my01,10,An,prototype,3.1333333333333333,3.8,7.2
 1,my01,20,An,BO,2.933333333333333,5.2,7
 2,my01,30,Ha,prototype,4.666666666666667,1.9333333333333331,4.466666666666667
