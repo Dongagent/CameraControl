@@ -773,24 +773,36 @@ def intensityNet_analysis(img, target_emotion, is_save_csv=True):
 
 
 def checkParameters(robotParams):
+
+    
     # Axis (8, 9), (12, 13), (18, 19), (22, 23), 
     # we should use a * b = 0 for each group. 
     # Which means, take (8, 9) for example. 
     # When axis 8 has value, we should make sure axis 9 is set to 0. 
-    if robotParams[8-1] * robotParams[9-1] != 0:
-        robotParams[np.random.choice([8-1, 9-1])] = 0
+
+    # DEPRECATED
+    # if robotParams[8-1] * robotParams[9-1] != 0:
+    #     robotParams[np.random.choice([8-1, 9-1])] = 0
+
+
+    # new version, let's set one score p for [8, 12, 18, 22]. If p > 0, we do nothing. If p < 0, [8, 12, 18, 22] = 0, [9, 13, 19, 23] = p
+    if robotParams[8-1] < 0:
+        robotParams[9-1] = -robotParams[8-1]
+        robotParams[8-1] = 0
+    
     # x12 = x8, # x13 = x9, no need to be different
     robotParams[12-1] = robotParams[8-1]
     robotParams[13-1] = robotParams[9-1]
-    # if robotParams[12-1] * robotParams[13-1] != 0:
-    #     robotParams[np.random.choice([12-1, 13-1])] = 0
-    if robotParams[18-1] * robotParams[19-1] != 0:
-        robotParams[np.random.choice([18-1, 19-1])] = 0
 
-    # This part might cause left not equal to right
-    # if robotParams[22-1] * robotParams[23-1] != 0:
-    #     robotParams[np.random.choice([22-1, 23-1])] = 0
-        
+    # DEPRECATED
+    # if robotParams[18-1] * robotParams[19-1] != 0:
+    #     robotParams[np.random.choice([18-1, 19-1])] = 0
+
+    # new version
+    if robotParams[18-1] < 0:
+        robotParams[19-1] = -robotParams[18-1]
+        robotParams[18-1] = 0
+
     # x22 = x18, x23 = x19
     robotParams[22-1] = robotParams[18-1]
     robotParams[23-1] = robotParams[19-1]
@@ -858,8 +870,9 @@ def target_function(**kwargs):
             fixedrobotcode[int(k[1:])-1] = round(v)
 
     # Happy Constraints
+    # x1 and x6
     if fixedrobotcode[0] + fixedrobotcode[5] > 255 + 86 + 10:
-        # if the upper lid and lower lid are too close to each other, we should return 0
+        # if the upper lid and lower lid are too close to each other, we should not return 0
         print("[INFO]Happy Constraints, give 0 score.")
         return 0
 
@@ -890,19 +903,6 @@ def target_function(**kwargs):
         # Take photo using cv2
         rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, COUNTER), folder=target_emotion)
         
-        # ------------------ deprecated ----------------
-        # Take photo using ffmpeg (deprecated)
-        # process = rb.take_picture(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, COUNTER), folder=target_emotion)
-        # process.wait()
-        # if process.returncode != 0:
-        #     print(process.stdout.readlines())
-        #     raise Exception("The subprocess does NOT end.")
-        # delete useless figure
-        # folderPath = "image_analysis/{}/".format(target_emotion)
-        # for i in os.listdir(folderPath):
-        #     if '1.png' in i:
-        #         os.remove(folderPath + i)
-        # ------------------ deprecated ----------------
         COUNTER += 1
         
         # Py-feat Analysis
@@ -1038,6 +1038,11 @@ def bayesian_optimization(baseline, target_emotion, robot):
 
         # mouth
         pbounds_dic['x32'] = (0, 110)
+
+        # dangerous point
+        pbounds_dic['x8'] = (-255, 255)
+        pbounds_dic['x18'] = (-255, 255)
+
         print(pbounds_dic)
         return pbounds_dic
 
@@ -1064,7 +1069,8 @@ def bayesian_optimization(baseline, target_emotion, robot):
     # This one open 25 axes, but DOF = 15
     # all_axes_for_emotions = [1, 6, 8, 9, 10, 11, 16, 18, 19, 20, 28, 29, 30, 32, 34]
     # without head pitch
-    all_axes_for_emotions = [1, 6, 8, 9, 10, 11, 16, 18, 19, 20, 28, 29, 30, 32]
+    # all_axes_for_emotions = [1, 6, 8, 9, 10, 11, 16, 18, 19, 20, 28, 29, 30, 32]
+    all_axes_for_emotions = [1, 6, 8, 10, 11, 16, 18, 20, 28, 29, 30, 32]
 
     # Ekman FACS
     # code = get_target(target_emotion)
