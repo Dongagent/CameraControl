@@ -700,7 +700,7 @@ def get_target(emotion_name):
         return 6
 
 def py_feat_analysis(img, target_emotion, is_save_csv=True):
-    from feat import Detector
+
     '''
         @img: file name 
         @target_emotion: Anger, Disgust, Fear, Happiness, Sadness, Surprise
@@ -771,10 +771,26 @@ def intensityNet_analysis(img, target_emotion, is_save_csv=True):
     # result = tmp_res[target_emotion]
     return output
 
+# Function to calculate the mixed output with nonlinear transition using a sigmoid function
+def calculate_output_nonlinear(A, B, threshold=0.75, alpha=0.8, B_min=0.39, B_max=0.64, output_min=0.75, output_max=1.2, k=10):
+    # If A is below or equal to the threshold, output A directly
+    if A <= threshold:
+        return A
+    
+    # Scale B to fit within the desired range [output_min, output_max]
+    B_mapped = output_min + (B - B_min) * (output_max - output_min) / (B_max - B_min)
+    
+    # Apply a sigmoid-based weight for smooth transition
+    weight = 1 / (1 + np.exp(-k * (A - threshold)))  # Sigmoid function for smoother blending
+    
+    # Calculate the smooth nonlinear mixed output
+    output = weight * (alpha * B_mapped + (1 - alpha) * A) + (1 - weight) * A
+    
+    return output
+
 
 def checkParameters(robotParams):
 
-    
     # Axis (8, 9), (12, 13), (18, 19), (22, 23), 
     # we should use a * b = 0 for each group. 
     # Which means, take (8, 9) for example. 
@@ -853,8 +869,6 @@ def target_function(**kwargs):
     rb = kwargs['robot']
     target_emotion = kwargs['target_emotion']
     kwargs = kwargs["kwargs"]
-    
-
 
     # Get robot parameters
     neutral = [86, 86, 128, 128, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 128, 122]
@@ -893,8 +907,6 @@ def target_function(**kwargs):
     if returncode == 0:
         print('[INFO]successfully return')
     
-
-    
     output = 0
     global loopFlag
     global COUNTER
@@ -910,12 +922,41 @@ def target_function(**kwargs):
         print('[INFO]target_emotion', target_emotion)
 
         # Use Py-Feat 0.3.7
-        # output = py_feat_analysis(img=rb.readablefileName, target_emotion=target_emotion)
-
-        # Use SiameseRankNet
-        output = intensityNet_analysis(img=rb.readablefileName, target_emotion=target_emotion)
-
+        output_feat = py_feat_analysis(img=rb.readablefileName, target_emotion=target_emotion)
         
+        if target_emotion == 'anger':
+            threshold = 0.7
+            B_min = 0.39
+            B_max = 0.65
+        elif target_emotion == 'disgust':
+            threshold = 0.8
+            B_min = 0.35
+            B_max = 0.63
+        elif target_emotion == 'fear':
+            threshold = 0.6
+            B_min = 0.19
+            B_max = 0.47
+        elif target_emotion == 'happiness':
+            threshold = 0.8
+            B_min = 0.28
+            B_max = 0.57
+        elif target_emotion == 'sadness':
+            threshold = 0.7
+            B_min = 0.33
+            B_max = 0.63
+        elif target_emotion == 'surprise':
+            threshold = 0.8
+            B_min = 0.23
+            B_max = 0.46
+
+        if output_inten > threshold:
+            # Use SiameseRankNet
+            output_inten = intensityNet_analysis(img=rb.readablefileName, target_emotion=target_emotion)
+            # we need a curve from the threshold
+            output = calculate_output_nonlinear(output_feat, output_inten, threshold=threshold, alpha=0.8, B_min=B_min, B_max=B_max, output_min=0.75, output_max=1.1, k=10)
+
+        else:
+            output = output_feat
         # if CURBEST[1] < output:
         #     CURBEST[0] = rb.readablefileName
         #     CURBEST[1] = output
@@ -924,12 +965,12 @@ def target_function(**kwargs):
         # Save every parameters
         # construct the DataFrame
         df_dic = {}
-        df_dic[target_emotion] = [output]
+        df_dic['rating'] = [output]
         for k,v in kwargs.items():
             df_dic[k] = [v]
         print('[INFO]df_dic', df_dic)
         df = pd.DataFrame(df_dic)
-        df_name = rb.readablefileName[:-4]+"_axes_data.csv"
+        df_name = rb.readablefileName[:-4]+"_output_and_axes.csv"
         df.to_csv(df_name, index=False, sep=',')
 
         # save robot param data
@@ -1157,6 +1198,8 @@ def bayesian_optimization(baseline, target_emotion, robot):
     logger = JSONLogger(path="./image_analysis/"+ target_emotion + "/logs.json")
     optimizer.subscribe(Events.OPTIMIZATION_STEP, logger)
 
+
+
     # ------------------- INFO  ----------------------------
     # x2 = x1, use one axis for eyes upper lid
     # x7 = x6, use one axis for eyes lower lid
@@ -1172,10 +1215,33 @@ def bayesian_optimization(baseline, target_emotion, robot):
     # The NEXT time I called optimizer.max will process. Which means it will skip this time.
     
     # --------------------------------------
-    # NO initialization
-    # if target_emotion == 'anger':
-    #     # anger
-    #     optimizer.probe(params={'x1':0 , 'x6': 255, 'x11': 255, 'x15': 255}, lazy=True,)
+    # DO initialization !!
+    # all_axes_for_emotions = [1, 6, 8, 10, 11, 16, 18, 20, 28, 29, 30, 32]
+    # new version, let's set one score p for [8, 12, 18, 22]. If p > 0, we do nothing. If p < 0, [8, 12, 18, 22] = 0, [9, 13, 19, 23] = -p
+    if target_emotion == 'anger':
+        # anger
+        optimizer.probe(params={'x1':0, 'x6': 255, 'x8': 0, 'x10': 0, 'x11': 255, 'x16': 0, 'x18': 0, 'x20': 0,
+                                'x28': 0, 'x29': 0, 'x30': 0, 'x32': 0}, lazy=False,) # prototype
+        optimizer.probe(params={'x1':0, 'x6': 255, 'x8': 255, 'x10': 0, 'x11': 255, 'x16': 255, 'x18': -135, 'x20': 178, 
+                                'x28': 133, 'x29': 255, 'x30':255, 'x32': 100}, lazy=False,) # An490
+        optimizer.probe(params={'x1':0, 'x6': 140, 'x8': 89, 'x10': 0, 'x11': 255, 'x16': 255, 'x18': 0, 'x20': 165,
+                                'x28': 162, 'x29': 255, 'x30':250, 'x32': 100}, lazy=False,) # An497
+        optimizer.probe(params={'x1':0, 'x6': 140, 'x8': 89, 'x10': 0, 'x11': 255, 'x16': 255, 'x18': 64, 'x20': 37,
+                                'x28': 226, 'x29': 108, 'x30':219, 'x32': 100}, lazy=False,) # An437
+        optimizer.probe(params={'x1':0, 'x6': 140, 'x8': 0, 'x10': 0, 'x11': 255, 'x16': 255, 'x18': 0, 'x20': 186,
+                                'x28': 130, 'x29': 156, 'x30':217, 'x32': 100}, lazy=False,) # An467
+        optimizer.probe(params={'x1':6, 'x6': 140, 'x8': 255, 'x10': 0, 'x11': 255, 'x16': 255, 'x18': 51, 'x20': 81,
+                                'x28': 178, 'x29': 208, 'x30':214, 'x32': 100}, lazy=False,) # An433
+        optimizer.probe(params={'x1':0, 'x6': 140, 'x8': 83, 'x10': 0, 'x11': 255, 'x16': 255, 'x18': 0, 'x20': 185,
+                                'x28': 170, 'x29': 1, 'x30':255, 'x32': 100}, lazy=False,) # An469
+        optimizer.probe(params={'x1':0, 'x6': 140, 'x8': 0, 'x10': 83, 'x11': 255, 'x16': 255, 'x18': 0, 'x20': 255,
+                                'x28': 120, 'x29': 255, 'x30':255, 'x32': 100}, lazy=False,) # An499
+        optimizer.probe(params={'x1':0, 'x6': 140, 'x8': -121, 'x10': 0, 'x11': 255, 'x16': 255, 'x18': 0, 'x20': 255,
+                        'x28': 152, 'x29': 118, 'x30':255, 'x32': 100}, lazy=False,) # An489
+        optimizer.probe(params={'x1':0, 'x6': 140, 'x8': -55, 'x10': 0, 'x11': 255, 'x16': 255, 'x18': 61, 'x20': 175,
+                        'x28': 180, 'x29': 181, 'x30':159, 'x32': 100}, lazy=False,) # An484
+
+        
 
     # if target_emotion == 'disgust':
     #     # disgust
