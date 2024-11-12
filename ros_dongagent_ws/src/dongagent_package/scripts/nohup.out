@@ -406,3 +406,33 @@ Please note that updating to Notebook 7 might break some of your extensions.
 [I 2024-11-12 13:27:26.798 ServerApp] Saving file at /probe.ipynb
 [I 2024-11-12 13:31:28.104 ServerApp] Saving file at /probe.ipynb
 [I 2024-11-12 13:34:49.716 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 14:57:07.474 ServerApp] Kernel started: 3755a48d-2216-4501-bed1-ea51bf6d147d
+[I 2024-11-12 14:57:08.045 ServerApp] Connecting to kernel 3755a48d-2216-4501-bed1-ea51bf6d147d.
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: adbb75d4-b3a4-4efd-a9c2-5fb721de05c7
+[I 2024-11-12 14:57:19.099 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-12 14:57:19.100 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-12 14:59:19.136 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-12 14:59:19.137 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-12 15:01:19.176 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-12 15:01:19.177 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-12 15:01:57.787 ServerApp] Kernel shutdown: 2dce0435-159a-4b85-ba1b-2f93f751c6bd
+[I 2024-11-12 15:01:57.787 ServerApp] Kernel shutdown: 3755a48d-2216-4501-bed1-ea51bf6d147d
+[I 2024-11-12 16:29:11.176 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 16:51:19.114 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 17:26:19.122 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 17:26:24.093 ServerApp] Kernel started: 232def59-0588-4ade-9931-a0cbcaa45c44
+[I 2024-11-12 17:26:24.522 ServerApp] Connecting to kernel 232def59-0588-4ade-9931-a0cbcaa45c44.
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: b4f48c03-bfaf-46ce-bdfc-267b08395b3f
+[I 2024-11-12 17:27:40.514 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 17:41:24.384 ServerApp] Starting buffering for 232def59-0588-4ade-9931-a0cbcaa45c44:c88b1068-69b1-4fb7-b8b1-01db25bd18ba
+[I 2024-11-12 17:41:24.399 ServerApp] Connecting to kernel 232def59-0588-4ade-9931-a0cbcaa45c44.
+[I 2024-11-12 17:41:24.399 ServerApp] Restoring connection for 232def59-0588-4ade-9931-a0cbcaa45c44:c88b1068-69b1-4fb7-b8b1-01db25bd18ba
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: e0ab786e-de60-49d3-a144-8b7737ebc9eb
+[I 2024-11-12 17:42:00.738 ServerApp] Starting buffering for 232def59-0588-4ade-9931-a0cbcaa45c44:c88b1068-69b1-4fb7-b8b1-01db25bd18ba
+[I 2024-11-12 17:42:00.761 ServerApp] Connecting to kernel 232def59-0588-4ade-9931-a0cbcaa45c44.
+[I 2024-11-12 17:42:00.761 ServerApp] Restoring connection for 232def59-0588-4ade-9931-a0cbcaa45c44:c88b1068-69b1-4fb7-b8b1-01db25bd18ba
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: a65626d2-b615-48f5-8ea8-4ed42e7240ee

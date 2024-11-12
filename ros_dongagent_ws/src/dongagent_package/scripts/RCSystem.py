@@ -949,11 +949,11 @@ def target_function(**kwargs):
             B_min = 0.23
             B_max = 0.46
 
-        if output_inten > threshold:
+        if output_feat > threshold:
             # Use SiameseRankNet
             output_inten = intensityNet_analysis(img=rb.readablefileName, target_emotion=target_emotion)
             # we need a curve from the threshold
-            output = calculate_output_nonlinear(output_feat, output_inten, threshold=threshold, alpha=0.8, B_min=B_min, B_max=B_max, output_min=0.75, output_max=1.1, k=10)
+            output = calculate_output_nonlinear(output_feat, output_inten, threshold=threshold, alpha=0.8, B_min=B_min, B_max=B_max, output_min=threshold, output_max=1.1, k=10)
 
         else:
             output = output_feat
@@ -1001,20 +1001,6 @@ def target_function(**kwargs):
         
         # Take photo using cv2
         rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, COUNTER), folder=target_emotion)
-        
-        # ------------------ deprecated ----------------
-        # Take photo using ffmpeg (deprecated)
-        # process = rb.take_picture(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, COUNTER), folder=target_emotion)
-        # process.wait()
-        # if process.returncode != 0:
-        #     print(process.stdout.readlines())
-        #     raise Exception("The subprocess does NOT end.")
-        # delete useless figure
-        # folderPath = "image_analysis/{}/".format(target_emotion)
-        # for i in os.listdir(folderPath):
-        #     if '1.png' in i:
-        #         os.remove(folderPath + i)
-        # ------------------ deprecated ----------------
 
         COUNTER += 1
 
@@ -1138,44 +1124,7 @@ def bayesian_optimization(baseline, target_emotion, robot):
     optimizer = BayesianOptimization(
         f=middle_function,
         # Define HyperParameter Space
-
         pbounds = pbounds,
-        # -----------------------------------
-        # # Anger 
-        # pbounds={
-        #     # "x1": (0, 255), 
-        #     # "x2": (0, 255),
-        #     # "x3": (0, 255), 
-        #     # "x4": (0, 255), 
-        #     # "x5": (0, 255), 
-        #     "x6": (0, 255), 
-        #     # "x7": (0, 255), 
-        #     # "x8": (0, 255), 
-        #     # "x9": (0, 255), 
-        #     # "x10": (0, 255),
-        #     "x11": (0, 255), 
-        #     # "x12": (0, 255), 
-        #     # "x13": (0, 255), 
-        #     # "x14": (0, 255), 
-        #     "x15": (0, 255), 
-        #     # "x16": (0, 255), 
-        #     # "x17": (0, 255), 
-        #     # "x18": (0, 255), 
-        #     # "x19": (0, 255), 
-        #     # "x20": (0, 255), 
-        #     # "x21": (0, 255), 
-        #     # "x22": (0, 255), 
-        #     # "x23": (0, 255), 
-        #     # "x24": (0, 255), "x25": (0, 255), 
-        #     # "x26": (0, 255), "x27": (0, 255), 
-        #     # "x28": (0, 255), "x29": (0, 255), # hot
-        #     # "x30": (0, 255), 
-        #     # "x31": (0, 255), 
-        #     # "x32": (0, 200),  #hot
-        #     # "x33": (0, 255), "x34": (0, 255), "x35": (0, 255)
-        # },
-        
-
         random_state=1,
         verbose=2)
     # random_state is like set seed
@@ -1615,11 +1564,13 @@ def main():
     os.chdir(workdir)
     rb.bestImg = workdir + '/image_analysis/temp/neutral.png'
     assert os.getcwd() == workdir, print(os.getcwd())
+
+    rb.return_to_stable_state()
     
-    # global detector
+    global detector
     # landmark_model should be set to mobilefacenet in case you want to use pyfeat 0.3.7/0.5.0/0.6.1
     # Be care of FEAT_VERSION
-    # detector = Detector(emotion_model = "resmasknet", landmark_model='mobilefacenet')
+    detector = Detector(emotion_model = "resmasknet", landmark_model='mobilefacenet')
     
     global smoothSleepTime
     # res = subprocess.Popen("ls", cwd="/home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package/scripts")
@@ -1641,7 +1592,10 @@ def main():
     # ---------------------
     # exp 23-1 prototype
     # ---------------------
+    # global intensityModel
     # for k,v in defaultPose.prototypeFacialExpressions.items():
+    #     if k == 'neutral':
+    #         continue
     #     print("switch to: ", k)
     #     # print(v)
     #     rb.switch_to_customizedPose(v)
@@ -1649,6 +1603,7 @@ def main():
     #     time.sleep(2)
     #     rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(k, 'test'), folder='prototype')
     #     time.sleep(1)
+    #     setIntensityModel(k)
     #     print("py_feat_analysis result is: ", py_feat_analysis(rb.fileName, k))
     #     print("IntensityNet result is: ", intensityNet_analysis(rb.fileName, k))
 
@@ -1679,8 +1634,8 @@ def main():
     # -------------------------------------
     # exp 23-3 BORFEO using IntensityNet
     # -------------------------------------
-
-    for target_emotion in ['fear', 'happiness', 'sadness', 'surprise']:
+    for target_emotion in ['anger']:
+    # for target_emotion in ['fear', 'happiness', 'sadness', 'surprise']:
         check_folder(target_emotion)
         COUNTER = 0
         print(target_emotion)
@@ -2829,6 +2784,20 @@ if __name__ == '__main__':
         main()
     except Exception as e:
         print(e)
+        trace = []
+        tb = e.__traceback__
+        while tb is not None:
+            trace.append({
+                "filename": tb.tb_frame.f_code.co_filename,
+                "name": tb.tb_frame.f_code.co_name,
+                "lineno": tb.tb_lineno
+            })
+            tb = tb.tb_next
+        print(str({
+            'type': type(e).__name__,
+            'message': str(e),
+            'trace': trace
+        }))
     finally:
         global rb
         rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
