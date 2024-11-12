@@ -1,4 +1,4 @@
-...1,participant_id,code,emotion_category,emotion_type,measure,value
+index,participant_id,code,emotion_category,emotion_type,measure,value
 0,my01,10,An,prototype,valence,3.1333333333333333
 0,my01,10,An,prototype,arousal,3.8
 0,my01,10,An,prototype,humanlike,7.2
