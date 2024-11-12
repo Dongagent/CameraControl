@@ -174,3 +174,235 @@ Please note that updating to Notebook 7 might break some of your extensions.
 [I 2024-11-05 18:13:20.605 ServerApp] Restoring connection for 359c3f7b-4ace-4972-884d-2152f053c942:def6c3ae-03c6-4b7d-8bd9-62692bf7c21b
 [IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
 [IPKernelApp] WARNING | No such comm: 2245f916-8244-4a12-803a-8c3f81b5b9bb
+[I 2024-11-05 18:30:04.874 ServerApp] Starting buffering for 359c3f7b-4ace-4972-884d-2152f053c942:def6c3ae-03c6-4b7d-8bd9-62692bf7c21b
+[I 2024-11-12 09:34:43.517 ServerApp] Package jupyterlab took 0.0000s to import
+[I 2024-11-12 09:34:43.523 ServerApp] Package jupyter_server_terminals took 0.0059s to import
+[I 2024-11-12 09:34:43.524 ServerApp] Package nbclassic took 0.0000s to import
+[W 2024-11-12 09:34:43.525 ServerApp] A `_jupyter_server_extension_points` function was not found in nbclassic. Instead, a `_jupyter_server_extension_paths` function was found and will be used for now. This function name will be deprecated in future releases of Jupyter Server.
+[I 2024-11-12 09:34:43.526 ServerApp] Package notebook_shim took 0.0000s to import
+[W 2024-11-12 09:34:43.526 ServerApp] A `_jupyter_server_extension_points` function was not found in notebook_shim. Instead, a `_jupyter_server_extension_paths` function was found and will be used for now. This function name will be deprecated in future releases of Jupyter Server.
+[I 2024-11-12 09:34:43.528 ServerApp] jupyter_server_terminals | extension was successfully linked.
+[I 2024-11-12 09:34:43.532 ServerApp] jupyterlab | extension was successfully linked.
+[I 2024-11-12 09:34:43.534 ServerApp] nbclassic | extension was successfully linked.
+[I 2024-11-12 09:34:43.750 ServerApp] Package jupyter_nbextensions_configurator took 0.0048s to import
+[W 2024-11-12 09:34:43.750 ServerApp] A `_jupyter_server_extension_points` function was not found in jupyter_nbextensions_configurator. Instead, a `_jupyter_server_extension_paths` function was found and will be used for now. This function name will be deprecated in future releases of Jupyter Server.
+[I 2024-11-12 09:34:43.750 ServerApp] jupyter_nbextensions_configurator | extension was found and enabled by notebook_shim. Consider moving the extension to Jupyter Server's extension paths.
+[I 2024-11-12 09:34:43.750 ServerApp] jupyter_nbextensions_configurator | extension was successfully linked.
+[I 2024-11-12 09:34:43.750 ServerApp] notebook_shim | extension was successfully linked.
+[I 2024-11-12 09:34:43.791 ServerApp] notebook_shim | extension was successfully loaded.
+[W 2024-11-12 09:34:43.791 ServerApp] jupyter_nbextensions_configurator | extension failed loading with message: KeyError('nbextensions_path')
+    Traceback (most recent call last):
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/extension/manager.py", line 356, in load_extension
+        extension.load_all_points(self.serverapp)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/extension/manager.py", line 228, in load_all_points
+        return [self.load_point(point_name, serverapp) for point_name in self.extension_points]
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/extension/manager.py", line 228, in <listcomp>
+        return [self.load_point(point_name, serverapp) for point_name in self.extension_points]
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/extension/manager.py", line 219, in load_point
+        return point.load(serverapp)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/extension/manager.py", line 147, in load
+        return loader(serverapp)
+      File "/home/dongagent/anaconda3/lib/python3.8/site-packages/jupyter_nbextensions_configurator/__init__.py", line 247, in load_jupyter_server_extension
+        if static_files_path not in webapp.settings['nbextensions_path']:
+    KeyError: 'nbextensions_path'
+[I 2024-11-12 09:34:43.792 ServerApp] jupyter_server_terminals | extension was successfully loaded.
+[I 2024-11-12 09:34:43.792 LabApp] JupyterLab extension loaded from /home/dongagent/anaconda3/lib/python3.8/site-packages/jupyterlab
+[I 2024-11-12 09:34:43.793 LabApp] JupyterLab application directory is /home/dongagent/anaconda3/share/jupyter/lab
+[I 2024-11-12 09:34:43.794 ServerApp] jupyterlab | extension was successfully loaded.
+[I 2024-11-12 09:34:43.798 ServerApp] nbclassic | extension was successfully loaded.
+[I 2024-11-12 09:34:43.798 ServerApp] Serving notebooks from local directory: /home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package/scripts
+[I 2024-11-12 09:34:43.798 ServerApp] Jupyter Server 2.3.0 is running at:
+[I 2024-11-12 09:34:43.798 ServerApp] http://localhost:8888/lab?token=741f2e505cb196a93d0435aa82864c8bc4d31100a5fe87bf
+[I 2024-11-12 09:34:43.798 ServerApp]     http://127.0.0.1:8888/lab?token=741f2e505cb196a93d0435aa82864c8bc4d31100a5fe87bf
+[I 2024-11-12 09:34:43.798 ServerApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[C 2024-11-12 09:34:43.817 ServerApp] 
+    
+    To access the server, open this file in a browser:
+        file:///home/dongagent/.local/share/jupyter/runtime/jpserver-5520-open.html
+    Or copy and paste one of these URLs:
+        http://localhost:8888/lab?token=741f2e505cb196a93d0435aa82864c8bc4d31100a5fe87bf
+        http://127.0.0.1:8888/lab?token=741f2e505cb196a93d0435aa82864c8bc4d31100a5fe87bf
+[I 2024-11-12 09:34:48.724 LabApp] Build is up to date
+[W 2024-11-12 09:34:49.775 ServerApp] Notebook MathematicalCal.ipynb is not trusted
+[W 2024-11-12 09:34:49.806 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+
+  _   _          _      _
+ | | | |_ __  __| |__ _| |_ ___
+ | |_| | '_ \/ _` / _` |  _/ -_)
+  \___/| .__/\__,_\__,_|\__\___|
+       |_|
+                                                                           
+Read the migration plan to Notebook 7 to learn about the new features and the actions to take if you are using extensions.
+
+https://jupyter-notebook.readthedocs.io/en/latest/migrate_to_notebook7.html
+
+Please note that updating to Notebook 7 might break some of your extensions.
+
+-\|/-\|/[I 2024-11-12 09:34:51.821 ServerApp] Kernel started: efcaf8b8-7f6a-4167-bcd3-4754782d7bf1
+[I 2024-11-12 09:34:51.823 ServerApp] Kernel started: a0d7b161-efae-4cae-b010-f589f2f355a7
+[I 2024-11-12 09:34:51.823 ServerApp] Kernel started: 405be402-b509-44aa-96bd-7d9583aa8fa7
+[I 2024-11-12 09:34:51.825 ServerApp] Kernel started: b84f7817-ff1f-4d7b-9b56-ba1069bb329b
+[I 2024-11-12 09:34:51.830 ServerApp] Kernel started: f8ba28db-1b64-4727-8410-a1193258b7d1
+-\|/-[I 2024-11-12 09:34:52.603 ServerApp] Connecting to kernel f8ba28db-1b64-4727-8410-a1193258b7d1.
+[I 2024-11-12 09:34:52.619 ServerApp] Connecting to kernel efcaf8b8-7f6a-4167-bcd3-4754782d7bf1.
+[I 2024-11-12 09:34:52.636 ServerApp] Connecting to kernel a0d7b161-efae-4cae-b010-f589f2f355a7.
+[I 2024-11-12 09:34:52.674 ServerApp] Connecting to kernel 405be402-b509-44aa-96bd-7d9583aa8fa7.
+[I 2024-11-12 09:34:52.687 ServerApp] Connecting to kernel f8ba28db-1b64-4727-8410-a1193258b7d1.
+[I 2024-11-12 09:34:52.704 ServerApp] Connecting to kernel b84f7817-ff1f-4d7b-9b56-ba1069bb329b.
+[I 2024-11-12 09:34:52.717 ServerApp] Connecting to kernel f8ba28db-1b64-4727-8410-a1193258b7d1.
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: 1d7580cc-4bb6-49a7-915c-33dc59e260a6
+[W 2024-11-12 09:35:12.128 ServerApp] delete /Untitled Folder
+[I 2024-11-12 09:35:21.782 ServerApp] Creating new notebook in 
+[I 2024-11-12 09:35:22.007 ServerApp] Kernel started: 5a215a8e-cae3-4fc1-b375-caeb4294ca5d
+[I 2024-11-12 09:35:22.371 ServerApp] Connecting to kernel 5a215a8e-cae3-4fc1-b375-caeb4294ca5d.
+[I 2024-11-12 09:35:22.384 ServerApp] Connecting to kernel 5a215a8e-cae3-4fc1-b375-caeb4294ca5d.
+[I 2024-11-12 09:35:22.398 ServerApp] Connecting to kernel 5a215a8e-cae3-4fc1-b375-caeb4294ca5d.
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: 104ff5a8-8f41-48a6-8f22-7a4f9132ceac
+[I 2024-11-12 09:35:39.514 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 09:36:49.931 ServerApp] Saving file at /MathematicalCal.ipynb
+[W 2024-11-12 09:36:49.932 ServerApp] Notebook MathematicalCal.ipynb is not trusted
+[I 2024-11-12 09:37:39.546 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 09:39:39.611 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 09:41:39.642 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 09:43:39.742 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 09:45:39.805 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 09:51:39.844 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 09:54:32.481 ServerApp] Creating new file in 
+[I 2024-11-12 09:54:34.606 ServerApp] Saving file at /untitled.py
+[I 2024-11-12 10:04:51.535 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:05:58.056 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:07:58.100 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:09:56.782 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:13:56.847 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:15:04.976 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:15:09.000 ServerApp] Kernel shutdown: b84f7817-ff1f-4d7b-9b56-ba1069bb329b
+[I 2024-11-12 10:15:09.341 ServerApp] Kernel started: 961afe29-7516-4566-b882-0a669bfea1ca
+[I 2024-11-12 10:15:09.731 ServerApp] Connecting to kernel 961afe29-7516-4566-b882-0a669bfea1ca.
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: 3d27f9f1-b775-4086-a5ad-bbfd5178da66
+[I 2024-11-12 10:17:05.044 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:19:05.094 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:21:05.160 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:22:05.094 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:24:05.165 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:25:01.139 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:26:05.111 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:26:36.887 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:28:37.152 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:30:12.368 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:32:20.108 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 10:34:51.102 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 10:35:03.845 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 10:37:03.876 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 10:38:31.393 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 10:38:44.185 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:39:03.743 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:41:03.480 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:41:12.147 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:41:33.543 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:43:33.587 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:45:33.636 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:47:33.692 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:49:33.743 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:50:10.504 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 10:51:25.107 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 10:53:25.133 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 10:54:15.745 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-12 10:54:33.137 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 10:54:46.467 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 10:54:52.026 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 10:55:02.315 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 10:56:18.028 ServerApp] Saving file at /resmasknet.py
+[I 2024-11-12 10:57:02.343 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 10:58:12.408 ServerApp] Saving file at /resmasknet.py
+[I 2024-11-12 10:59:02.431 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:00:14.943 ServerApp] Saving file at /resmasknet.py
+[I 2024-11-12 11:00:19.365 ServerApp] Saving file at /resmasknet.py
+[I 2024-11-12 11:00:52.622 ServerApp] Saving file at /resmasknet.py
+[I 2024-11-12 11:00:52.813 ServerApp] Saving file at /resmasknet.py
+[I 2024-11-12 11:01:37.432 ServerApp] Saving file at /resmasknet.py
+[I 2024-11-12 11:01:38.173 ServerApp] Saving file at /resmasknet.py
+[I 2024-11-12 11:01:38.339 ServerApp] Saving file at /resmasknet.py
+[I 2024-11-12 11:02:08.586 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:02:40.802 ServerApp] Kernel shutdown: efcaf8b8-7f6a-4167-bcd3-4754782d7bf1
+[I 2024-11-12 11:02:40.804 ServerApp] Kernel shutdown: a0d7b161-efae-4cae-b010-f589f2f355a7
+[I 2024-11-12 11:02:40.807 ServerApp] Kernel shutdown: 405be402-b509-44aa-96bd-7d9583aa8fa7
+[I 2024-11-12 11:02:40.808 ServerApp] Kernel shutdown: f8ba28db-1b64-4727-8410-a1193258b7d1
+[I 2024-11-12 11:02:40.808 ServerApp] Kernel shutdown: 5a215a8e-cae3-4fc1-b375-caeb4294ca5d
+[I 2024-11-12 11:02:40.809 ServerApp] Kernel shutdown: 961afe29-7516-4566-b882-0a669bfea1ca
+[I 2024-11-12 11:03:03.383 ServerApp] Kernel started: 2dce0435-159a-4b85-ba1b-2f93f751c6bd
+[I 2024-11-12 11:03:03.837 ServerApp] Connecting to kernel 2dce0435-159a-4b85-ba1b-2f93f751c6bd.
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: 6b49bbbf-1040-4380-b6c6-f9e952d1fb38
+[I 2024-11-12 11:04:08.618 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:06:08.649 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:08:08.681 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:10:08.719 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:12:08.765 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:14:08.831 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:15:38.098 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:16:49.545 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:17:42.519 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:17:46.654 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:19:15.501 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:21:15.571 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:22:40.451 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:24:40.534 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:30:40.572 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:32:40.607 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:33:21.019 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:33:32.525 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:37:25.381 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:39:25.410 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:41:25.441 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:43:25.500 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:45:25.591 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:48:42.581 ServerApp] Kernel restarted: 2dce0435-159a-4b85-ba1b-2f93f751c6bd
+[I 2024-11-12 11:48:42.585 ServerApp] Starting buffering for 2dce0435-159a-4b85-ba1b-2f93f751c6bd:b81f629e-93f1-4698-8a40-59356c51702d
+[I 2024-11-12 11:48:42.587 ServerApp] Connecting to kernel 2dce0435-159a-4b85-ba1b-2f93f751c6bd.
+[I 2024-11-12 11:48:42.588 ServerApp] Restoring connection for 2dce0435-159a-4b85-ba1b-2f93f751c6bd:b81f629e-93f1-4698-8a40-59356c51702d
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: 617e5b37-621d-42fb-96d1-d9ddef13cbfc
+[I 2024-11-12 11:49:25.704 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:50:06.095 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:50:13.541 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:51:00.080 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:52:27.208 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:54:27.288 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:55:20.096 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:57:21.126 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 11:58:43.517 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 12:00:12.873 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 12:01:21.603 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 12:01:37.717 ServerApp] Kernel interrupted: 2dce0435-159a-4b85-ba1b-2f93f751c6bd
+[I 2024-11-12 12:02:07.403 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 12:02:26.515 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 12:04:26.606 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 12:06:26.684 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 12:08:26.725 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 12:10:26.786 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 12:12:26.844 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 12:13:33.127 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 12:13:37.000 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 12:13:37.778 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 12:14:17.390 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 12:16:17.432 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 12:18:17.516 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 12:20:17.550 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 12:42:17.606 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 12:44:17.703 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 12:56:17.824 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 12:58:17.902 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 12:59:54.658 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 13:00:14.201 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 13:02:14.272 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 13:04:14.329 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 13:06:14.467 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 13:07:04.520 ServerApp] Kernel interrupted: 2dce0435-159a-4b85-ba1b-2f93f751c6bd
+[I 2024-11-12 13:07:26.646 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 13:09:26.740 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 13:27:26.798 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 13:31:28.104 ServerApp] Saving file at /probe.ipynb
+[I 2024-11-12 13:34:49.716 ServerApp] Saving file at /probe.ipynb
