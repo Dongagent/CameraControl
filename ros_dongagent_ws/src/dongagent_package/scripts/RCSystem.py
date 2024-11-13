@@ -1198,36 +1198,59 @@ def bayesian_optimization(baseline, target_emotion, robot):
         
 
     if target_emotion == 'disgust':
-    #     # disgust
+        # disgust
         optimizer.probe(params={'x1':86, 'x6':0, 'x8':0, 'x10':0, 'x11':0, 'x16':0, 'x18':0, 'x20':0, 
-                        'x28':0, 'x29':0, 'x30':255, 'x32':0}, lazy=False,) # prototype
+                'x28':0, 'x29':0, 'x30':255, 'x32':0}, lazy=False,) # prototype
         optimizer.probe(params={'x1':136, 'x6':122, 'x8':255, 'x10':0, 'x11':255, 'x16':227, 'x18':-190, 'x20':234,
-                        'x28':17, 'x29':0, 'x30':235, 'x32':100}, lazy=False,) # Di13
+                'x28':17, 'x29':0, 'x30':235, 'x32':100}, lazy=False,) # Di13
         optimizer.probe(params={'x1':133, 'x6':94, 'x8':-203, 'x10':0, 'x11':255, 'x16':253, 'x18':-201, 'x20':102,
-                        'x28':0, 'x29':0, 'x30':255, 'x32':100}, lazy=False,) # Di14
+                'x28':0, 'x29':0, 'x30':255, 'x32':100}, lazy=False,) # Di14
         optimizer.probe(params={'x1':143, 'x6':101, 'x8':-209, 'x10':0, 'x11':255, 'x16':212, 'x18':-156, 'x20':203,
-                        'x28':43, 'x29':0, 'x30':209, 'x32':100}, lazy=False,) # Di12       
+                'x28':43, 'x29':0, 'x30':209, 'x32':100}, lazy=False,) # Di12       
         optimizer.probe(params={'x1':114, 'x6':140, 'x8':-255, 'x10':0, 'x11':179, 'x16':33, 'x18':-180, 'x20':0,
-                        'x28':0, 'x29':32, 'x30':46, 'x32':100}, lazy=False,) # Di45
+                'x28':0, 'x29':32, 'x30':46, 'x32':100}, lazy=False,) # Di45
         optimizer.probe(params={'x1':188, 'x6':137, 'x8':79, 'x10':201, 'x11':133, 'x16':20, 'x18':123, 'x20':121,
-                        'x28':27, 'x29':160, 'x30':115, 'x32':100}, lazy=False,) # Di59
+                'x28':27, 'x29':160, 'x30':115, 'x32':100}, lazy=False,) # Di59
         optimizer.probe(params={'x1':16, 'x6':119, 'x8':174, 'x10':165, 'x11':114, 'x16':75, 'x18':121, 'x20':116,
-                        'x28':220, 'x29':183, 'x30':57, 'x32':100}, lazy=False,) # Di38
+                'x28':220, 'x29':183, 'x30':57, 'x32':100}, lazy=False,) # Di38
         optimizer.probe(params={'x1':104, 'x6':28, 'x8':248, 'x10':36, 'x11':148, 'x16':79, 'x18':143, 'x20':110,
-                        'x28':68, 'x29':112, 'x30':94, 'x32':100}, lazy=False,) # Di166
+                'x28':68, 'x29':112, 'x30':94, 'x32':100}, lazy=False,) # Di166
         optimizer.probe(params={'x1':252, 'x6':67, 'x8':5, 'x10':85, 'x11':166, 'x16':33, 'x18':69, 'x20':204,
-                        'x28':191, 'x29':49, 'x30':85, 'x32':100}, lazy=False,) # Di475
+                'x28':191, 'x29':49, 'x30':85, 'x32':100}, lazy=False,) # Di475
         optimizer.probe(params={'x1':191, 'x6':24, 'x8':-26, 'x10':0, 'x11':253, 'x16':165, 'x18':-17, 'x20':191,
-                        'x28':81, 'x29':31, 'x30':64, 'x32':100}, lazy=False,) # Di11
+                'x28':81, 'x29':31, 'x30':64, 'x32':100}, lazy=False,) # Di11
         optimizer.probe(params={'x1':27, 'x6':122, 'x8':255, 'x10':58, 'x11':152, 'x16':152, 'x18':98, 'x20':117,
-                        'x28':62, 'x29':164, 'x30':235, 'x32':100}, lazy=False,) # Di32
+                'x28':62, 'x29':164, 'x30':235, 'x32':100}, lazy=False,) # Di32
 
-    # if target_emotion == 'fear':
-    #     # fear
-    #     optimizer.probe(params={'x1': 0, 'x8': 255, 'x10': 255, 'x11': 255, 'x15': 255, 'x20': 255}, lazy=True,)
+    if target_emotion == 'fear':
+        # fear
+        optimizer.probe(params={'x1':0, 'x6':0, 'x8':255, 'x10':255, 'x11':255, 'x16':0, 'x18':0, 'x20':255, 
+                'x28':0, 'x29':0, 'x30':0, 'x32':0}, lazy=False,) # prototype
+        optimizer.probe(params={'x1':188, 'x6':137, 'x8':79, 'x10':201, 'x11':133, 'x16':20, 'x18':123, 'x20':121, 
+                'x28':27, 'x29':160, 'x30':115, 'x32':100}, lazy=False,) # Fe59
+        optimizer.probe(params={'x1':232, 'x6':43, 'x8':163, 'x10': 203, 'x11': 76, 'x16': 77, 'x18': 41, 'x20':159, 
+                'x28':129, 'x29':110, 'x30':62, 'x32':100}, lazy=False,) # Fe93
+        optimizer.probe(params={'x1':182, 'x6':48, 'x8':-166, 'x10': 200, 'x11': 177, 'x16': 74, 'x18': 141, 'x20':226, 
+                'x28':76, 'x29':36, 'x30':203, 'x32':100}, lazy=False,) # Fe356
+        optimizer.probe(params={'x1':186, 'x6': 75, 'x8': 107, 'x10': 227, 'x11': 254, 'x16': 50, 'x18': -65, 'x20':172, 
+                'x28': 199, 'x29': 91, 'x30': 143, 'x32':100}, lazy=False,) # Fe427
+        optimizer.probe(params={'x1':233, 'x6': 7, 'x8': 26, 'x10': 33, 'x11': 153, 'x16': 77, 'x18': 64,
+            'x20': 172, 'x28': 63, 'x29': 213, 'x30': 213, 'x32':100}, lazy=False,) # Fe385
+        optimizer.probe(params={'x1':106, 'x6': 106, 'x8': 96, 'x10': 161, 'x11': 157, 'x16': 60, 'x18': -140,
+            'x20': 119, 'x28': 53, 'x29': 102, 'x30': 254, 'x32':100}, lazy=False,) # Fe472
+        optimizer.probe(params={'x1':16, 'x6': 97, 'x8': 46, 'x10': 137, 'x11': 125, 'x16': 6, 'x18': 38
+            'x20': 32, 'x28': 248, 'x29': 35, 'x30': 211, 'x32':100}, lazy=False,) # Fe16
+        optimizer.probe(params={'x1':40, 'x6': 78, 'x8': -161, 'x10': 194, 'x11': 239, 'x16': 187, 'x18': -244, 
+            'x20': 131, 'x28': 134, 'x29': 197, 'x30': 198, 'x32':100}, lazy=False,) # Fe313
+        optimizer.probe(params={'x1':224, 'x6': 51, 'x8': 234, 'x10': 16, 'x11': 24, 'x16': 202, 'x18': 61, 
+            'x20': 247, 'x28': 84, 'x29': 131, 'x30': 177, 'x32':100}, lazy=False,) # Fe17
 
-    # if target_emotion == 'happiness':
-    #     # happiness
+
+    if target_emotion == 'happiness':
+        # happiness
+        optimizer.probe(params={'x1':224, 'x6': 51, 'x8': 234, 'x10': 16, 'x11': 24, 'x16': 202, 'x18': 61, 
+            'x20': 247, 'x28': 84, 'x29': 131, 'x30': 177, 'x32':100}, lazy=False,) # Fe17
+        
     #     optimizer.probe(params={'x6': 255, 'x9': 255, 'x16': 255, 'x18': 255,}, lazy=True,)
 
     # if target_emotion == 'sadness':
