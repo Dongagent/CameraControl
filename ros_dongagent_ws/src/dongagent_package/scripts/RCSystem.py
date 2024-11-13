@@ -1292,7 +1292,7 @@ def bayesian_optimization(baseline, target_emotion, robot):
         'x20': 255, 'x28': 255, 'x29': 255, 'x30': 255, 'x32': 0}, lazy=False,) # Ha288
         optimizer.probe(params={'x1':0, 'x6': 140, 'x8': 0, 'x10': 0, 'x11': 0, 'x16': 255, 'x18': 0,
         'x20': 255, 'x28': 0, 'x29': 255, 'x30': 0, 'x32': 0}, lazy=False,) # Ha250
-        optimizer.probe(params={'x1':58, 'x6': 140, 'x8': 0, 'x10': 255, 'x11': 0, 'x16': 255, 'x18': -143
+        optimizer.probe(params={'x1':58, 'x6': 140, 'x8': 0, 'x10': 255, 'x11': 0, 'x16': 255, 'x18': -143,
         'x20': 0, 'x28': 255, 'x29': 0, 'x30': 0, 'x32': 0}, lazy=False,) # Ha489
         
 
@@ -1308,22 +1308,38 @@ def bayesian_optimization(baseline, target_emotion, robot):
         'x20': 255, 'x28': 0, 'x29': 0, 'x30': 255, 'x32':100}, lazy=True,) # Sa286
         optimizer.probe(params={'x1':255, 'x6':0, 'x8':-94, 'x10': 0, 'x11': 255, 'x16': 178, 'x18': 255,
         'x20': 89, 'x28': 0, 'x29': 0, 'x30': 255, 'x32':100}, lazy=True,) # Sa140
-        optimizer.probe(params={'x1':255, 'x6':0, 'x8':-94, 'x10': 0, 'x11': 255, 'x16': 178, 'x18': 255,
-        'x20': 89, 'x28': 0, 'x29': 0, 'x30': 255, 'x32':100}, lazy=True,) # Sa140
-        
-# {'sadness': 'sadness_174_axes_data.csv', 'x1': 238, 'x10': 233, 'x11': 199, 'x16': 30, 'x18': 221, 'x19': 22, 'x20': 21, 'x28': 39, 'x29': 122, 'x30': 9, 'x32': 233, 'x6': 33, 'x8': 249, 'x9': 179}
-# {'sadness': 'sadness_422_axes_data.csv', 'x1': 255, 'x10': 253, 'x11': 255, 'x16': 255, 'x18': 0, 'x19': 106, 'x20': 255, 'x28': 255, 'x29': 211, 'x30': 255, 'x32': 255, 'x6': 0, 'x8': 19, 'x9': 0}
-# {'sadness': 'sadness_245_axes_data.csv', 'x1': 255, 'x10': 0, 'x11': 255, 'x16': 255, 'x18': 0, 'x19': 255, 'x20': 255, 'x28': 0, 'x29': 178, 'x30': 0, 'x32': 255, 'x6': 43, 'x8': 0, 'x9': 106}
-# {'sadness': 'sadness_483_axes_data.csv', 'x1': 255, 'x10': 0, 'x11': 255, 'x16': 0, 'x18': 255, 'x19': 0, 'x20': 0, 'x28': 0, 'x29': 255, 'x30': 255, 'x32': 255, 'x6': 140, 'x8': 0, 'x9': 0}
-# {'sadness': 'sadness_491_axes_data.csv', 'x1': 255, 'x10': 255, 'x11': 255, 'x16': 10, 'x18': 0, 'x19': 0, 'x20': 255, 'x28': 0, 'x29': 255, 'x30': 105, 'x32': 233, 'x6': 140, 'x8': 0, 'x9': 255}
-# {'sadness': 'sadness_247_axes_data.csv', 'x1': 255, 'x10': 0, 'x11': 255, 'x16': 46, 'x18': 255, 'x19': 0, 'x20': 255, 'x28': 0, 'x29': 0, 'x30': 227, 'x32': 255, 'x6': 106, 'x8': 0, 'x9': 0}
+        optimizer.probe(params={'x1':238, 'x6':33, 'x8':-179, 'x10': 233, 'x11': 199, 'x16': 30, 'x18': -22,
+        'x20': 21, 'x28': 39, 'x29': 122, 'x30': 9, 'x32':100}, lazy=True,) # Sa174
+        optimizer.probe(params={'x1':255, 'x6': 0, 'x8': 19, 'x10': 253, 'x11': 255, 'x16': 255, 'x18': -106,
+        'x20': 255, 'x28': 255, 'x29': 211, 'x30': 255, 'x32':100}, lazy=True,) # Sa422
+        optimizer.probe(params={'x1':255, 'x6': 43, 'x8': -106, 'x10': 0, 'x11': 255, 'x16': 255, 'x18': -255,
+        'x20': 255, 'x28': 0, 'x29': 178, 'x30': 0, 'x32':100}, lazy=True,) # Sa245
+        optimizer.probe(params={'x1':255, 'x6': 140, 'x8': 0, 'x10': 0, 'x11': 255, 'x16': 0, 'x18': 255,
+        'x20': 0, 'x28': 0, 'x29': 255, 'x30': 255, 'x32':100}, lazy=True,) # Sa483
+        optimizer.probe(params={'x1':255, 'x6': 140, 'x8': 0, 'x10': 255, 'x11': 255, 'x16': 10, 'x18': 0,
+        'x20': 255, 'x28': 0, 'x29': 255, 'x30': 105, 'x32':100}, lazy=True,) # Sa491
+        optimizer.probe(params={'x1':255, 'x6': 106, 'x8': 0, 'x10': 0, 'x11': 255, 'x16': 46, 'x18': 255,
+        'x20': 255, 'x28': 0, 'x29': 0, 'x30': 227, 'x32':100}, lazy=True,) # Sa247
 
     if target_emotion == 'surprise':
         # surprise
         optimizer.probe(params={'x1':0, 'x6':0, 'x8':255, 'x10':128, 'x11':0, 'x16':0, 'x18':0, 
-        'x20':0, 'x28':0, 'x29':0, 'x30':0, 'x32':0}, lazy=True,)
+        'x20':0, 'x28':0, 'x29':0, 'x30':0, 'x32':0}, lazy=True,) # prototype
+        optimizer.probe(params={'x1':0, 'x6':0, 'x8':255, 'x10':0, 'x11':0, 'x16':0, 'x18':255, 
+        'x20':0, 'x28':255, 'x29':0, 'x30':0, 'x32':100}, lazy=True,) # Su275
+        optimizer.probe(params={'x1':0, 'x6':0, 'x8':255, 'x10':0, 'x11':0, 'x16':0, 'x18':0, 
+        'x20':255, 'x28':0, 'x29':149, 'x30':0, 'x32':100}, lazy=True,)  # Su245
+        optimizer.probe(params={'x1':0, 'x6':0, 'x8':255, 'x10': 255, 'x11': 0, 'x16': 0, 'x18': 255, 
+        'x20': 255, 'x28': 72, 'x29': 0, 'x30': 0, 'x32':100}, lazy=True,) # Su261
 
 
+{'surprise': 'surprise_369_axes_data.csv', 'x1': 0, 'x10': 255, 'x11': 0, 'x16': 255, 'x18': 0, 'x19': 0, 'x20': 255, 'x28': 0, 'x29': 0, 'x30': 0, 'x32': 255, 'x6': 140, 'x8': 255, 'x9': 255}
+{'surprise': 'surprise_337_axes_data.csv', 'x1': 0, 'x10': 255, 'x11': 0, 'x16': 0, 'x18': 9, 'x19': 0, 'x20': 0, 'x28': 0, 'x29': 255, 'x30': 0, 'x32': 255, 'x6': 0, 'x8': 255, 'x9': 149}
+{'surprise': 'surprise_121_axes_data.csv', 'x1': 0, 'x10': 38, 'x11': 156, 'x16': 0, 'x18': 132, 'x19': 0, 'x20': 247, 'x28': 0, 'x29': 255, 'x30': 0, 'x32': 255, 'x6': 0, 'x8': 255, 'x9': 255}
+{'surprise': 'surprise_428_axes_data.csv', 'x1': 0, 'x10': 159, 'x11': 0, 'x16': 0, 'x18': 0, 'x19': 0, 'x20': 255, 'x28': 255, 'x29': 255, 'x30': 0, 'x32': 255, 'x6': 0, 'x8': 255, 'x9': 255}
+{'surprise': 'surprise_407_axes_data.csv', 'x1': 0, 'x10': 255, 'x11': 0, 'x16': 0, 'x18': 255, 'x19': 240, 'x20': 255, 'x28': 91, 'x29': 0, 'x30': 0, 'x32': 255, 'x6': 140, 'x8': 123, 'x9': 70}
+{'surprise': 'surprise_440_axes_data.csv', 'x1': 0, 'x10': 255, 'x11': 0, 'x16': 0, 'x18': 0, 'x19': 0, 'x20': 0, 'x28': 0, 'x29': 0, 'x30': 0, 'x32': 255, 'x6': 0, 'x8': 0, 'x9': 0}
+{'surprise': 'surprise_106_axes_data.csv', 'x1': 0, 'x10': 0, 'x11': 0, 'x16': 0, 'x18': 255, 'x19': 144, 'x20': 255, 'x28': 4, 'x29': 255, 'x30': 0, 'x32': 255, 'x6': 0, 'x8': 255, 'x9': 0}
 
 
     global init_points
@@ -1683,7 +1699,7 @@ def main():
     # -------------------------------------
     # exp 24 BORFEO using IntensityNet
     # -------------------------------------
-    for target_emotion in ['disgust']:
+    for target_emotion in ['happiness']:
     # for target_emotion in ['fear', 'happiness', 'sadness', 'surprise']:
         check_folder(target_emotion)
         COUNTER = 0
@@ -2932,7 +2948,15 @@ def main():
     
 if __name__ == '__main__':
     try:
+        # add program running duration in minute, second
+        start = time.time()
         main()
+        end = time.time()
+        time_sum = end - start
+        minutes = time_sum // 60
+        remaining_seconds = time_sum % 60
+        print(f"The program running duration is: {minutes}min {remaining_seconds}sec")
+
     except Exception as e:
         print(e)
         trace = []
