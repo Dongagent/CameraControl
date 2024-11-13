@@ -1233,7 +1233,7 @@ def bayesian_optimization(baseline, target_emotion, robot):
             'x20': 172, 'x28': 63, 'x29': 213, 'x30': 213, 'x32':100}, lazy=False,) # Fe385
         optimizer.probe(params={'x1':106, 'x6': 106, 'x8': 96, 'x10': 161, 'x11': 157, 'x16': 60, 'x18': -140,
             'x20': 119, 'x28': 53, 'x29': 102, 'x30': 254, 'x32':100}, lazy=False,) # Fe472
-        optimizer.probe(params={'x1':16, 'x6': 97, 'x8': 46, 'x10': 137, 'x11': 125, 'x16': 6, 'x18': 38
+        optimizer.probe(params={'x1':16, 'x6': 97, 'x8': 46, 'x10': 137, 'x11': 125, 'x16': 6, 'x18': 38,
             'x20': 32, 'x28': 248, 'x29': 35, 'x30': 211, 'x32':100}, lazy=False,) # Fe16
         optimizer.probe(params={'x1':40, 'x6': 78, 'x8': -161, 'x10': 194, 'x11': 239, 'x16': 187, 'x18': -244, 
             'x20': 131, 'x28': 134, 'x29': 197, 'x30': 198, 'x32':100}, lazy=False,) # Fe313
