@@ -24,7 +24,7 @@ import defaultPose, mimicryExpParams
 # import socket
 import threading
 from threading import Thread
-import serial, itertools
+# import serial, itertools
 import cv2, time, copy, sys, math, logging
 import os, subprocess
 import platform
@@ -33,6 +33,9 @@ import pandas as pd
 from bayes_opt import BayesianOptimization
 from bayes_opt.logger import JSONLogger
 from bayes_opt.event import Events
+# from bayes_opt import acquisition
+
+
 # ----- for ros------
 import rospy, json, base64
 from std_msgs.msg import String
@@ -47,13 +50,15 @@ from intensityNet import *
 SPACE = ' '
 LINUXVIDEOPATH = '/dev/video2' # ffplay # v4l2-ctl --list-devices
 loopFlag = 0 # 0 - py-feat, 1 - human
-DEBUG = 0
 FEAT_VERSION = 0 # 0 - py-feat 0.3.7 , 1 - py-feat 0.6.1
+DEBUG = 0
 # 0 - Run; 
 # 1 - Debuging with robot; 
 # 2 - Debug WITHOUT robot; for image debuging
 # 3 - Debug without pic, with  robot; 
 # 4 - Debug without pic, without robot;
+
+# acq = acquisition.UpperConfidenceBound(kappa=2.5)
 
 headYaw_fix_flag = False
 headYaw_fix = 105
@@ -861,7 +866,10 @@ def fix_robot_param(fixedrobotcode):
 
     return fixedrobotcode
 
-# BO
+# ------------
+# **** BO ****
+# ------------
+
 def target_function(**kwargs):
     """Pyfeat evaluation object
     
@@ -890,7 +898,8 @@ def target_function(**kwargs):
     if fixedrobotcode[0] + fixedrobotcode[5] > 255 + 86 + 10:
         # if the upper lid and lower lid are too close to each other, we should not return 0
         print("[INFO]Happy Constraints, give 0 score.")
-        return 0
+        print('[INFO]Happy Constraints, currently removed')
+        # return 0
 
     fixedrobotcode = fix_robot_param(fixedrobotcode)
     
@@ -923,6 +932,9 @@ def target_function(**kwargs):
         print('[INFO]The {}th trial'.format(str(COUNTER + 1)))
         print('[INFO]target_emotion', target_emotion)
 
+        # check COUNTER is 1 or not
+        # assert COUNTER == 2 , "COUNTER is 2."
+
         # Use Py-Feat 0.3.7
         output_feat = py_feat_analysis(img=rb.readablefileName, target_emotion=target_emotion)
         
@@ -931,7 +943,7 @@ def target_function(**kwargs):
             B_min = 0.39
             B_max = 0.65
         elif target_emotion == 'disgust':
-            threshold = 0.5
+            threshold = 0.6
             B_min = 0.35
             B_max = 0.63
         elif target_emotion == 'fear':
@@ -951,14 +963,16 @@ def target_function(**kwargs):
             B_min = 0.23
             B_max = 0.46
 
-        # if output_feat > threshold:
-        #     # Use SiameseRankNet
-        #     output_inten = intensityNet_analysis(img=rb.readablefileName, target_emotion=target_emotion)
-        #     # we need a curve from the threshold
-        #     output = calculate_output_nonlinear(output_feat, output_inten, threshold=threshold, alpha=0.8, B_min=B_min, B_max=B_max, output_min=threshold, output_max=1.1, k=10)
-        # else:
-        output = output_feat
+        output_inten = intensityNet_analysis(img=rb.readablefileName, target_emotion=target_emotion)
+        if output_feat > threshold:
+            # Use SiameseRankNet
+            # output_inten = intensityNet_analysis(img=rb.readablefileName, target_emotion=target_emotion)
+            # we need a curve from the threshold
+            output = calculate_output_nonlinear(output_feat, output_inten, threshold=threshold, alpha=0.8, B_min=B_min, B_max=B_max, output_min=threshold, output_max=1.1, k=10)
+        else:
+            output = output_feat
         
+        # output = output_feat
 
 
         # if target_emotion == 'disgust':
@@ -973,6 +987,8 @@ def target_function(**kwargs):
         # construct the DataFrame
         df_dic = {}
         df_dic['rating'] = [output]
+        df_dic['feat'] = [output_feat]
+        df_dic['inten'] = [output_inten]
         for k,v in kwargs.items():
             df_dic[k] = [v]
         print('[INFO]df_dic', df_dic)
@@ -1132,24 +1148,25 @@ def bayesian_optimization(baseline, target_emotion, robot):
     optimizer = BayesianOptimization(
         f=middle_function,
         # Define HyperParameter Space
+        # acquisition_function=acq,
         pbounds = pbounds,
-        random_state=1,
+        random_state=486,
         verbose=2)
     # random_state is like set seed
     # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent
     
     # initialization of pre-define facial expression
-    neutral_baseline = defaultPose.prototypeFacialExpressions["neutral"]
-    subtract = abs(np.array(neutral_baseline) - np.array(baseline)) 
-    if subtract.sum() == 0:
-        subtract += 1
-    if list(subtract) != []:
-        # print('subtract', subtract)
-        probe_param = {}
-        for i in range(len(subtract)):
-            if subtract[i] != 0:
-                probe_param["x{}".format(i+1)] = subtract[i]
-        # print(probe_param)
+    # neutral_baseline = defaultPose.prototypeFacialExpressions["neutral"]
+    # subtract = abs(np.array(neutral_baseline) - np.array(baseline)) 
+    # if subtract.sum() == 0:
+    #     subtract += 1
+    # if list(subtract) != []:
+    #     # print('subtract', subtract)
+    #     probe_param = {}
+    #     for i in range(len(subtract)):
+    #         if subtract[i] != 0:
+    #             probe_param["x{}".format(i+1)] = subtract[i]
+    #     # print(probe_param)
 
     # logger
     logger = JSONLogger(path="./image_analysis/"+ target_emotion + "/logs.json")
@@ -1202,12 +1219,16 @@ def bayesian_optimization(baseline, target_emotion, robot):
 
     if target_emotion == 'disgust':
         # disgust
+        print(111111111111111111111111111111111111111)
         optimizer.probe(params={'x1':86, 'x6':0, 'x8':0, 'x10':0, 'x11':0, 'x16':0, 'x18':0, 'x20':0, 
                 'x28':0, 'x29':0, 'x30':255, 'x32':0}, lazy=False,) # prototype
+        print(22222222222222222222222222222222222222)
         optimizer.probe(params={'x1':136, 'x6':122, 'x8':255, 'x10':0, 'x11':255, 'x16':227, 'x18':-190, 'x20':234,
                 'x28':17, 'x29':0, 'x30':235, 'x32':100}, lazy=False,) # Di13
+        print(33333333333333333333333333333333333333)
         optimizer.probe(params={'x1':133, 'x6':94, 'x8':-203, 'x10':0, 'x11':255, 'x16':253, 'x18':-201, 'x20':102,
                 'x28':0, 'x29':0, 'x30':255, 'x32':100}, lazy=False,) # Di14
+        print(4444444444444444444444444444444444444444)
         optimizer.probe(params={'x1':143, 'x6':101, 'x8':-209, 'x10':0, 'x11':255, 'x16':212, 'x18':-156, 'x20':203,
                 'x28':43, 'x29':0, 'x30':209, 'x32':100}, lazy=False,) # Di12       
         optimizer.probe(params={'x1':114, 'x6':140, 'x8':-255, 'x10':0, 'x11':179, 'x16':33, 'x18':-180, 'x20':0,
@@ -1282,6 +1303,10 @@ def bayesian_optimization(baseline, target_emotion, robot):
     # )
     global init_points
     global n_iter
+
+    # TODO change the maximize method to Suggest-Evaluate-Register Paradigm
+    # https://github.com/bayesian-optimization/BayesianOptimization/blob/8cc0f0e751a28befbee2ce300f62ec6271f19037/examples/advanced-tour.ipynb#L25
+
     optimizer.maximize(init_points=init_points, n_iter=n_iter)
     # optimizer.maximize(alpha=1e-2) 
     # alpha is interpreted as the variance of additional Gaussian measurement noise 
@@ -1629,10 +1654,51 @@ def main():
     detector = Detector(emotion_model = "resmasknet", landmark_model='mobilefacenet')
     
     global smoothSleepTime
-    # res = subprocess.Popen("ls", cwd="/home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package/scripts")
-    # print(res)
 
-    # assert res == 0, 'workdir err'
+    # -------------------------------------
+    # exp 24 BORFEO using IntensityNet
+    # -------------------------------------
+    for target_emotion in ['disgust']:
+    # for target_emotion in ['fear', 'happiness', 'sadness', 'surprise']:
+        check_folder(target_emotion)
+        COUNTER = 0
+        print(target_emotion)
+
+        global CURBEST
+        CURBEST = ['', 0]
+        # test photo
+        rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, 'test'), folder='test')
+        
+        # set face box and model
+        facebox = detector.detect_faces(cv2.imread(rb.readablefileName))[0]
+        setIntensityModel(target_emotion, facebox)
+
+        optimizer = bayesian_optimization(
+            baseline=defaultPose.prototypeFacialExpressions[target_emotion],
+            target_emotion=target_emotion,
+            robot=rb)
+        print('\n')
+        # print("Current target emotion is: ", target_emotion, optimizer.res)
+        print('\n')
+        # Return to normal
+        rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+        rb.connect_ros(True, False)
+
+        # release after using it
+        global intensityModel
+        intensityModel = None
+
+    # Return to normal
+    rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    rb.connect_ros(True, False)
+    time.sleep(2)
+    rb.webcam_stream_widget.stop()
+    try:
+        rb.webcam_stream_widget.vthread.join()
+    except Exception as e:
+        print(e)
+    
+    
     # rb.transfer_robotParams_to_states(rb.lastParams, [x for x in range(36)])
     # Anger, Disgust, Fear, Happiness, Sadness, Surprise
     # anger, disgust, fear, happiness, sadness, surprise
@@ -1687,38 +1753,38 @@ def main():
     # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
     # rb.connect_ros(True, False)
 
-    # -------------------------------------
-    # exp 23-3 BORFEO using IntensityNet
-    # -------------------------------------
-    for target_emotion in ['disgust']:
-    # for target_emotion in ['fear', 'happiness', 'sadness', 'surprise']:
-        check_folder(target_emotion)
-        COUNTER = 0
-        print(target_emotion)
+    # # -------------------------------------
+    # # exp 23-3 BORFEO using IntensityNet
+    # # -------------------------------------
+    # for target_emotion in ['disgust']:
+    # # for target_emotion in ['fear', 'happiness', 'sadness', 'surprise']:
+    #     check_folder(target_emotion)
+    #     COUNTER = 0
+    #     print(target_emotion)
 
-        global CURBEST
-        CURBEST = ['', 0]
-        # test photo
-        rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, 'test'), folder='test')
+    #     global CURBEST
+    #     CURBEST = ['', 0]
+    #     # test photo
+    #     rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, 'test'), folder='test')
         
-        # set face box and model
-        facebox = detector.detect_faces(rb.readablefileName)[0]
-        setIntensityModel(target_emotion, facebox)
+    #     # set face box and model
+    #     # facebox = detector.detect_faces(Image.open(rb.readablefileName))[0]
+    #     # setIntensityModel(target_emotion, facebox)
 
-        optimizer = bayesian_optimization(
-            baseline=defaultPose.prototypeFacialExpressions[target_emotion],
-            target_emotion=target_emotion,
-            robot=rb)
-        print('\n')
-        # print("Current target emotion is: ", target_emotion, optimizer.res)
-        print('\n')
-        # Return to normal
-        rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
-        rb.connect_ros(True, False)
+    #     optimizer = bayesian_optimization(
+    #         baseline=defaultPose.prototypeFacialExpressions[target_emotion],
+    #         target_emotion=target_emotion,
+    #         robot=rb)
+    #     print('\n')
+    #     # print("Current target emotion is: ", target_emotion, optimizer.res)
+    #     print('\n')
+    #     # Return to normal
+    #     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    #     rb.connect_ros(True, False)
 
-        # release after using it
-        global intensityModel
-        intensityModel = None
+    #     # release after using it
+    #     global intensityModel
+    #     intensityModel = None
 
     # # Return to normal
     # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])

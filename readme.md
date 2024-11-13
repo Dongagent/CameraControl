@@ -12,6 +12,7 @@ py-feat  0.5.0 (resmasknet is changed, DON'T use it until varified.)
 py-feat  0.3.7
 
 bayesian-optimization 1.4.2
+Try bayesian-optimization 2.0.0 with python 3.10
 
 rospkg 1.4.0
 
