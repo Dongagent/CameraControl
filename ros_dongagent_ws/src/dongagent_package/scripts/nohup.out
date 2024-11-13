@@ -469,3 +469,13 @@ Please note that updating to Notebook 7 might break some of your extensions.
 [I 2024-11-13 13:25:48.929 ServerApp] Saving file at /webcam_control.ipynb
 [I 2024-11-13 13:27:48.991 ServerApp] Saving file at /webcam_control.ipynb
 [I 2024-11-13 13:28:01.435 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-13 13:42:33.819 ServerApp] Kernel started: f25b7c35-87a9-4913-931f-3c074cca2068
+[I 2024-11-13 13:42:34.366 ServerApp] Connecting to kernel f25b7c35-87a9-4913-931f-3c074cca2068.
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: 3efc23c4-bc2a-4a44-9904-505c00e49c29
+[I 2024-11-13 13:43:13.448 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-13 13:43:13.449 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-13 13:54:01.525 ServerApp] Kernel shutdown: 232def59-0588-4ade-9931-a0cbcaa45c44
+[I 2024-11-13 13:54:01.526 ServerApp] Kernel shutdown: f25b7c35-87a9-4913-931f-3c074cca2068
+[I 2024-11-13 14:25:00.845 ServerApp] 302 GET / (@127.0.0.1) 0.44ms
+[I 2024-11-13 14:25:00.854 LabApp] 302 GET /lab? (@127.0.0.1) 0.80ms

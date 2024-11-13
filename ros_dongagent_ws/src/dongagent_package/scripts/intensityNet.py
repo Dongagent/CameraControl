@@ -117,7 +117,7 @@ class IntensityNet_type1(nn.Module):
             # )
 
             # test
-            start_x, start_y, end_x, end_y = 523, 258, 748, 483
+            start_x, start_y, end_x, end_y = 504, 322, 721, 539
 
             # # covnert to square images
             # center_x, center_y = (start_x + end_x) // 2, (start_y + end_y) // 2
