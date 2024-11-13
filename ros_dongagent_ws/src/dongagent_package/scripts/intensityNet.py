@@ -10,7 +10,7 @@ from PIL import Image
 from SiameseRankNet import *
 import pandas as pd
 class IntensityNet_type1(nn.Module):
-    def __init__(self, model_path):
+    def __init__(self, model_path, facebox=None):
         super(IntensityNet_type1, self).__init__()
         # Load ResMaskNet model
         self.model = resmasking_dropout1(in_channels=3, num_classes=7)
@@ -71,6 +71,8 @@ class IntensityNet_type1(nn.Module):
                 self.state_dict[key.replace("module.model.","")] = self.state_dict.pop(key)
             self.model.load_state_dict(self.state_dict, strict=False)
             self.model.cuda()
+
+        self.facebox = facebox
         
     
     # _once
@@ -97,7 +99,7 @@ class IntensityNet_type1(nn.Module):
         # print('x', x)
         return x
     
-    def detect_emo(self, frame, detected_face="", *args, **kwargs):
+    def detect_emo(self, frame, detected_face=""):
         """Detect emotions.
 
         Args:
@@ -108,35 +110,8 @@ class IntensityNet_type1(nn.Module):
         """
 
         with torch.no_grad():
-            # frame = np.fliplr(frame).astype(np.uint8)
-            # h, w = frame.shape[:2]
-            # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-            # start_x, start_y, end_x, end_y, conf = np.array(detected_face[0]).astype(
-            #     int
-            # )
-
-            # test
-            start_x, start_y, end_x, end_y = 504, 322, 721, 539
-
-            # # covnert to square images
-            # center_x, center_y = (start_x + end_x) // 2, (start_y + end_y) // 2
-            # square_length = ((end_x - start_x) + (end_y - start_y)) // 2 // 2
-            # square_length *= 1.1
-            # start_x = int(center_x - square_length)
-            # start_y = int(center_y - square_length)
-            # end_x = int(center_x + square_length)
-            # end_y = int(center_y + square_length)
-            # if start_x < 0:
-            #     start_x = 0
-            # if start_y < 0:
-            #     start_y = 0
-            # face = gray[start_y:end_y, start_x:end_x]
-            # face = ensure_color(face)
-            # face = cv2.resize(face, (self.image_size, self.image_size))
-    
+            start_x, start_y, end_x, end_y = get_box(self.facebox[0], self.facebox[1], self.facebox[2], self.facebox[3])
             face = frame.crop([start_x, start_y, end_x, end_y])
-
             if self.use_gpu:
                 face = self.transform(face).cuda()
             else:
@@ -145,6 +120,17 @@ class IntensityNet_type1(nn.Module):
             output = torch.squeeze(self.model(face), 0)
 
             return output
+
+def get_box(start_x, start_y, end_x, end_y):
+    center_x, center_y = (start_x + end_x) // 2, (start_y + end_y) // 2
+    square_length = ((end_x - start_x) + (end_y - start_y)) // 2 // 2
+    square_length *= 1.1
+    start_x = int(center_x - square_length)
+    start_y = int(center_y - square_length)
+    end_x = int(center_x + square_length)
+    end_y = int(center_y + square_length)
+    return start_x, start_y, end_x, end_y
+
 
 def get_target(emotion_name):
     # Anger, Disgust, Fear, Happiness, Sadness, Surprise, Neutral
@@ -165,7 +151,7 @@ def get_target(emotion_name):
         return 6
 
 
-def intensityNet_analysis(img, target_emotion, is_save_csv=True):
+def intensityNet_analysis(img, target_emotion, facebox=None, is_save_csv=True):
     # Load the model
     # ['anger', 'disgust', 'fear', 'happiness', 'sadness', 'surprise']
     print("target_emotion:", target_emotion)
@@ -184,7 +170,8 @@ def intensityNet_analysis(img, target_emotion, is_save_csv=True):
     else:
         model_path = ""
 
-    model = IntensityNet_type1(model_path)
+    assert facebox is not None, "facebox is None"
+    model = IntensityNet_type1(model_path, facebox)
 
     # use model to detect emo
     detection_res = model.detect_emo(Image.open(img))

@@ -727,7 +727,7 @@ def py_feat_analysis(img, target_emotion, is_save_csv=True):
     # return emo_df.iloc[0,targetID]
     return list(df[target_emotion])[0]
 
-def setIntensityModel(target_emotion):
+def setIntensityModel(target_emotion, facebox):
     global intensityModel
     # Load the model
     # ['anger', 'disgust', 'fear', 'happiness', 'sadness', 'surprise']
@@ -747,7 +747,9 @@ def setIntensityModel(target_emotion):
     else:
         model_path = ""
 
-    intensityModel = IntensityNet_type1(model_path)
+    assert facebox, "facebox is empty"
+    intensityModel = IntensityNet_type1(model_path, facebox)
+
     return 1
 
 
@@ -1249,18 +1251,22 @@ def bayesian_optimization(baseline, target_emotion, robot):
 
     if target_emotion == 'happiness':
         # happiness
-        optimizer.probe(params={'x1':224, 'x6': 51, 'x8': 234, 'x10': 16, 'x11': 24, 'x16': 202, 'x18': 61, 
-            'x20': 247, 'x28': 84, 'x29': 131, 'x30': 177, 'x32':100}, lazy=False,) # Fe17
+        optimizer.probe(params={'x1':86, 'x6':255, 'x8':0, 'x10':0, 'x11':0, 'x16':255, 'x18':255, 
+        'x20':0, 'x28':0, 'x29':0, 'x30':0, 'x32':0}, lazy=False,) # prototype
         
     #     optimizer.probe(params={'x6': 255, 'x9': 255, 'x16': 255, 'x18': 255,}, lazy=True,)
 
-    # if target_emotion == 'sadness':
-    #     # sadness
-    #     optimizer.probe(params={'x10': 255, 'x11': 255, 'x15': 255, 'x19': 255}, lazy=True,)
+    if target_emotion == 'sadness':
+        # sadness
+        optimizer.probe(params={'x1':86, 'x6':0, 'x8':0, 'x10':255, 'x11':255, 'x16':0, 'x18':0, 
+        'x20':0, 'x28':0, 'x29':0, 'x30':0, 'x32':0}, lazy=True,) # prototype
 
-    # if target_emotion == 'surprise':
-    #     # surprise
-    #     optimizer.probe(params={'x1': 0, 'x8': 255, 'x10': 128,}, lazy=True,)
+    if target_emotion == 'surprise':
+        # surprise
+        optimizer.probe(params={'x1':0, 'x6':0, 'x8':255, 'x10':128, 'x11':0, 'x16':0, 'x18':0, 
+        'x20':0, 'x28':0, 'x29':0, 'x30':0, 'x32':0}, lazy=True,)
+
+
     # --------------------------------------
 
     # Happiness prototype
@@ -1689,12 +1695,16 @@ def main():
         check_folder(target_emotion)
         COUNTER = 0
         print(target_emotion)
-        # setIntensityModel(target_emotion)
 
         global CURBEST
         CURBEST = ['', 0]
         # test photo
         rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, 'test'), folder='test')
+        
+        # set face box and model
+        facebox = detector.detect_faces(rb.readablefileName)[0]
+        setIntensityModel(target_emotion, facebox)
+
         optimizer = bayesian_optimization(
             baseline=defaultPose.prototypeFacialExpressions[target_emotion],
             target_emotion=target_emotion,
