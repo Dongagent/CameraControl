@@ -904,8 +904,8 @@ def target_function(**kwargs):
     # -------------
     # I need a feedback here!!
     # -------------
-    if returncode == 0:
-        print('[INFO]successfully return')
+    # if returncode == 0:
+    #     print('[INFO]successfully moved')
     
     output = 0
     global loopFlag
@@ -929,7 +929,7 @@ def target_function(**kwargs):
             B_min = 0.39
             B_max = 0.65
         elif target_emotion == 'disgust':
-            threshold = 0.8
+            threshold = 0.5
             B_min = 0.35
             B_max = 0.63
         elif target_emotion == 'fear':
@@ -957,6 +957,10 @@ def target_function(**kwargs):
 
         else:
             output = output_feat
+        
+        # if target_emotion == 'disgust':
+        #     output = intensityNet_analysis(img=rb.readablefileName, target_emotion=target_emotion)
+
         # if CURBEST[1] < output:
         #     CURBEST[0] = rb.readablefileName
         #     CURBEST[1] = output
@@ -1041,6 +1045,7 @@ def target_function(**kwargs):
     # --- TEST return to normal state every time---
     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
     rb.connect_ros(True, False, steps=3)
+    time.sleep(0.5)
     # --- TEST END ---  
 
     return output
@@ -1572,8 +1577,8 @@ def main():
     global MYSTEPS
     # init_points = 2
     # n_iter = 2
-    init_points = 10
-    n_iter = 90
+    init_points = 20
+    n_iter = 130
 
     # set headYaw_fix_flag
     global headYaw_fix_flag
@@ -1655,7 +1660,7 @@ def main():
     # -------------------------------------
     # exp 23-3 BORFEO using IntensityNet
     # -------------------------------------
-    for target_emotion in ['anger']:
+    for target_emotion in ['disgust']:
     # for target_emotion in ['fear', 'happiness', 'sadness', 'surprise']:
         check_folder(target_emotion)
         COUNTER = 0
@@ -1665,7 +1670,7 @@ def main():
         global CURBEST
         CURBEST = ['', 0]
         # test photo
-        rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, 'test'), folder=target_emotion)
+        rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, 'test'), folder='test')
         optimizer = bayesian_optimization(
             baseline=defaultPose.prototypeFacialExpressions[target_emotion],
             target_emotion=target_emotion,

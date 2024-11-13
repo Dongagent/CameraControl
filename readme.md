@@ -71,6 +71,9 @@ Please check the access permission of ```/dev/ttyUSB0```, better to use ```sudo 
 
 ```rosrun rc rc```
 
+#### 3 modify the facebox
+In jupyter
+
 #### 4 run your code
 ```conda activate py37pyfeat1```
 ```rosrun dongagent_package RCSystem.py```
@@ -133,9 +136,10 @@ Test: 100
 
 ### SET UP WEB CAM
 
-use 
-```v4l2-ctl -d /dev/video2 --set-ctrl=brightness=150```
-```v4l2-ctl -d /dev/video2 -c exposure_auto=1``` means manual, 3 means auto
+use ```v4l2-ctl -d /dev/video2 -c exposure_auto=1``` means manual, 3 means auto
+
+```v4l2-ctl -d /dev/video2 --set-ctrl=brightness=140 --set-ctrl=gain=20 --set-ctrl=exposure_absolute=333 --set-ctrl=white_balance_temperature=4336```
+
 
 
 
@@ -149,7 +153,7 @@ v4l2-ctl -d /dev/video2 -L
 				0: Disabled
 				1: 50 Hz
 				2: 60 Hz
-      white_balance_temperature 0x0098091a (int)    : min=2000 max=6500 step=1 default=4000 value=4188 flags=inactive
+      white_balance_temperature 0x0098091a (int)    : min=2000 max=6500 step=1 default=4000 value=4336 flags=inactive
                       sharpness 0x0098091b (int)    : min=0 max=255 step=1 default=128 value=128
          backlight_compensation 0x0098091c (int)    : min=0 max=1 step=1 default=0 value=0
                   exposure_auto 0x009a0901 (menu)   : min=0 max=3 default=3 value=1
