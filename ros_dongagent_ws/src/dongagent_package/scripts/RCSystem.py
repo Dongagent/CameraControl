@@ -1558,7 +1558,7 @@ def main():
     global headYaw_fix_flag
     headYaw_fix_flag = True
     # set how much steps Nikola need to shift the axes from one to another
-    MYSTEPS = 10
+    MYSTEPS = 20
     # change workdir
     workdir = "/home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package/scripts"
     os.chdir(workdir)
