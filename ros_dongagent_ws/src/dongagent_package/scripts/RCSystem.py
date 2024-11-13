@@ -949,15 +949,16 @@ def target_function(**kwargs):
             B_min = 0.23
             B_max = 0.46
 
-        if output_feat > threshold:
-            # Use SiameseRankNet
-            output_inten = intensityNet_analysis(img=rb.readablefileName, target_emotion=target_emotion)
-            # we need a curve from the threshold
-            output = calculate_output_nonlinear(output_feat, output_inten, threshold=threshold, alpha=0.8, B_min=B_min, B_max=B_max, output_min=threshold, output_max=1.1, k=10)
-
-        else:
-            output = output_feat
+        # if output_feat > threshold:
+        #     # Use SiameseRankNet
+        #     output_inten = intensityNet_analysis(img=rb.readablefileName, target_emotion=target_emotion)
+        #     # we need a curve from the threshold
+        #     output = calculate_output_nonlinear(output_feat, output_inten, threshold=threshold, alpha=0.8, B_min=B_min, B_max=B_max, output_min=threshold, output_max=1.1, k=10)
+        # else:
+        output = output_feat
         
+
+
         # if target_emotion == 'disgust':
         #     output = intensityNet_analysis(img=rb.readablefileName, target_emotion=target_emotion)
 
@@ -1238,7 +1239,7 @@ def bayesian_optimization(baseline, target_emotion, robot):
             'x20': 172, 'x28': 63, 'x29': 213, 'x30': 213, 'x32':100}, lazy=False,) # Fe385
         optimizer.probe(params={'x1':106, 'x6': 106, 'x8': 96, 'x10': 161, 'x11': 157, 'x16': 60, 'x18': -140,
             'x20': 119, 'x28': 53, 'x29': 102, 'x30': 254, 'x32':100}, lazy=False,) # Fe472
-        optimizer.probe(params={'x1':16, 'x6': 97, 'x8': 46, 'x10': 137, 'x11': 125, 'x16': 6, 'x18': 38
+        optimizer.probe(params={'x1':16, 'x6': 97, 'x8': 46, 'x10': 137, 'x11': 125, 'x16': 6, 'x18': 38,
             'x20': 32, 'x28': 248, 'x29': 35, 'x30': 211, 'x32':100}, lazy=False,) # Fe16
         optimizer.probe(params={'x1':40, 'x6': 78, 'x8': -161, 'x10': 194, 'x11': 239, 'x16': 187, 'x18': -244, 
             'x20': 131, 'x28': 134, 'x29': 197, 'x30': 198, 'x32':100}, lazy=False,) # Fe313
@@ -1688,7 +1689,7 @@ def main():
         check_folder(target_emotion)
         COUNTER = 0
         print(target_emotion)
-        setIntensityModel(target_emotion)
+        # setIntensityModel(target_emotion)
 
         global CURBEST
         CURBEST = ['', 0]
