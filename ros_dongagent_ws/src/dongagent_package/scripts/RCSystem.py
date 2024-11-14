@@ -44,6 +44,7 @@ import struct
 
 # ----- for new model -----
 # from SiameseRankNet import SiameseRankNet_analysis
+from resmasknet import ResMaskNet
 from intensityNet import * 
 
 # ----- for new model END -----
@@ -73,6 +74,12 @@ detector = ''
 # intensityModel
 global intensityModel
 intensityModel = ''
+
+global rmn_model
+rmn_model = ''
+
+global facebox
+facebox = ''
 
 class WebcamStreamWidget(object):
     def __init__(self, stream_id=0, width=1280, height=720):
@@ -317,6 +324,7 @@ class robot:
         
         # save file in another thread
         if self.readablefileName:
+            print('[INFO]Taking a photo...')
             self.webcam_stream_widget.save_frame(self.readablefileName)
             print('[INFO]frame captured.')
         else:
@@ -649,9 +657,10 @@ class robot:
         figurePath = ""
         return openfacePath
 
-    def analysis(self, target_emotion_name):
-        assert target_emotion_name in ["Anger", "Disgust", "Fear", "Happiness", "Sadness", "Surprise"], "You are not using the predefine name"
-        py_feat_analysis(self.readablefileName, target_emotion_name)
+    # def analysis(self, target_emotion_name):
+    #     assert target_emotion_name in ["Anger", "Disgust", "Fear", "Happiness", "Sadness", "Surprise"], "You are not using the predefine name"
+    #     py_feat_analysis(self.readablefileName, target_emotion_name)
+
     def feedback(self):
         pass
 def list2string(data):
@@ -707,29 +716,47 @@ def get_target(emotion_name):
 def py_feat_analysis(img, target_emotion, is_save_csv=True):
 
     '''
+        # Use model directly
         @img: file name 
         @target_emotion: Anger, Disgust, Fear, Happiness, Sadness, Surprise
     '''
-    global detector
 
-    image_prediction = detector.detect_image(img)
-    df = image_prediction.head()
-    if FEAT_VERSION == 0:
-        emo_df = df.iloc[-1:,-8:] # feat 0.3.7
-    elif FEAT_VERSION == 1:
-        emo_df = df.iloc[-1:,-9:-1] # feat 0.5.0
-    else:
-        raise Exception("FEAT_VERSION is not correct")
+    global rmn_model
+    global facebox
 
-    if is_save_csv:
-        csv_name = img[:-4]+".csv"
-        csv_emotion_name = img[:-4]+"_emotion.csv"
-        df.to_csv(csv_name)
-        emo_df.to_csv(csv_emotion_name)
     targetID = get_target(target_emotion)
+    rmn_res = model.detect_emo(frame=cv2.imread(img), detected_face=facebox)
+    df = pd.DataFrame([rmn_res], columns=["anger", "disgust", "fear", "happiness", "sadness", "surprise", "neutral"])
+    df['input'] = rb.readablefileName
+    if is_save_csv:
+        csv_emotion_name = img[:-4]+"_emotion.csv"
+        df.to_csv(csv_emotion_name)
+
     if DEBUG > 0:
         print("[INFO]py_feat_analysis: {}".format(list(df[target_emotion])[0]))
+
+    # -----------
+    # old version
+    # -----------
+    # image_prediction = detector.detect_image(img)
+    # df = image_prediction.head()
+    # if FEAT_VERSION == 0:
+    #     emo_df = df.iloc[-1:,-8:] # feat 0.3.7
+    # elif FEAT_VERSION == 1:
+    #     emo_df = df.iloc[-1:,-9:-1] # feat 0.5.0
+    # else:
+    #     raise Exception("FEAT_VERSION is not correct")
+
+    # if is_save_csv:
+    #     csv_name = img[:-4]+".csv"
+    #     csv_emotion_name = img[:-4]+"_emotion.csv"
+    #     df.to_csv(csv_name)
+    #     emo_df.to_csv(csv_emotion_name)
+    # targetID = get_target(target_emotion)
+    # if DEBUG > 0:
+    #     print("[INFO]py_feat_analysis: {}".format(list(df[target_emotion])[0]))
     # return emo_df.iloc[0,targetID]
+
     return list(df[target_emotion])[0]
 
 def setIntensityModel(target_emotion, facebox):
@@ -924,6 +951,7 @@ def target_function(**kwargs):
     # pyfeat_in_loop_output case
     if loopFlag == 0:
         # Take photo using cv2
+
         rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, COUNTER), folder=target_emotion)
         
         COUNTER += 1
@@ -1826,9 +1854,14 @@ def main():
         # test photo
         rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, 'test'), folder='test')
         
-        # set face box and model
+        # set face box and intensity model
+        global facebox
         facebox = detector.detect_faces(cv2.imread(rb.readablefileName))[0]
+        print("[Notice] facebox is: ", facebox)
         setIntensityModel(target_emotion, facebox)
+        # set rmn model
+        global rmn_model
+        rmn_model = ResMaskNet()
 
         optimizer = bayesian_optimization(
             baseline=defaultPose.prototypeFacialExpressions[target_emotion],
