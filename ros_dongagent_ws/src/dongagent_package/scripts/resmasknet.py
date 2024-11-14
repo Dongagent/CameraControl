@@ -1,7 +1,8 @@
 from SiameseRankNet import *
 
 def get_resource_path():
-    return "/home/dongagent/Downloads/py-feat-0.3.7/feat/resources"
+    # return "/home/dongagent/Downloads/py-feat-0.3.7/feat/resources"
+    return "/home/dongagent/anaconda3/envs/py37pyfeat1/lib/python3.7/site-packages/py_feat-0.3.7-py3.7.egg/feat/resources"
     
 """
 All code & models from https://github.com/phamquiluan/ResidualMaskingNetwork

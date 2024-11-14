@@ -19,7 +19,7 @@ import random
 from typing import Counter
 from datetime import datetime
 import defaultPose, mimicryExpParams
-
+from collections import deque as deque
 
 # import socket
 import threading
@@ -33,6 +33,7 @@ import pandas as pd
 from bayes_opt import BayesianOptimization
 from bayes_opt.logger import JSONLogger
 from bayes_opt.event import Events
+from bayes_opt import UtilityFunction
 # from bayes_opt import acquisition
 
 
@@ -724,40 +725,25 @@ def py_feat_analysis(img, target_emotion, is_save_csv=True):
     global rmn_model
     global facebox
 
-    targetID = get_target(target_emotion)
-    rmn_res = model.detect_emo(frame=cv2.imread(img), detected_face=facebox)
-    df = pd.DataFrame([rmn_res], columns=["anger", "disgust", "fear", "happiness", "sadness", "surprise", "neutral"])
-    df['input'] = rb.readablefileName
+    # use model directly
+    rmn_res = rmn_model.detect_emo(frame=cv2.imread(img), detected_face=[facebox])
+    output = rmn_res[0][get_target(target_emotion)]
+
+    
+
+    new_df = pd.DataFrame(rmn_res, columns=["anger", "disgust", "fear", "happiness", "sadness", "surprise", "neutral"])
+    new_df['input'] = rb.readablefileName
+    print('rmn_model: ', new_df)
     if is_save_csv:
-        csv_emotion_name = img[:-4]+"_emotion.csv"
-        df.to_csv(csv_emotion_name)
+        csv_emotion_name = img[:-4]+"_rmn_emotion.csv"
+        new_df.to_csv(csv_emotion_name)
 
+    
     if DEBUG > 0:
-        print("[INFO]py_feat_analysis: {}".format(list(df[target_emotion])[0]))
-
-    # -----------
-    # old version
-    # -----------
-    # image_prediction = detector.detect_image(img)
-    # df = image_prediction.head()
-    # if FEAT_VERSION == 0:
-    #     emo_df = df.iloc[-1:,-8:] # feat 0.3.7
-    # elif FEAT_VERSION == 1:
-    #     emo_df = df.iloc[-1:,-9:-1] # feat 0.5.0
-    # else:
-    #     raise Exception("FEAT_VERSION is not correct")
-
-    # if is_save_csv:
-    #     csv_name = img[:-4]+".csv"
-    #     csv_emotion_name = img[:-4]+"_emotion.csv"
-    #     df.to_csv(csv_name)
-    #     emo_df.to_csv(csv_emotion_name)
-    # targetID = get_target(target_emotion)
-    # if DEBUG > 0:
-    #     print("[INFO]py_feat_analysis: {}".format(list(df[target_emotion])[0]))
-    # return emo_df.iloc[0,targetID]
-
-    return list(df[target_emotion])[0]
+        print("[INFO] new py_feat_analysis: {}".format(list(new_df[target_emotion])[0]))
+    
+    
+    return output
 
 def setIntensityModel(target_emotion, facebox):
     global intensityModel
@@ -907,6 +893,8 @@ def target_function(**kwargs):
     target_emotion = kwargs['target_emotion']
     kwargs = kwargs["kwargs"]
 
+    print(kwargs)
+
     # Get robot parameters
     neutral = [86, 86, 128, 128, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 128, 122]
     if headYaw_fix_flag:
@@ -951,13 +939,10 @@ def target_function(**kwargs):
     # pyfeat_in_loop_output case
     if loopFlag == 0:
         # Take photo using cv2
-
-        rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, COUNTER), folder=target_emotion)
-        
         COUNTER += 1
-        
+        rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, COUNTER), folder=target_emotion)
         # Py-feat Analysis
-        print('[INFO]The {}th trial'.format(str(COUNTER + 1)))
+        print('[INFO]The {}th trial'.format(str(COUNTER)))
         print('[INFO]target_emotion', target_emotion)
 
         # check COUNTER is 1 or not
@@ -1465,32 +1450,40 @@ def bayesian_optimization(baseline, target_emotion, robot, is_add_probe=False):
 
     # add probe
     if is_add_probe:
+        print('[INFO]Using probe.')
         for p in emo_probe_param[target_emotion]:
             optimizer.probe(p, lazy=True)
 
-    optimizer.maximize(init_points=init_points, n_iter=n_iter)
+    # optimizer.maximize(init_points=init_points, n_iter=n_iter)
 
     # ------------------------
     # new method to use bayesian optimize
     # ------------------------
 
     # random search for init_points times, using deque
-    # my_init_points = deque()
-    # for i in range(init_points):
-    #     probe_param = {}
-    #     for i in range(1, 33):
-    #         probe_param["x{}".format(i)] = optimizer.suggest()
-    #     my_init_points.append(probe_param)
+    ucb = UtilityFunction(kind='ucb',
+                          kappa=2.576,
+                          xi=0.0,
+                          kappa_decay=1,
+                          kappa_decay_delay=0)
+
+    my_init_points = deque()
+    for i in range(init_points):
+        print('random search for init_points:', i)
+        probe_param = {}
+        for i in all_axes_for_emotions:
+            probe_param["x{}".format(i)] = optimizer.suggest(ucb)
+        my_init_points.append(probe_param)
     
     
-    # iteration = 0
-    # while my_init_points or iteration < n_iter:
-    #     try:
-    #         x_probe = my_init_points.popleft()
-    #     except IndexError:
-    #         x_probe = optimizer.suggest()
-    #         iteration += 1
-    #     optimizer.probe(x_probe, lazy=False)
+    iteration = 0
+    while my_init_points or iteration < n_iter:
+        try:
+            x_probe = my_init_points.popleft()
+        except IndexError:
+            x_probe = optimizer.suggest(ucb)
+            iteration += 1
+        optimizer.probe(x_probe, lazy=False)
 
 
     # optimizer.maximize(alpha=1e-2) 
@@ -1817,8 +1810,8 @@ def main():
     global MYSTEPS
     # init_points = 2
     # n_iter = 2
-    init_points = 30
-    n_iter = 270
+    init_points = 15
+    n_iter = 50
 
     # set headYaw_fix_flag
     global headYaw_fix_flag
@@ -1836,15 +1829,16 @@ def main():
     global detector
     # landmark_model should be set to mobilefacenet in case you want to use pyfeat 0.3.7/0.5.0/0.6.1
     # Be care of FEAT_VERSION
-    detector = Detector(emotion_model = "resmasknet", landmark_model='mobilefacenet')
-    
+    detector = Detector(landmark_model='mobilefacenet')
+    time.sleep(8)
+
     global smoothSleepTime
 
     # -------------------------------------
     # exp 24 BORFEO using IntensityNet
     # -------------------------------------
-    for target_emotion in ['anger', 'disgust', 'fear', 'happiness', 'sadness', 'surprise']:
-    # for target_emotion in ['fear', 'happiness', 'sadness', 'surprise']:
+    # for target_emotion in ['anger', 'disgust', 'fear', 'happiness', 'sadness', 'surprise']:
+    for target_emotion in ['anger']:
         check_folder(target_emotion)
         COUNTER = 0
         print(target_emotion)
@@ -1857,6 +1851,7 @@ def main():
         # set face box and intensity model
         global facebox
         facebox = detector.detect_faces(cv2.imread(rb.readablefileName))[0]
+
         print("[Notice] facebox is: ", facebox)
         setIntensityModel(target_emotion, facebox)
         # set rmn model
@@ -1867,7 +1862,7 @@ def main():
             baseline=defaultPose.prototypeFacialExpressions[target_emotion],
             target_emotion=target_emotion,
             robot=rb,
-            is_add_probe=False
+            is_add_probe=True
             )
         print('\n')
         # print("Current target emotion is: ", target_emotion, optimizer.res)
