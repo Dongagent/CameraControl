@@ -479,3 +479,300 @@ Please note that updating to Notebook 7 might break some of your extensions.
 [I 2024-11-13 13:54:01.526 ServerApp] Kernel shutdown: f25b7c35-87a9-4913-931f-3c074cca2068
 [I 2024-11-13 14:25:00.845 ServerApp] 302 GET / (@127.0.0.1) 0.44ms
 [I 2024-11-13 14:25:00.854 LabApp] 302 GET /lab? (@127.0.0.1) 0.80ms
+[I 2024-11-14 15:01:06.026 ServerApp] Package jupyterlab took 0.0000s to import
+[I 2024-11-14 15:01:06.032 ServerApp] Package jupyter_server_terminals took 0.0049s to import
+[I 2024-11-14 15:01:06.032 ServerApp] Package nbclassic took 0.0000s to import
+[W 2024-11-14 15:01:06.034 ServerApp] A `_jupyter_server_extension_points` function was not found in nbclassic. Instead, a `_jupyter_server_extension_paths` function was found and will be used for now. This function name will be deprecated in future releases of Jupyter Server.
+[I 2024-11-14 15:01:06.034 ServerApp] Package notebook_shim took 0.0000s to import
+[W 2024-11-14 15:01:06.035 ServerApp] A `_jupyter_server_extension_points` function was not found in notebook_shim. Instead, a `_jupyter_server_extension_paths` function was found and will be used for now. This function name will be deprecated in future releases of Jupyter Server.
+[I 2024-11-14 15:01:06.039 ServerApp] jupyter_server_terminals | extension was successfully linked.
+[I 2024-11-14 15:01:06.043 ServerApp] jupyterlab | extension was successfully linked.
+[I 2024-11-14 15:01:06.048 ServerApp] nbclassic | extension was successfully linked.
+[I 2024-11-14 15:01:06.280 ServerApp] Package jupyter_nbextensions_configurator took 0.0036s to import
+[W 2024-11-14 15:01:06.280 ServerApp] A `_jupyter_server_extension_points` function was not found in jupyter_nbextensions_configurator. Instead, a `_jupyter_server_extension_paths` function was found and will be used for now. This function name will be deprecated in future releases of Jupyter Server.
+[I 2024-11-14 15:01:06.280 ServerApp] jupyter_nbextensions_configurator | extension was found and enabled by notebook_shim. Consider moving the extension to Jupyter Server's extension paths.
+[I 2024-11-14 15:01:06.280 ServerApp] jupyter_nbextensions_configurator | extension was successfully linked.
+[I 2024-11-14 15:01:06.281 ServerApp] notebook_shim | extension was successfully linked.
+[I 2024-11-14 15:01:06.328 ServerApp] notebook_shim | extension was successfully loaded.
+[W 2024-11-14 15:01:06.328 ServerApp] jupyter_nbextensions_configurator | extension failed loading with message: KeyError('nbextensions_path')
+    Traceback (most recent call last):
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/extension/manager.py", line 356, in load_extension
+        extension.load_all_points(self.serverapp)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/extension/manager.py", line 228, in load_all_points
+        return [self.load_point(point_name, serverapp) for point_name in self.extension_points]
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/extension/manager.py", line 228, in <listcomp>
+        return [self.load_point(point_name, serverapp) for point_name in self.extension_points]
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/extension/manager.py", line 219, in load_point
+        return point.load(serverapp)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/extension/manager.py", line 147, in load
+        return loader(serverapp)
+      File "/home/dongagent/anaconda3/lib/python3.8/site-packages/jupyter_nbextensions_configurator/__init__.py", line 247, in load_jupyter_server_extension
+        if static_files_path not in webapp.settings['nbextensions_path']:
+    KeyError: 'nbextensions_path'
+[I 2024-11-14 15:01:06.329 ServerApp] jupyter_server_terminals | extension was successfully loaded.
+[I 2024-11-14 15:01:06.330 LabApp] JupyterLab extension loaded from /home/dongagent/anaconda3/lib/python3.8/site-packages/jupyterlab
+[I 2024-11-14 15:01:06.330 LabApp] JupyterLab application directory is /home/dongagent/anaconda3/share/jupyter/lab
+[I 2024-11-14 15:01:06.333 ServerApp] jupyterlab | extension was successfully loaded.
+[I 2024-11-14 15:01:06.336 ServerApp] nbclassic | extension was successfully loaded.
+[I 2024-11-14 15:01:06.337 ServerApp] The port 8888 is already in use, trying another port.
+[I 2024-11-14 15:01:06.337 ServerApp] Serving notebooks from local directory: /home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package/scripts
+[I 2024-11-14 15:01:06.337 ServerApp] Jupyter Server 2.3.0 is running at:
+[I 2024-11-14 15:01:06.337 ServerApp] http://localhost:8889/lab?token=2ba5b07e7834d2c0ea4bf4f2674d977985290c156a926368
+[I 2024-11-14 15:01:06.337 ServerApp]     http://127.0.0.1:8889/lab?token=2ba5b07e7834d2c0ea4bf4f2674d977985290c156a926368
+[I 2024-11-14 15:01:06.337 ServerApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[C 2024-11-14 15:01:06.362 ServerApp] 
+    
+    To access the server, open this file in a browser:
+        file:///home/dongagent/.local/share/jupyter/runtime/jpserver-48371-open.html
+    Or copy and paste one of these URLs:
+        http://localhost:8889/lab?token=2ba5b07e7834d2c0ea4bf4f2674d977985290c156a926368
+        http://127.0.0.1:8889/lab?token=2ba5b07e7834d2c0ea4bf4f2674d977985290c156a926368
+[I 2024-11-14 15:01:11.001 LabApp] Build is up to date
+[W 2024-11-14 15:01:12.481 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+
+  _   _          _      _
+ | | | |_ __  __| |__ _| |_ ___
+ | |_| | '_ \/ _` / _` |  _/ -_)
+  \___/| .__/\__,_\__,_|\__\___|
+       |_|
+                                                                           
+Read the migration plan to Notebook 7 to learn about the new features and the actions to take if you are using extensions.
+
+https://jupyter-notebook.readthedocs.io/en/latest/migrate_to_notebook7.html
+
+Please note that updating to Notebook 7 might break some of your extensions.
+
+-\|/-\|/-\|/-\|/-\|/-\|/[E 2024-11-14 15:01:15.760 ServerApp] Failed to run command:
+    ['/home/dongagent/anaconda3/envs/py38pyfeat/bin/python', '-m', 'ipykernel_launcher', '-f', '/home/dongagent/.local/share/jupyter/runtime/kernel-4e8b3930-4c0c-4cf6-9a50-4db7e1c3661b.json']
+        PATH='/home/dongagent/anaconda3/envs/py37pyfeat1/bin:/home/dongagent/anaconda3/condabin:/usr/local/cuda-11.2/bin:/opt/ros/noetic/bin:/home/dongagent/anaconda3/bin:/home/dongagent/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/node-v14.17.0-linux-x64/bin:/home/dongagent/Downloads/OpenFace/build/bin'
+        with kwargs:
+    {'stdin': -1, 'stdout': None, 'stderr': None, 'cwd': '/home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package/scripts', 'start_new_session': True}
+    
+[E 2024-11-14 15:01:15.760 ServerApp] [Errno 2] No such file or directory: '/home/dongagent/anaconda3/envs/py38pyfeat/bin/python'
+    Traceback (most recent call last):
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/manager.py", line 85, in wrapper
+        out = await method(self, *args, **kwargs)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/manager.py", line 401, in _async_start_kernel
+        await self._async_launch_kernel(kernel_cmd, **kw)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/manager.py", line 317, in _async_launch_kernel
+        connection_info = await self.provisioner.launch_kernel(kernel_cmd, **kw)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/provisioning/local_provisioner.py", line 205, in launch_kernel
+        self.process = launch_kernel(cmd, **scrubbed_kwargs)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/launcher.py", line 167, in launch_kernel
+        raise ex
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/launcher.py", line 155, in launch_kernel
+        proc = Popen(cmd, **kwargs)
+      File "/home/dongagent/anaconda3/lib/python3.8/subprocess.py", line 854, in __init__
+        self._execute_child(args, executable, preexec_fn, close_fds,
+      File "/home/dongagent/anaconda3/lib/python3.8/subprocess.py", line 1702, in _execute_child
+        raise child_exception_type(errno_num, err_msg, err_filename)
+    FileNotFoundError: [Errno 2] No such file or directory: '/home/dongagent/anaconda3/envs/py38pyfeat/bin/python'
+[E 2024-11-14 15:01:15.764 ServerApp] [Errno 2] No such file or directory: '/home/dongagent/anaconda3/envs/py38pyfeat/bin/python'
+    Traceback (most recent call last):
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/multikernelmanager.py", line 166, in _add_kernel_when_ready
+        await kernel_awaitable
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_core/utils/__init__.py", line 182, in ensure_async
+        result = await obj
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/manager.py", line 93, in wrapper
+        raise e
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/manager.py", line 85, in wrapper
+        out = await method(self, *args, **kwargs)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/manager.py", line 401, in _async_start_kernel
+        await self._async_launch_kernel(kernel_cmd, **kw)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/manager.py", line 317, in _async_launch_kernel
+        connection_info = await self.provisioner.launch_kernel(kernel_cmd, **kw)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/provisioning/local_provisioner.py", line 205, in launch_kernel
+        self.process = launch_kernel(cmd, **scrubbed_kwargs)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/launcher.py", line 167, in launch_kernel
+        raise ex
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/launcher.py", line 155, in launch_kernel
+        proc = Popen(cmd, **kwargs)
+      File "/home/dongagent/anaconda3/lib/python3.8/subprocess.py", line 854, in __init__
+        self._execute_child(args, executable, preexec_fn, close_fds,
+      File "/home/dongagent/anaconda3/lib/python3.8/subprocess.py", line 1702, in _execute_child
+        raise child_exception_type(errno_num, err_msg, err_filename)
+    FileNotFoundError: [Errno 2] No such file or directory: '/home/dongagent/anaconda3/envs/py38pyfeat/bin/python'
+[E 2024-11-14 15:01:15.773 ServerApp] Failed to run command:
+    ['/home/dongagent/anaconda3/envs/py38pyfeat/bin/python', '-m', 'ipykernel_launcher', '-f', '/home/dongagent/.local/share/jupyter/runtime/kernel-f090cd8c-3dab-42e5-a5fa-5bdaea949a06.json']
+        PATH='/home/dongagent/anaconda3/envs/py37pyfeat1/bin:/home/dongagent/anaconda3/condabin:/usr/local/cuda-11.2/bin:/opt/ros/noetic/bin:/home/dongagent/anaconda3/bin:/home/dongagent/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/node-v14.17.0-linux-x64/bin:/home/dongagent/Downloads/OpenFace/build/bin'
+        with kwargs:
+    {'stdin': -1, 'stdout': None, 'stderr': None, 'cwd': '/home/dongagent/github/CameraControl/ros_dongagent_ws/src/dongagent_package/scripts', 'start_new_session': True}
+    
+[E 2024-11-14 15:01:15.774 ServerApp] [Errno 2] No such file or directory: '/home/dongagent/anaconda3/envs/py38pyfeat/bin/python'
+    Traceback (most recent call last):
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/manager.py", line 85, in wrapper
+        out = await method(self, *args, **kwargs)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/manager.py", line 401, in _async_start_kernel
+        await self._async_launch_kernel(kernel_cmd, **kw)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/manager.py", line 317, in _async_launch_kernel
+        connection_info = await self.provisioner.launch_kernel(kernel_cmd, **kw)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/provisioning/local_provisioner.py", line 205, in launch_kernel
+        self.process = launch_kernel(cmd, **scrubbed_kwargs)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/launcher.py", line 167, in launch_kernel
+        raise ex
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/launcher.py", line 155, in launch_kernel
+        proc = Popen(cmd, **kwargs)
+      File "/home/dongagent/anaconda3/lib/python3.8/subprocess.py", line 854, in __init__
+        self._execute_child(args, executable, preexec_fn, close_fds,
+      File "/home/dongagent/anaconda3/lib/python3.8/subprocess.py", line 1702, in _execute_child
+        raise child_exception_type(errno_num, err_msg, err_filename)
+    FileNotFoundError: [Errno 2] No such file or directory: '/home/dongagent/anaconda3/envs/py38pyfeat/bin/python'
+[E 2024-11-14 15:01:15.774 ServerApp] [Errno 2] No such file or directory: '/home/dongagent/anaconda3/envs/py38pyfeat/bin/python'
+    Traceback (most recent call last):
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/multikernelmanager.py", line 166, in _add_kernel_when_ready
+        await kernel_awaitable
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_core/utils/__init__.py", line 182, in ensure_async
+        result = await obj
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/manager.py", line 93, in wrapper
+        raise e
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/manager.py", line 85, in wrapper
+        out = await method(self, *args, **kwargs)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/manager.py", line 401, in _async_start_kernel
+        await self._async_launch_kernel(kernel_cmd, **kw)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/manager.py", line 317, in _async_launch_kernel
+        connection_info = await self.provisioner.launch_kernel(kernel_cmd, **kw)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/provisioning/local_provisioner.py", line 205, in launch_kernel
+        self.process = launch_kernel(cmd, **scrubbed_kwargs)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/launcher.py", line 167, in launch_kernel
+        raise ex
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/launcher.py", line 155, in launch_kernel
+        proc = Popen(cmd, **kwargs)
+      File "/home/dongagent/anaconda3/lib/python3.8/subprocess.py", line 854, in __init__
+        self._execute_child(args, executable, preexec_fn, close_fds,
+      File "/home/dongagent/anaconda3/lib/python3.8/subprocess.py", line 1702, in _execute_child
+        raise child_exception_type(errno_num, err_msg, err_filename)
+    FileNotFoundError: [Errno 2] No such file or directory: '/home/dongagent/anaconda3/envs/py38pyfeat/bin/python'
+[W 2024-11-14 15:01:15.779 ServerApp] 500 POST /api/sessions?1731564075719 (127.0.0.1): [Errno 2] No such file or directory: '/home/dongagent/anaconda3/envs/py38pyfeat/bin/python'
+[W 2024-11-14 15:01:15.779 ServerApp] wrote error: "[Errno 2] No such file or directory: '/home/dongagent/anaconda3/envs/py38pyfeat/bin/python'"
+    Traceback (most recent call last):
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/services/sessions/handlers.py", line 89, in post
+        model = await sm.create_session(
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/services/sessions/sessionmanager.py", line 287, in create_session
+        kernel_id = await self.start_kernel_for_session(
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/services/sessions/sessionmanager.py", line 345, in start_kernel_for_session
+        kernel_id = await self.kernel_manager.start_kernel(
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/services/kernels/kernelmanager.py", line 228, in _async_start_kernel
+        kernel_id = await self.pinned_superclass._async_start_kernel(self, **kwargs)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/multikernelmanager.py", line 219, in _async_start_kernel
+        raise km.ready.exception()  # type: ignore
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/multikernelmanager.py", line 166, in _add_kernel_when_ready
+        await kernel_awaitable
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_core/utils/__init__.py", line 182, in ensure_async
+        result = await obj
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/manager.py", line 93, in wrapper
+        raise e
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/manager.py", line 85, in wrapper
+        out = await method(self, *args, **kwargs)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/manager.py", line 401, in _async_start_kernel
+        await self._async_launch_kernel(kernel_cmd, **kw)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/manager.py", line 317, in _async_launch_kernel
+        connection_info = await self.provisioner.launch_kernel(kernel_cmd, **kw)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/provisioning/local_provisioner.py", line 205, in launch_kernel
+        self.process = launch_kernel(cmd, **scrubbed_kwargs)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/launcher.py", line 167, in launch_kernel
+        raise ex
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/launcher.py", line 155, in launch_kernel
+        proc = Popen(cmd, **kwargs)
+      File "/home/dongagent/anaconda3/lib/python3.8/subprocess.py", line 854, in __init__
+        self._execute_child(args, executable, preexec_fn, close_fds,
+      File "/home/dongagent/anaconda3/lib/python3.8/subprocess.py", line 1702, in _execute_child
+        raise child_exception_type(errno_num, err_msg, err_filename)
+    FileNotFoundError: [Errno 2] No such file or directory: '/home/dongagent/anaconda3/envs/py38pyfeat/bin/python'
+    
+    The above exception was the direct cause of the following exception:
+    
+    Traceback (most recent call last):
+      File "/home/dongagent/.local/lib/python3.8/site-packages/tornado/web.py", line 1713, in _execute
+        result = await result
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/services/sessions/handlers.py", line 107, in post
+        raise web.HTTPError(500, str(e)) from e
+    tornado.web.HTTPError: HTTP 500: Internal Server Error ([Errno 2] No such file or directory: '/home/dongagent/anaconda3/envs/py38pyfeat/bin/python')
+[E 2024-11-14 15:01:15.783 ServerApp] {
+      "Host": "localhost:8889",
+      "Accept": "*/*",
+      "Referer": "http://localhost:8889/lab/tree/Controlbyhand.ipynb",
+      "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+    }
+[E 2024-11-14 15:01:15.783 ServerApp] 500 POST /api/sessions?1731564075719 (1794e9c619514899af7b64773a3d355a@127.0.0.1) 36.28ms referer=http://localhost:8889/lab/tree/Controlbyhand.ipynb
+[W 2024-11-14 15:01:15.784 ServerApp] 500 POST /api/sessions?1731564075722 (127.0.0.1): [Errno 2] No such file or directory: '/home/dongagent/anaconda3/envs/py38pyfeat/bin/python'
+[W 2024-11-14 15:01:15.784 ServerApp] wrote error: "[Errno 2] No such file or directory: '/home/dongagent/anaconda3/envs/py38pyfeat/bin/python'"
+    Traceback (most recent call last):
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/services/sessions/handlers.py", line 89, in post
+        model = await sm.create_session(
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/services/sessions/sessionmanager.py", line 287, in create_session
+        kernel_id = await self.start_kernel_for_session(
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/services/sessions/sessionmanager.py", line 345, in start_kernel_for_session
+        kernel_id = await self.kernel_manager.start_kernel(
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/services/kernels/kernelmanager.py", line 228, in _async_start_kernel
+        kernel_id = await self.pinned_superclass._async_start_kernel(self, **kwargs)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/multikernelmanager.py", line 219, in _async_start_kernel
+        raise km.ready.exception()  # type: ignore
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/multikernelmanager.py", line 166, in _add_kernel_when_ready
+        await kernel_awaitable
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_core/utils/__init__.py", line 182, in ensure_async
+        result = await obj
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/manager.py", line 93, in wrapper
+        raise e
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/manager.py", line 85, in wrapper
+        out = await method(self, *args, **kwargs)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/manager.py", line 401, in _async_start_kernel
+        await self._async_launch_kernel(kernel_cmd, **kw)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/manager.py", line 317, in _async_launch_kernel
+        connection_info = await self.provisioner.launch_kernel(kernel_cmd, **kw)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/provisioning/local_provisioner.py", line 205, in launch_kernel
+        self.process = launch_kernel(cmd, **scrubbed_kwargs)
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/launcher.py", line 167, in launch_kernel
+        raise ex
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_client/launcher.py", line 155, in launch_kernel
+        proc = Popen(cmd, **kwargs)
+      File "/home/dongagent/anaconda3/lib/python3.8/subprocess.py", line 854, in __init__
+        self._execute_child(args, executable, preexec_fn, close_fds,
+      File "/home/dongagent/anaconda3/lib/python3.8/subprocess.py", line 1702, in _execute_child
+        raise child_exception_type(errno_num, err_msg, err_filename)
+    FileNotFoundError: [Errno 2] No such file or directory: '/home/dongagent/anaconda3/envs/py38pyfeat/bin/python'
+    
+    The above exception was the direct cause of the following exception:
+    
+    Traceback (most recent call last):
+      File "/home/dongagent/.local/lib/python3.8/site-packages/tornado/web.py", line 1713, in _execute
+        result = await result
+      File "/home/dongagent/.local/lib/python3.8/site-packages/jupyter_server/services/sessions/handlers.py", line 107, in post
+        raise web.HTTPError(500, str(e)) from e
+    tornado.web.HTTPError: HTTP 500: Internal Server Error ([Errno 2] No such file or directory: '/home/dongagent/anaconda3/envs/py38pyfeat/bin/python')
+[E 2024-11-14 15:01:15.785 ServerApp] {
+      "Host": "localhost:8889",
+      "Accept": "*/*",
+      "Referer": "http://localhost:8889/lab/tree/Controlbyhand.ipynb",
+      "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+    }
+[E 2024-11-14 15:01:15.785 ServerApp] 500 POST /api/sessions?1731564075722 (1794e9c619514899af7b64773a3d355a@127.0.0.1) 37.31ms referer=http://localhost:8889/lab/tree/Controlbyhand.ipynb
+[I 2024-11-14 15:01:15.814 ServerApp] Kernel started: 36e2af71-0891-49d9-9409-53ceed7f9ac3
+[I 2024-11-14 15:01:15.818 ServerApp] Kernel started: 8ad6af28-b72e-4cbd-bf02-fb099c7df9b6
+[I 2024-11-14 15:01:15.822 ServerApp] Kernel started: fd50259a-d3e8-4014-a454-d464bffa12f4
+[I 2024-11-14 15:01:16.753 ServerApp] Connecting to kernel fd50259a-d3e8-4014-a454-d464bffa12f4.
+[I 2024-11-14 15:01:16.798 ServerApp] Connecting to kernel 36e2af71-0891-49d9-9409-53ceed7f9ac3.
+[I 2024-11-14 15:01:16.827 ServerApp] Connecting to kernel 8ad6af28-b72e-4cbd-bf02-fb099c7df9b6.
+[I 2024-11-14 15:01:16.845 ServerApp] Connecting to kernel fd50259a-d3e8-4014-a454-d464bffa12f4.
+[I 2024-11-14 15:01:17.090 ServerApp] Connecting to kernel fd50259a-d3e8-4014-a454-d464bffa12f4.
+[I 2024-11-14 15:01:25.998 ServerApp] Kernel started: cc9303bc-0d2a-49a3-b352-0cddccc8222d
+[I 2024-11-14 15:01:26.730 ServerApp] Connecting to kernel cc9303bc-0d2a-49a3-b352-0cddccc8222d.
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: 4e88155c-b2e9-4555-9ec1-3414586027e3
+[I 2024-11-14 15:01:30.070 ServerApp] Kernel started: ab6b5156-de40-462c-bf25-7cec4ab2c922
+[I 2024-11-14 15:01:31.011 ServerApp] Connecting to kernel ab6b5156-de40-462c-bf25-7cec4ab2c922.
+[I 2024-11-14 15:01:31.027 ServerApp] Connecting to kernel ab6b5156-de40-462c-bf25-7cec4ab2c922.
+[I 2024-11-14 15:01:31.045 ServerApp] Connecting to kernel ab6b5156-de40-462c-bf25-7cec4ab2c922.
+[I 2024-11-14 15:01:37.735 ServerApp] Kernel shutdown: 36e2af71-0891-49d9-9409-53ceed7f9ac3
+[I 2024-11-14 15:01:37.981 ServerApp] Kernel started: c115468a-d3e2-4ef4-80f8-de9cb1893bb6
+[I 2024-11-14 15:01:38.607 ServerApp] Connecting to kernel c115468a-d3e2-4ef4-80f8-de9cb1893bb6.
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: cabab463-53cd-429e-82c9-d5df0f6ba4ed
+[I 2024-11-14 15:02:35.995 ServerApp] Kernel shutdown: 8ad6af28-b72e-4cbd-bf02-fb099c7df9b6
+[I 2024-11-14 15:02:35.999 ServerApp] Kernel shutdown: fd50259a-d3e8-4014-a454-d464bffa12f4
+[I 2024-11-14 15:02:36.005 ServerApp] Kernel shutdown: cc9303bc-0d2a-49a3-b352-0cddccc8222d
+[I 2024-11-14 15:02:36.006 ServerApp] Kernel shutdown: ab6b5156-de40-462c-bf25-7cec4ab2c922
+[I 2024-11-14 15:02:36.011 ServerApp] Kernel shutdown: c115468a-d3e2-4ef4-80f8-de9cb1893bb6
+[I 2024-11-14 15:03:14.163 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-14 15:03:14.164 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-14 15:03:15.220 ServerApp] Saving file at /Useful_analysis_37.ipynb
+[I 2024-11-14 15:03:15.331 ServerApp] Saving file at /Useful_analysis_for_ver061.ipynb

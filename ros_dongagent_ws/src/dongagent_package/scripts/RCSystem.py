@@ -972,7 +972,7 @@ def target_function(**kwargs):
         else:
             output = output_feat
         
-        # output = output_feat
+        output = output_feat
 
 
         # if target_emotion == 'disgust':
@@ -1070,7 +1070,7 @@ def target_function(**kwargs):
     return output
 
 
-def bayesian_optimization(baseline, target_emotion, robot):
+def bayesian_optimization(baseline, target_emotion, robot, is_add_probe=False):
 
     def middle_function(**kwargs):
         return target_function(robot=robot, target_emotion=target_emotion, kwargs=kwargs)
@@ -1436,8 +1436,9 @@ def bayesian_optimization(baseline, target_emotion, robot):
 
 
     # add probe
-    for p in emo_probe_param[target_emotion]:
-        optimizer.probe(p, lazy=True)
+    if is_add_probe:
+        for p in emo_probe_param[target_emotion]:
+            optimizer.probe(p, lazy=True)
 
     optimizer.maximize(init_points=init_points, n_iter=n_iter)
 
@@ -1788,8 +1789,8 @@ def main():
     global MYSTEPS
     # init_points = 2
     # n_iter = 2
-    init_points = 20
-    n_iter = 130
+    init_points = 30
+    n_iter = 270
 
     # set headYaw_fix_flag
     global headYaw_fix_flag
@@ -1814,7 +1815,7 @@ def main():
     # -------------------------------------
     # exp 24 BORFEO using IntensityNet
     # -------------------------------------
-    for target_emotion in ['happiness']:
+    for target_emotion in ['anger', 'disgust', 'fear', 'happiness', 'sadness', 'surprise']:
     # for target_emotion in ['fear', 'happiness', 'sadness', 'surprise']:
         check_folder(target_emotion)
         COUNTER = 0
@@ -1832,7 +1833,9 @@ def main():
         optimizer = bayesian_optimization(
             baseline=defaultPose.prototypeFacialExpressions[target_emotion],
             target_emotion=target_emotion,
-            robot=rb)
+            robot=rb,
+            is_add_probe=False
+            )
         print('\n')
         # print("Current target emotion is: ", target_emotion, optimizer.res)
         print('\n')
