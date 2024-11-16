@@ -884,3 +884,10 @@ Please note that updating to Notebook 7 might break some of your extensions.
 [W 2024-11-14 18:55:44.735 ServerApp] Notebook probe.ipynb is not trusted
 [I 2024-11-14 18:56:23.953 ServerApp] Saving file at /probe.ipynb
 [W 2024-11-14 18:56:23.953 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-14 18:58:24.692 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-14 18:58:24.693 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-14 18:58:51.351 ServerApp] Starting buffering for c039734c-580d-49a2-b112-3af61a35ba99:2802678f-e636-4ad3-a72a-436ed4d0a5b1
+[I 2024-11-14 18:58:51.381 ServerApp] Connecting to kernel c039734c-580d-49a2-b112-3af61a35ba99.
+[I 2024-11-14 18:58:51.381 ServerApp] Restoring connection for c039734c-580d-49a2-b112-3af61a35ba99:2802678f-e636-4ad3-a72a-436ed4d0a5b1
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: 4d8ffc2f-3bdf-4f82-b92a-4c9af285f40a
