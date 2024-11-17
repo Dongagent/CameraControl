@@ -140,7 +140,7 @@ Test: 100
 use ```v4l2-ctl -d /dev/video2 -c exposure_auto=1``` means manual, 3 means auto
 
 ```v4l2-ctl -d /dev/video2 --set-ctrl=brightness=140 --set-ctrl=gain=20 --set-ctrl=exposure_absolute=333 --set-ctrl=white_balance_temperature=4336```
-
+```v4l2-ctl -d /dev/video2 -c zoom_absolute=150```
 
 
 

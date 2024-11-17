@@ -891,3 +891,277 @@ Please note that updating to Notebook 7 might break some of your extensions.
 [I 2024-11-14 18:58:51.381 ServerApp] Restoring connection for c039734c-580d-49a2-b112-3af61a35ba99:2802678f-e636-4ad3-a72a-436ed4d0a5b1
 [IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
 [IPKernelApp] WARNING | No such comm: 4d8ffc2f-3bdf-4f82-b92a-4c9af285f40a
+[I 2024-11-16 16:01:33.245 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-16 16:01:33.246 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-16 16:04:21.815 ServerApp] Kernel started: ce1a049e-4a45-4faf-93af-e3956d6c4aad
+[I 2024-11-16 16:04:22.279 ServerApp] Connecting to kernel ce1a049e-4a45-4faf-93af-e3956d6c4aad.
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: bbf92297-5ca0-4b9a-8522-338243fd78e7
+[I 2024-11-16 16:05:33.258 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-16 16:05:33.258 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-16 16:11:32.104 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-16 16:11:32.105 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-16 16:13:32.194 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-16 16:13:32.195 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-16 16:15:32.235 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-16 16:15:32.236 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-16 16:21:32.290 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-16 16:21:32.291 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-16 16:26:32.847 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-16 16:26:32.848 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-16 16:28:32.958 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-16 16:28:32.959 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-16 16:28:36.613 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-16 16:28:36.614 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-16 16:30:36.679 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-16 16:30:36.680 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-16 16:32:36.734 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-16 16:32:36.735 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-16 16:35:32.076 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-16 16:35:32.076 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-16 16:36:39.002 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-16 16:36:39.003 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-16 16:36:46.096 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-16 16:36:46.096 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-16 16:36:53.951 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-16 16:36:53.952 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-16 16:37:04.200 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-16 16:37:04.201 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-16 16:37:34.946 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-16 16:37:34.946 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-16 16:37:37.300 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-16 16:37:37.301 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-16 16:39:37.331 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-16 16:39:37.332 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-16 16:43:37.378 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-16 16:43:37.379 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-16 16:45:37.454 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-16 16:45:37.454 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-16 16:47:37.496 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-16 16:47:37.497 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-16 16:48:26.597 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-16 16:48:26.597 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-16 16:48:36.790 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-16 16:48:36.792 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-16 16:53:37.928 ServerApp] Kernel shutdown: c039734c-580d-49a2-b112-3af61a35ba99
+[I 2024-11-16 16:53:37.930 ServerApp] Kernel shutdown: ce1a049e-4a45-4faf-93af-e3956d6c4aad
+[W 2024-11-16 16:53:42.433 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-16 16:53:43.136 ServerApp] Kernel started: 0ab98a69-ca13-4621-85dc-e78a836268d7
+[I 2024-11-16 16:53:44.146 ServerApp] Connecting to kernel 0ab98a69-ca13-4621-85dc-e78a836268d7.
+[I 2024-11-16 16:53:44.164 ServerApp] Connecting to kernel 0ab98a69-ca13-4621-85dc-e78a836268d7.
+[I 2024-11-16 16:53:44.185 ServerApp] Connecting to kernel 0ab98a69-ca13-4621-85dc-e78a836268d7.
+[I 2024-11-16 16:55:42.853 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-16 16:55:42.853 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-16 16:57:42.907 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-16 16:57:42.907 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-16 16:58:06.546 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-16 16:58:06.546 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-16 17:00:06.735 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-16 17:00:06.736 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-16 17:14:06.900 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-16 17:14:06.900 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-16 19:10:07.083 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-16 19:10:07.084 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-16 19:12:07.247 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-16 19:12:07.248 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-16 19:14:07.428 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-16 19:14:07.428 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-16 19:26:24.789 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-16 19:26:24.790 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-16 19:27:56.019 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-16 19:27:56.020 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-16 19:29:56.283 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-16 19:29:56.284 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-16 19:30:02.471 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-16 19:30:02.472 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-16 19:31:04.948 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-16 19:31:04.948 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-16 19:33:05.306 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-16 19:33:05.307 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-16 19:49:49.646 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-16 19:49:49.647 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-16 19:51:50.212 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-16 19:51:50.213 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-16 19:53:51.194 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-16 19:53:51.195 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-16 20:07:03.104 ServerApp] Kernel shutdown: 0ab98a69-ca13-4621-85dc-e78a836268d7
+[I 2024-11-16 20:09:32.042 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-16 20:25:32.105 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-16 20:38:03.858 ServerApp] Kernel started: 23d10ccb-371b-47b3-971a-0f0374f41ac2
+[I 2024-11-16 20:38:04.445 ServerApp] Connecting to kernel 23d10ccb-371b-47b3-971a-0f0374f41ac2.
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: e7f56988-5bce-4f62-a1a9-b14271b95ec4
+[I 2024-11-16 20:39:00.131 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-16 20:39:00.131 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-16 20:41:00.344 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-16 20:41:00.344 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-16 20:43:30.524 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-16 20:43:30.525 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-16 20:43:50.438 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-16 20:43:50.438 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-16 20:45:50.706 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-16 20:45:50.706 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-16 21:03:44.937 ServerApp] Starting buffering for 23d10ccb-371b-47b3-971a-0f0374f41ac2:c63d9d82-000b-46a0-b2e8-117126114985
+[I 2024-11-16 21:03:44.953 ServerApp] Connecting to kernel 23d10ccb-371b-47b3-971a-0f0374f41ac2.
+[I 2024-11-16 21:03:44.953 ServerApp] Restoring connection for 23d10ccb-371b-47b3-971a-0f0374f41ac2:c63d9d82-000b-46a0-b2e8-117126114985
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: 082d348c-889c-4e92-86e8-7f2de6979c9f
+[I 2024-11-17 14:42:48.802 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 14:42:48.803 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 14:44:12.289 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 14:44:12.290 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 14:46:12.596 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 14:46:12.596 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 14:48:12.841 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 14:48:12.841 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 14:50:42.661 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-17 14:50:45.970 ServerApp] Kernel started: f95e32a4-28bd-4a12-92a0-a20be381dc7f
+[I 2024-11-17 14:50:46.393 ServerApp] Connecting to kernel f95e32a4-28bd-4a12-92a0-a20be381dc7f.
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: b8793733-216a-4651-8b1e-11654757faa6
+[I 2024-11-17 14:51:32.235 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-17 14:51:45.668 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-17 14:53:45.759 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-17 14:54:14.552 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-17 14:56:14.667 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-17 14:58:14.754 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-17 15:00:14.805 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-17 15:04:14.899 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-17 15:04:15.173 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-17 15:05:23.383 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-17 15:07:23.460 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-17 15:11:55.307 ServerApp] Kernel started: 74569129-fc2c-42b3-b463-94bd9f84bf7d
+[I 2024-11-17 15:11:56.028 ServerApp] Connecting to kernel 74569129-fc2c-42b3-b463-94bd9f84bf7d.
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: 691a482f-018d-48ae-a3f9-b3a6cd13e2eb
+[I 2024-11-17 15:12:49.754 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-17 15:12:49.755 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-17 15:16:49.818 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-17 15:16:49.820 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-17 15:18:49.880 ServerApp] Saving file at /Controlbyhand.ipynb
+[W 2024-11-17 15:18:49.881 ServerApp] Notebook Controlbyhand.ipynb is not trusted
+[I 2024-11-17 16:22:03.719 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 16:22:03.720 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 16:24:03.940 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 16:24:03.940 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 16:31:12.614 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 16:31:12.615 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 16:35:12.846 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 16:35:12.847 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 16:44:23.378 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-17 16:44:40.051 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-17 16:46:40.116 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-17 16:47:15.797 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 16:47:15.798 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 16:50:40.202 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-17 16:51:16.000 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 16:51:16.001 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 16:51:54.959 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 16:51:54.959 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 16:52:00.966 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 16:52:00.966 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 16:52:08.864 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 16:52:08.865 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 16:52:31.258 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 16:52:31.259 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 16:54:22.213 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 16:54:22.214 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 17:08:22.436 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 17:08:22.437 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 17:10:22.627 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 17:10:22.627 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 17:12:22.834 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 17:12:22.835 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 17:14:23.047 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 17:14:23.047 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 17:16:47.898 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 17:16:47.899 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 17:18:48.264 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 17:18:48.264 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 17:19:43.107 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 17:19:43.108 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 17:21:43.317 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 17:21:43.318 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 17:33:43.528 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 17:33:43.529 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 17:59:48.897 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 17:59:48.898 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 17:59:49.677 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 17:59:49.678 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 18:00:01.509 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 18:00:01.510 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 18:00:51.660 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 18:00:51.661 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 18:01:50.789 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 18:01:50.790 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 18:02:13.455 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 18:02:13.456 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 18:02:17.398 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 18:02:17.399 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 18:02:31.270 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 18:02:31.271 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 18:02:38.614 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 18:02:38.615 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 18:03:23.345 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 18:03:23.345 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 18:03:37.561 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 18:03:37.562 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 18:05:37.713 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 18:05:37.714 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 19:25:37.913 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 19:25:37.914 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 19:27:38.106 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 19:27:38.106 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 19:28:48.743 ServerApp] Saving file at /webcam_control.ipynb
+[I 2024-11-17 19:36:48.715 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-17 19:36:48.716 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-17 19:37:13.395 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-17 19:37:13.395 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-17 19:37:33.703 ServerApp] Kernel started: 77c1d158-25fb-46ba-8f43-206860063fe4
+[I 2024-11-17 19:37:34.146 ServerApp] Connecting to kernel 77c1d158-25fb-46ba-8f43-206860063fe4.
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: 68619645-1f8f-4682-ab9f-4a4afd66b13d
+[I 2024-11-17 19:38:22.805 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-17 19:38:22.806 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-17 19:38:38.496 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-17 19:38:38.496 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-17 19:39:28.561 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-17 19:39:28.562 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-17 19:40:04.570 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-17 19:40:04.571 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-17 19:40:07.550 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-17 19:40:07.551 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-17 19:41:17.189 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-17 19:41:17.190 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-17 19:43:17.262 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-17 19:43:17.263 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-17 19:52:49.351 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-17 19:52:49.351 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-17 19:53:32.968 ServerApp] Kernel interrupted: 77c1d158-25fb-46ba-8f43-206860063fe4
+[I 2024-11-17 19:53:36.711 ServerApp] Kernel interrupted: 77c1d158-25fb-46ba-8f43-206860063fe4
+[I 2024-11-17 19:53:43.106 ServerApp] Kernel interrupted: 77c1d158-25fb-46ba-8f43-206860063fe4
+[I 2024-11-17 19:53:43.433 ServerApp] Kernel interrupted: 77c1d158-25fb-46ba-8f43-206860063fe4
+[I 2024-11-17 19:54:49.402 ServerApp] Saving file at /probe.ipynb
+[W 2024-11-17 19:54:49.403 ServerApp] Notebook probe.ipynb is not trusted
+[I 2024-11-17 19:55:41.807 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 19:55:41.807 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 19:56:10.862 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 19:56:10.862 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 19:58:04.730 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 19:58:04.731 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 19:59:43.371 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 19:59:43.372 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 20:00:32.888 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 20:00:32.888 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 20:02:33.132 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 20:02:33.132 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 20:02:46.329 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 20:02:46.329 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 20:03:57.134 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 20:03:57.135 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 20:05:57.835 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 20:05:57.836 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 20:11:46.259 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 20:11:46.260 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted
+[I 2024-11-17 20:13:46.512 ServerApp] Saving file at /analyze_after_each_exp.ipynb
+[W 2024-11-17 20:13:46.513 ServerApp] Notebook analyze_after_each_exp.ipynb is not trusted

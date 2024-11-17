@@ -777,7 +777,7 @@ class ResMaskNet:
             h, w = frame.shape[:2]
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-            start_x, start_y, end_x, end_y, conf = np.array(detected_face[0]).astype(
+            start_x, start_y, end_x, end_y = np.array(detected_face[0]).astype(
                 int
             )
             # covnert to square images
