@@ -1026,6 +1026,8 @@ def target_function(**kwargs):
             output = output_feat
         
         # output = output_feat
+        # output = output_inten
+
 
 
         # if target_emotion == 'disgust':
@@ -1710,7 +1712,7 @@ def main():
     global n_iter
     global MYSTEPS
     init_points = 20
-    n_iter = 300
+    n_iter = 70
     # init_points = 18
     # n_iter = 170
 
@@ -1744,11 +1746,13 @@ def main():
     # exp 24 BORFEO new Baseline
     # exp 25 develop of BORFEO
     # exp 26 BORFEO using intensitynet
-    # exp 27-1 pretrain with intensitynet only and get new boundary
-    # exp 27-2 BORFEO using mixed model
+    # exp 26-1 pretrain with intensitynet only and get new boundary
+    # exp 26-2 BORFEO using mixed model
+    # exp 27 BORFEO new Baseline
+    # exp 27-1 BORFEO using intensitynet
     # -------------------------------------
     for target_emotion in ['anger', 'disgust', 'fear', 'happiness', 'sadness', 'surprise']:
-    # for target_emotion in ['anger']:
+    # for target_emotion in ['anger', 'disgust', 'fear']:
         check_folder(target_emotion)
         COUNTER = 0
         print(target_emotion)
