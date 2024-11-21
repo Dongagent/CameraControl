@@ -135,11 +135,18 @@ Test: 100
 
 ### Exp 21: serial port control
 
+### Exp 27: New baseline
+Kappa = 1.576
+init_points = 20
+n_iter = 300
+use_probe = True
+
 ### SET UP WEB CAM
 
-use ```v4l2-ctl -d /dev/video2 -c exposure_auto=1``` means manual, 3 means auto
+use ```v4l2-ctl -d /dev/video2 -c exposure_auto=1 -c white_balance_temperature_auto=0``` means manual, 3 means auto
+<!-- ```v4l2-ctl -d /dev/video2 -c white_balance_temperature_auto=0``` -->
 
-```v4l2-ctl -d /dev/video2 --set-ctrl=brightness=140 --set-ctrl=gain=20 --set-ctrl=exposure_absolute=333 --set-ctrl=white_balance_temperature=4336```
+```v4l2-ctl -d /dev/video2 --set-ctrl=brightness=140 --set-ctrl=gain=20 --set-ctrl=exposure_absolute=333 --set-ctrl=white_balance_temperature=4336 -c zoom_absolute=150```
 ```v4l2-ctl -d /dev/video2 -c zoom_absolute=150```
 
 

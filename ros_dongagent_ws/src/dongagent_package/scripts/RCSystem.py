@@ -63,7 +63,7 @@ DEBUG = 0
 # acq = acquisition.UpperConfidenceBound(kappa=2.5)
 
 headYaw_fix_flag = False
-headYaw_fix = 105
+headYaw_fix = 120
 
 global smoothSleepTime
 smoothSleepTime = 0.025
@@ -725,7 +725,7 @@ def py_feat_analysis(img, target_emotion, is_save_csv=True):
     global rmn_model
     global facebox
 
-    # use model directly
+    # method 1: use model directly
     rmn_res = rmn_model.detect_emo(frame=cv2.imread(img), detected_face=[facebox])
     output = rmn_res[0][get_target(target_emotion)]
 
@@ -740,12 +740,34 @@ def py_feat_analysis(img, target_emotion, is_save_csv=True):
         csv_emotion_name = img[:-4]+"_rmn_emotion.csv"
         new_df.to_csv(csv_emotion_name)
 
-    
     if DEBUG > 0:
         print("[INFO] new py_feat_analysis: {}".format(list(new_df[target_emotion])[0]))
     
-    
+    # method 2: use old pyfeat to get output
+    # global detector
+
+    # image_prediction = detector.detect_image(img)
+    # df = image_prediction.head()
+    # if FEAT_VERSION == 0:
+    #     emo_df = df.iloc[-1:,-8:] # feat 0.3.7
+    # elif FEAT_VERSION == 1:
+    #     emo_df = df.iloc[-1:,-9:-1] # feat 0.5.0
+    # else:
+    #     raise Exception("FEAT_VERSION is not correct")
+
+    # if is_save_csv:
+    #     csv_name = img[:-4]+".csv"
+    #     csv_emotion_name = img[:-4]+"_emotion.csv"
+    #     df.to_csv(csv_name)
+    #     emo_df.to_csv(csv_emotion_name)
+    # targetID = get_target(target_emotion)
+    # if DEBUG > 0:
+    #     print("[INFO]py_feat_analysis: {}".format(list(df[target_emotion])[0]))
+    # # return emo_df.iloc[0,targetID]
+    # # return list(df[target_emotion])[0]
+
     return output
+
 
 def setIntensityModel(target_emotion, facebox):
     global intensityModel
@@ -1307,8 +1329,9 @@ def bayesian_optimization(baseline, target_emotion, robot, is_add_probe=False):
 
     # random search for init_points times, using deque
     # Higher kappa values mean more exploration and less exploitation and vice versa for low values.
+    global kappa
     ucb = UtilityFunction(kind='ucb',
-                          kappa=10.576,
+                          kappa=kappa,
                           xi=0.0,
                           kappa_decay=1,
                           kappa_decay_delay=0)
@@ -1322,6 +1345,13 @@ def bayesian_optimization(baseline, target_emotion, robot, is_add_probe=False):
         return 1
 
     my_init_points = deque()
+
+    # if using probe, add probe to the init_points first
+    if is_add_probe:
+        print('[INFO]Using probe.')
+        for p in emo_probe_param[target_emotion]:
+            my_init_points.append(p)
+
     for i in range(init_points):
         print('random search for init_points:', i)
         tmp = optimizer.suggest(ucb)
@@ -1329,11 +1359,6 @@ def bayesian_optimization(baseline, target_emotion, robot, is_add_probe=False):
             tmp = optimizer.suggest(ucb)            
         my_init_points.append(tmp)
     
-    if is_add_probe:
-        print('[INFO]Using probe.')
-        for p in emo_probe_param[target_emotion]:
-            my_init_points.append(p)
-
     iteration = 0
     while my_init_points or iteration < n_iter:
         try:
@@ -1669,8 +1694,8 @@ def main():
     global init_points
     global n_iter
     global MYSTEPS
-    init_points = 8
-    n_iter = 22
+    init_points = 20
+    n_iter = 300
     # init_points = 18
     # n_iter = 170
 
@@ -1684,6 +1709,11 @@ def main():
     os.chdir(workdir)
     rb.bestImg = workdir + '/image_analysis/temp/neutral.png'
     assert os.getcwd() == workdir, print(os.getcwd())
+
+    global kappa
+    # Higher kappa values mean more exploration and less exploitation 
+    # and vice versa for low values.
+    kappa = 1.576
 
     rb.return_to_stable_state()
     
@@ -1702,8 +1732,8 @@ def main():
     # exp 27-1 pretrain with intensitynet only and get new boundary
     # exp 27-2 BORFEO using mixed model
     # -------------------------------------
-    # for target_emotion in ['anger', 'disgust', 'fear', 'happiness', 'sadness', 'surprise']:
-    for target_emotion in ['disgust', 'fear', 'happiness', 'sadness', 'surprise']:
+    for target_emotion in ['anger', 'disgust', 'fear', 'happiness', 'sadness', 'surprise']:
+    # for target_emotion in ['anger']:
         check_folder(target_emotion)
         COUNTER = 0
         print(target_emotion)
@@ -1722,7 +1752,7 @@ def main():
 
         # save the list facebox to a dataframe, columns are start_x, start_y, end_x, end_y
         facebox_csv = pd.DataFrame([facebox], columns=['start_x', 'start_y', 'end_x', 'end_y'])
-        facebox_csv.to_csv('facebox.csv', index=False)
+        facebox_csv.to_csv(f'image_analysis/{target_emotion}/facebox.csv', index=False)
 
 
         setIntensityModel(target_emotion, facebox)
