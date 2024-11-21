@@ -82,6 +82,12 @@ rmn_model = ''
 global facebox
 facebox = ''
 
+global feat_res
+feat_res = []
+
+global intensity_res
+intensity_res = []
+
 class WebcamStreamWidget(object):
     def __init__(self, stream_id=0, width=1280, height=720):
         # initialize the video camera stream and read the first frame
@@ -998,7 +1004,20 @@ def target_function(**kwargs):
             B_max = 0.46
 
         output_inten = intensityNet_analysis(img=rb.readablefileName, target_emotion=target_emotion)
-        if output_feat > threshold:
+        
+        global feat_res
+        global intensity_res
+        
+        if COUNTER <= 20:
+            feat_res.append(output_feat)
+            intensity_res.append(output_inten)
+        else:
+            # Threshold=Min+α×(Max−Min)
+            threshold = min(feat_res) + 0.75 * (max(feat_res) - min(feat_res))
+            B_min = min(output_inten)
+            B_max = max(output_inten)
+        
+        if COUNTER > 20 and output_feat > threshold:
             # Use SiameseRankNet
             # output_inten = intensityNet_analysis(img=rb.readablefileName, target_emotion=target_emotion)
             # we need a curve from the threshold
@@ -1006,7 +1025,7 @@ def target_function(**kwargs):
         else:
             output = output_feat
         
-        output = output_feat
+        # output = output_feat
 
 
         # if target_emotion == 'disgust':
@@ -1038,41 +1057,41 @@ def target_function(**kwargs):
         
 
     
-    # Human optimization output case
-    elif loopFlag == 1:
-        # type 1, 1-7 rating
-        # Human rating part
+    # # Human optimization output case
+    # elif loopFlag == 1:
+    #     # type 1, 1-7 rating
+    #     # Human rating part
 
-        instructionSentence = '\n\nThe {}/100 trials for {}.\nPlease watch the robot face directly and type an integer number within 1-7 (1 is Lowest, 7 is Largest) and Enter:\n'.format(COUNTER + 1, target_emotion)
-        errorSentence = 'Input ERROR. Please try again.\nType an integer number within 1-7 (1 is Lowest, 7 is Largest) and Enter:\n'
-        rating = input(instructionSentence)
-        while True:
-            if rating.isdigit():
-                if int(rating) in range(1, 8):
-                    output = (int(rating) - 1) / 6.0
-                    break
-                else:
-                    rating = input(errorSentence)
-            else:
-                rating = input(errorSentence)
+    #     instructionSentence = '\n\nThe {}/100 trials for {}.\nPlease watch the robot face directly and type an integer number within 1-7 (1 is Lowest, 7 is Largest) and Enter:\n'.format(COUNTER + 1, target_emotion)
+    #     errorSentence = 'Input ERROR. Please try again.\nType an integer number within 1-7 (1 is Lowest, 7 is Largest) and Enter:\n'
+    #     rating = input(instructionSentence)
+    #     while True:
+    #         if rating.isdigit():
+    #             if int(rating) in range(1, 8):
+    #                 output = (int(rating) - 1) / 6.0
+    #                 break
+    #             else:
+    #                 rating = input(errorSentence)
+    #         else:
+    #             rating = input(errorSentence)
         
-        # Take photo using cv2
-        rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, COUNTER), folder=target_emotion)
+    #     # Take photo using cv2
+    #     rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(target_emotion, COUNTER), folder=target_emotion)
 
-        COUNTER += 1
+    #     COUNTER += 1
 
-        # Save every parameters
-        # construct the DataFrame
-        df_dic = {}
-        df_dic[target_emotion] = [output]
-        for k,v in kwargs.items():
-            df_dic[k] = [v]
+    #     # Save every parameters
+    #     # construct the DataFrame
+    #     df_dic = {}
+    #     df_dic[target_emotion] = [output]
+    #     for k,v in kwargs.items():
+    #         df_dic[k] = [v]
         
-        print('df_dic', df_dic)
-        df = pd.DataFrame(df_dic)
-        df_name = rb.readablefileName[:-4]+"_axes_data.csv"
+    #     print('df_dic', df_dic)
+    #     df = pd.DataFrame(df_dic)
+    #     df_name = rb.readablefileName[:-4]+"_axes_data.csv"
 
-        df.to_csv(df_name, index=False, sep=',')
+    #     df.to_csv(df_name, index=False, sep=',')
 
         # type 2, true or false rating
         # PROBLEMATIC!!! What's the matric here, it's too hard to define the matric for running Bayesian Optimization. Otherwise just use random search.
@@ -1445,8 +1464,6 @@ def eyeblink(rb, stop_event):
     finally:
         print('[INFO] eyeblink end')
 
-
-
 def idle_behavior(rb):
     # need testing
     # TODO randomly insert eye blinking 
@@ -1487,8 +1504,6 @@ def idle_behavior(rb):
     # time.sleep(3)
     rb.return_to_stable_state()
     time.sleep(3)
-
-
 
 # Function to handle serial port communication
 def serial_port_listener(port, baud_rate, stop_event, expLogger, isPracticeTrial=True):
