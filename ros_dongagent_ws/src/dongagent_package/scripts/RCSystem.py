@@ -1730,6 +1730,7 @@ def main():
     global MYSTEPS
     init_points = 20
     n_iter = 70
+    n_iter = 70
     # init_points = 18
     # n_iter = 170
 
@@ -1763,6 +1764,10 @@ def main():
     # exp 24 BORFEO new Baseline
     # exp 25 develop of BORFEO
     # exp 26 BORFEO using intensitynet
+    # exp 26-1 pretrain with intensitynet only and get new boundary
+    # exp 26-2 BORFEO using mixed model
+    # exp 27 BORFEO new Baseline
+    # exp 27-1 BORFEO using intensitynet
     # exp 26-1 pretrain with intensitynet only and get new boundary
     # exp 26-2 BORFEO using mixed model
     # exp 27 BORFEO new Baseline
