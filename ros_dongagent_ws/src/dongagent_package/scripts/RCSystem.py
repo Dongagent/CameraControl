@@ -88,6 +88,9 @@ feat_res = []
 global intensity_res
 intensity_res = []
 
+global mixed_res
+mixed_res = []
+
 class WebcamStreamWidget(object):
     def __init__(self, stream_id=0, width=1280, height=720):
         # initialize the video camera stream and read the first frame
@@ -979,51 +982,60 @@ def target_function(**kwargs):
         output_feat = py_feat_analysis(img=rb.readablefileName, target_emotion=target_emotion)
         
         if target_emotion == 'anger':
-            threshold = 0.04
-            B_max= 0.1413
-            B_min= 0.0766
+            threshold = 0.7106 * 0.8
+            B_max= 0.59
+            B_min= 0.36
         elif target_emotion == 'disgust':
-            threshold = 0.52
-            B_min = 0.35
-            B_max = 0.63
+            threshold = 0.9443 * 0.8
+            B_min = 0.37
+            B_max = 0.59
         elif target_emotion == 'fear':
-            threshold = 0.66
+            threshold = 0.3933 * 0.8
             B_min = 0.19
-            B_max = 0.47
+            B_max = 0.43
         elif target_emotion == 'happiness':
-            threshold = 0.68
-            B_min = 0.28
-            B_max = 0.57
+            threshold = 0.9832 * 0.8
+            B_min = 0.29
+            B_max = 0.55
         elif target_emotion == 'sadness':
-            threshold = 0.457
-            B_min = 0.33
+            threshold = 0.6891 * 0.8
+            B_min = 0.36
             B_max = 0.63
         elif target_emotion == 'surprise':
-            threshold = 0.75
-            B_min = 0.23
-            B_max = 0.46
+            threshold = 0.9842 * 0.8
+            B_min = 0.21    
+            B_max = 0.43
 
         output_inten = intensityNet_analysis(img=rb.readablefileName, target_emotion=target_emotion)
         
         global feat_res
         global intensity_res
-        
+        global mixed_res
         if COUNTER <= 20:
-            feat_res.append(output_feat)
-            intensity_res.append(output_inten)
+            feat_res.append(round(output_feat, 6))
+            intensity_res.append(round(output_inten, 6))
         else:
             # Threshold=Min+α×(Max−Min)
             threshold = min(feat_res) + 0.75 * (max(feat_res) - min(feat_res))
-            B_min = min(output_inten)
-            B_max = max(output_inten)
+            print('threshold:', threshold)
+            print('intensity_res:', intensity_res)
+            B_min = min(intensity_res)
+            B_max = max(intensity_res)
         
         if COUNTER > 20 and output_feat > threshold:
             # Use SiameseRankNet
             # output_inten = intensityNet_analysis(img=rb.readablefileName, target_emotion=target_emotion)
             # we need a curve from the threshold
             output = calculate_output_nonlinear(output_feat, output_inten, threshold=threshold, alpha=0.8, B_min=B_min, B_max=B_max, output_min=threshold, output_max=1.1, k=10)
+            mixed_res.append(output)
         else:
             output = output_feat
+        
+        # ---------------------------------
+        # *********************************
+        # Control the version of the output
+        # *********************************
+        # ---------------------------------
         
         # output = output_feat
         # output = output_inten
@@ -1056,6 +1068,12 @@ def target_function(**kwargs):
         robot_param = pd.DataFrame(fixedrobotcode, columns=[0]) # save the fixedrobotcode rather than rb.robotParams
         robot_param_name = rb.readablefileName[:-4]+"_rb_paramdata.csv"
         robot_param.to_csv(robot_param_name, index=False, sep=',')
+
+        # save mixed res csv
+        if COUNTER > 50:
+            mixed_res_df = pd.DataFrame(mixed_res, columns=['mixed_res'])
+            mixed_res_name = f"image_analysis/{target_emotion}/mixed_res.csv"
+            mixed_res_df.to_csv(mixed_res_name, index=False, sep=',')
         
 
     
@@ -1137,10 +1155,9 @@ def bayesian_optimization(baseline, target_emotion, robot, is_add_probe=False):
                 # TODO need to verify
                 happy_upper = 120
                 pbounds_dic['x{}'.format(i)] = (0, happy_upper)
-            # elif i in [0, 1]:
-            #     pbounds_dic['x{}'.format(i)] = (0, 160)
-            # else:
-            pbounds_dic['x{}'.format(i)] = (0, 255)
+                
+            else:
+                pbounds_dic['x{}'.format(i)] = (0, 255)
 
         # mouth
         pbounds_dic['x32'] = (0, 110)
@@ -1149,7 +1166,7 @@ def bayesian_optimization(baseline, target_emotion, robot, is_add_probe=False):
         pbounds_dic['x8'] = (-255, 255)
         pbounds_dic['x18'] = (-255, 255)
 
-        print(pbounds_dic)
+        print('pbounds_dic', pbounds_dic)
         return pbounds_dic
 
     # x2 = x1, use one axis for eyes upper lid
@@ -1359,7 +1376,7 @@ def bayesian_optimization(baseline, target_emotion, robot, is_add_probe=False):
 
     def check_suggestion(suggestion):
         # x1 and x6
-        if suggestion['x1'] + suggestion['x6'] > 420:
+        if suggestion['x1'] + suggestion['x6'] > 380:
             # if the upper lid and lower lid are too close to each other, we should not return 0
             print("[INFO]Eye closing Constraints, search another point")
             return 0
@@ -1388,7 +1405,7 @@ def bayesian_optimization(baseline, target_emotion, robot, is_add_probe=False):
             tmp = optimizer.suggest(ucb)
             while not check_suggestion(tmp):
                 tmp = optimizer.suggest(ucb)
-            x_probe = optimizer.suggest(ucb)
+            x_probe = tmp
             iteration += 1
         optimizer.probe(x_probe, lazy=False)
 
@@ -1730,7 +1747,7 @@ def main():
     global kappa
     # Higher kappa values mean more exploration and less exploitation 
     # and vice versa for low values.
-    kappa = 1.576
+    kappa = 3.576
 
     rb.return_to_stable_state()
     
@@ -1751,11 +1768,18 @@ def main():
     # exp 27 BORFEO new Baseline
     # exp 27-1 BORFEO using intensitynet
     # -------------------------------------
-    for target_emotion in ['anger', 'disgust', 'fear', 'happiness', 'sadness', 'surprise']:
-    # for target_emotion in ['anger', 'disgust', 'fear']:
+    # for target_emotion in ['anger', 'disgust', 'fear', 'happiness', 'sadness', 'surprise']:
+    # for target_emotion in ['disgust', 'fear', 'happiness', 'sadness', 'surprise']:
+    for target_emotion in ['sadness']:
         check_folder(target_emotion)
         COUNTER = 0
         print(target_emotion)
+
+        global intensity_res
+        intensity_res = []
+
+        global mixed_res
+        mixed_res = []
 
         global CURBEST
         CURBEST = ['', 0]
