@@ -138,8 +138,29 @@ Test: 100
 ### Exp 27: New baseline
 Kappa = 1.576
 init_points = 20
-n_iter = 300
+n_iter = 270
 use_probe = True
+
+### Exp28: mixed v1
+Kappa = 3.576
+init_points = 20
+n_iter = 70
+use_probe = True
+
+### Exp29: mixed v2
+Kappa = 7.576
+init_points = 20
+n_iter = 70
+use_probe = True
+alpha=0.7
+
+### Exp30: mixed v3
+alpha=0.6
+Kappa = 7.576
+init_points = 20
+n_iter = 70
+use_probe = True
+alpha=0.7
 
 ### SET UP WEB CAM
 

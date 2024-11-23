@@ -1011,18 +1011,30 @@ def target_function(**kwargs):
         global feat_res
         global intensity_res
         global mixed_res
-        if COUNTER <= 20:
+        if COUNTER <= 30:
             feat_res.append(round(output_feat, 6))
             intensity_res.append(round(output_inten, 6))
         else:
             # Threshold=Min+α×(Max−Min)
-            threshold = min(feat_res) + 0.75 * (max(feat_res) - min(feat_res))
-            print('threshold:', threshold)
-            print('intensity_res:', intensity_res)
+            alpha = 0.6
+            # if target_emotion == 'fear':
+            #     alpha = 0.3
+            threshold1 = min(feat_res) +  alpha * (max(feat_res) - min(feat_res))
+            
+            my_list = sorted(feat_res)
+            # Calculate the index for the first 60% of the list
+            cutoff_index = int(len(my_list) * alpha)
+            threshold2 = my_list[cutoff_index]
+
+            threshold = min(threshold1, threshold2)
             B_min = min(intensity_res)
             B_max = max(intensity_res)
+            if COUNTER < 35:
+                print('threshold:', threshold)
+                print('intensity_res:', intensity_res)
+                print('B_min:', B_min, 'B_max:', B_max)
         
-        if COUNTER > 20 and output_feat > threshold:
+        if COUNTER > 30 and output_feat > threshold:
             # Use SiameseRankNet
             # output_inten = intensityNet_analysis(img=rb.readablefileName, target_emotion=target_emotion)
             # we need a curve from the threshold
@@ -1068,13 +1080,6 @@ def target_function(**kwargs):
         robot_param = pd.DataFrame(fixedrobotcode, columns=[0]) # save the fixedrobotcode rather than rb.robotParams
         robot_param_name = rb.readablefileName[:-4]+"_rb_paramdata.csv"
         robot_param.to_csv(robot_param_name, index=False, sep=',')
-
-        # save mixed res csv
-        if COUNTER > 50:
-            mixed_res_df = pd.DataFrame(mixed_res, columns=['mixed_res'])
-            mixed_res_name = f"image_analysis/{target_emotion}/mixed_res.csv"
-            mixed_res_df.to_csv(mixed_res_name, index=False, sep=',')
-        
 
     
     # # Human optimization output case
@@ -1151,13 +1156,28 @@ def bayesian_optimization(baseline, target_emotion, robot, is_add_probe=False):
     def generate_pbounds(axes, target_emotion):
         pbounds_dic = {}
         for i in axes:
+
+            pbounds_dic['x{}'.format(i)] = (0, 255)
             if target_emotion == 'happiness' and i in [0, 1]:
                 # TODO need to verify
                 happy_upper = 120
                 pbounds_dic['x{}'.format(i)] = (0, happy_upper)
+            if target_emotion == 'disgust':
+                # disgust constrain
+                if i in [29]:                   
+                    pbounds_dic['x{}'.format(i)] = (130, 255)
+                if i in [15, 16]:
+                    pbounds_dic['x{}'.format(i)] = (0, 50)
+            if target_emotion == 'fear':
+                # fear constrain
+                if i in [0, 1]:
+                    pbounds_dic['x{}'.format(i)] = (0, 86)
+                if i in [4, 5]:
+                    pbounds_dic['x{}'.format(i)] = (0, 128)
+
+
                 
-            else:
-                pbounds_dic['x{}'.format(i)] = (0, 255)
+
 
         # mouth
         pbounds_dic['x32'] = (0, 110)
@@ -1193,6 +1213,9 @@ def bayesian_optimization(baseline, target_emotion, robot, is_add_probe=False):
     # all_axes_for_emotions = [1, 6, 8, 9, 10, 11, 16, 18, 19, 20, 28, 29, 30, 32, 34]
     # without head pitch
     # all_axes_for_emotions = [1, 6, 8, 9, 10, 11, 16, 18, 19, 20, 28, 29, 30, 32]
+    # new version, let's set one score p for [8, 12, 18, 22]. If p > 0, we do nothing. 
+    # If p < 0, [8, 12, 18, 22] = 0, [9, 13, 19, 23] = |p|
+    
     all_axes_for_emotions = [1, 6, 8, 10, 11, 16, 18, 20, 28, 29, 30, 32]
 
     # Ekman FACS
@@ -1414,6 +1437,14 @@ def bayesian_optimization(baseline, target_emotion, robot, is_add_probe=False):
     # alpha is interpreted as the variance of additional Gaussian measurement noise 
     # on the training observations.
 
+    # save mixed res csv
+    if COUNTER == n_iter + init_points + 10:
+        mixed_res_df = pd.DataFrame(mixed_res, columns=['mixed_res'])
+        mixed_res_name = f"image_analysis/{target_emotion}/mixed_res.csv"
+        mixed_res_df.to_csv(mixed_res_name, index=False, sep=',')
+    else:
+        print(COUNTER)
+        raise ValueError("COUNTER != n_iter + init_points + 10")
     print(target_emotion, "Max result:", optimizer.max)
     return optimizer
 
@@ -1729,9 +1760,8 @@ def main():
     global n_iter
     global MYSTEPS
     init_points = 20
-    n_iter = 70
-    n_iter = 70
-    # init_points = 18
+    # n_iter = 70
+    n_iter = 300
     # n_iter = 170
 
     # set headYaw_fix_flag
@@ -1748,7 +1778,7 @@ def main():
     global kappa
     # Higher kappa values mean more exploration and less exploitation 
     # and vice versa for low values.
-    kappa = 3.576
+    kappa = 7.576
 
     rb.return_to_stable_state()
     
@@ -1774,15 +1804,17 @@ def main():
     # exp 27-1 BORFEO using intensitynet
     # -------------------------------------
     # for target_emotion in ['anger', 'disgust', 'fear', 'happiness', 'sadness', 'surprise']:
-    # for target_emotion in ['disgust', 'fear', 'happiness', 'sadness', 'surprise']:
-    for target_emotion in ['sadness']:
+    # for target_emotion in ['anger']:
+    for target_emotion in ['disgust', 'fear', 'happiness', 'sadness', 'surprise']:
         check_folder(target_emotion)
         COUNTER = 0
         print(target_emotion)
 
+
+        global feat_res
+        feat_res = []
         global intensity_res
         intensity_res = []
-
         global mixed_res
         mixed_res = []
 
@@ -1814,6 +1846,9 @@ def main():
             robot=rb,
             is_add_probe=True
             )
+
+
+
         print('\n')
         # print("Current target emotion is: ", target_emotion, optimizer.res)
         print('\n')
@@ -1824,6 +1859,8 @@ def main():
         # release after using it
         global intensityModel
         intensityModel = None
+
+        time.sleep(3)
 
     # Return to normal
     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
