@@ -800,7 +800,8 @@ def setIntensityModel(target_emotion, facebox):
 
     assert facebox, "facebox is empty"
     intensityModel = IntensityNet_type1(model_path, facebox)
-
+    intensityModel.eval()
+    
     return 1
 
 
@@ -1272,13 +1273,15 @@ def bayesian_optimization(baseline, target_emotion, robot, is_add_probe=False):
     # ------------------- INFO  ----------------------------
     # x2 = x1, use one axis for eyes upper lid
     # x7 = x6, use one axis for eyes lower lid
+    # x12 = x8
     # x13 = x9
+    # x14  = x10
+    # x15 = x11
     # x17 = x16
     # x22 = x18
-    # x14  = x10
     # x23 = x19
-    # x12 = x8
     # x24 = x20
+    
     
     # --------------------------------------
     # DO initialization !!
@@ -1296,7 +1299,7 @@ def bayesian_optimization(baseline, target_emotion, robot, is_add_probe=False):
         {'x1':0, 'x6': 140, 'x8': 83, 'x10': 0, 'x11': 255, 'x16': 255, 'x18': 0, 'x20': 185, 'x28': 170, 'x29': 1, 'x30':255, 'x32': 100}, # An469
         {'x1':0, 'x6': 140, 'x8': 0, 'x10': 83, 'x11': 255, 'x16': 255, 'x18': 0, 'x20': 255, 'x28': 120, 'x29': 255, 'x30':255, 'x32': 100}, # An499
         {'x1':0, 'x6': 140, 'x8': -121, 'x10': 0, 'x11': 255, 'x16': 255, 'x18': 0, 'x20': 255, 'x28': 152, 'x29': 118, 'x30':255, 'x32': 100}, # An489
-        {'x1':0, 'x6': 140, 'x8': -55, 'x10': 0, 'x11': 255, 'x16': 255, 'x18': 61, 'x20': 175, 'x28': 180, 'x29': 181, 'x30':159, 'x32': 100} # An484
+        {'x1':0, 'x6': 140, 'x8': -55, 'x10': 0 , 'x11': 255, 'x16': 255, 'x18': 61, 'x20': 175, 'x28': 180, 'x29': 181, 'x30':159, 'x32': 100} # An484
     ]
 
     emo_probe_param['disgust'] = [
@@ -1327,7 +1330,7 @@ def bayesian_optimization(baseline, target_emotion, robot, is_add_probe=False):
     ]
 
     emo_probe_param['happiness'] = [
-        {'x1':86, 'x6':255, 'x8':0, 'x10':0, 'x11':0, 'x16':255, 'x18':255, 'x20':0, 'x28':0, 'x29':0, 'x30':0, 'x32':0}, # prototype
+        {'x1':86, 'x6':255, 'x8':-255, 'x10':0, 'x11':0, 'x16':255, 'x18':255, 'x20':0, 'x28':0, 'x29':0, 'x30':0, 'x32':0}, # prototype
         {'x1':0, 'x6': 0, 'x8': 0, 'x10': 163, 'x11': 0, 'x16': 255, 'x18': 255, 'x20': 255, 'x28': 255, 'x29': 255, 'x30': 255, 'x32':0}, # Ha428
         {'x1':0, 'x6': 0, 'x8': 0, 'x10': 255, 'x11': 0, 'x16': 255, 'x18': 255, 'x20': 255, 'x28': 0, 'x29': 0, 'x30': 0, 'x32':0}, # Ha393
         {'x1':62, 'x6': 140, 'x8': 0, 'x10': 255, 'x11': 0, 'x16': 255, 'x18': 0, 'x20': 0, 'x28': 255, 'x29': 159, 'x30': 0, 'x32': 0}, # Ha407
@@ -1341,7 +1344,7 @@ def bayesian_optimization(baseline, target_emotion, robot, is_add_probe=False):
     ]
 
     emo_probe_param['sadness'] = [
-        {'x1':86, 'x6':0, 'x8':0, 'x10':255, 'x11':255, 'x16':0, 'x18':0,  'x20':0, 'x28':0, 'x29':0, 'x30':0, 'x32':0}, # prototype
+        {'x1':86, 'x6':0, 'x8':0, 'x10':255, 'x11':255, 'x16':0, 'x18':-255, 'x20':0, 'x28':0, 'x29':0, 'x30':0, 'x32':0}, # prototype
         {'x1':255, 'x6':0, 'x8':255, 'x10': 255, 'x11': 255, 'x16': 255, 'x18': -99,  'x20': 0, 'x28': 0, 'x29': 0, 'x30': 255, 'x32':100}, # Sa313
         {'x1':255, 'x6':140, 'x8':100, 'x10': 255, 'x11': 255, 'x16': 21, 'x18': 255, 'x20': 255, 'x28': 0, 'x29': 255, 'x30': 0, 'x32':100}, # Sa496
         {'x1':255, 'x6':140, 'x8':255, 'x10': 0, 'x11': 255, 'x16': 0, 'x18': 255, 'x20': 255, 'x28': 0, 'x29': 0, 'x30': 255, 'x32':100}, # Sa286
@@ -1839,6 +1842,7 @@ def main():
         # set rmn model
         global rmn_model
         rmn_model = ResMaskNet()
+        rmn_model.eval()
 
         optimizer = bayesian_optimization(
             baseline=defaultPose.prototypeFacialExpressions[target_emotion],
