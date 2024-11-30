@@ -1,5 +1,5 @@
 # use localhost:10088
-import os, glob, json, cv2, torch
+import os, glob, json, cv2, torch, random
 import numpy as np
 from torchvision.transforms import transforms
 from torch.hub import load_state_dict_from_url
@@ -58,22 +58,49 @@ class IntensityNet_type1(nn.Module):
             transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
         ])
         
-        self.sigmoid = nn.Sigmoid()
+        # self.sigmoid = nn.Sigmoid()
         # self.activation = nn.Tanh()
         # self.dropout = nn.Dropout(p=0.5)
         # self.relu = nn.ReLU()
         
         # for inference
         self.model_path = model_path
+
+        # Set deterministic behavior
+        torch.manual_seed(42)
+        random.seed(42)
+        np.random.seed(42)
+        if self.use_gpu:
+            torch.cuda.manual_seed(42)
+            torch.cuda.manual_seed_all(42)
+
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+
+        print("use_gpu:", self.use_gpu)
         if self.use_gpu:
             self.state_dict = torch.load(self.model_path)
-            for key in list(self.state_dict.keys()):
-                self.state_dict[key.replace("module.model.","")] = self.state_dict.pop(key)
-            self.model.load_state_dict(self.state_dict, strict=False)
-            self.model.cuda()
+            # print(state_dict)
+            model_state_dict = {}
+            model_cls_state_dict = {}
+            for key, value in self.state_dict.items():
+                if "model." in key:
+                    model_state_dict[key.replace("module.model.", "")] = value
+                if "model_cls." in key:
+                    model_cls_state_dict[key.replace("module.model_cls.", "")] = value
+                
+            # Load state_dicts
+            self.model.load_state_dict(model_state_dict, strict=False)
+            self.model_cls.load_state_dict(model_cls_state_dict, strict=False)
+
+            if self.use_gpu:
+                self.model = self.model.cuda()
+                self.model_cls = self.model_cls.cuda()
 
         self.facebox = facebox
         
+        self.model.eval()
+        self.model_cls.eval()
     
     # _once
     def forward_once(self, x):
@@ -98,26 +125,34 @@ class IntensityNet_type1(nn.Module):
         # x = self.sigmoid(x1)
         # print('x', x)
         return x
-    
+
     def detect_emo(self, frame, detected_face=""):
         """Detect emotions.
 
         Args:
-            frame ([type]): [description]
+            frame (PIL.Image or np.ndarray): Input frame containing the face.
+            detected_face (tuple): Coordinates of the detected face as (x, y, w, h).
 
         Returns:
-            List of predicted emotions in probability: [angry, disgust, fear, happy, sad, surprise, neutral]
+            List of predicted emotion probabilities: [angry, disgust, fear, happy, sad, surprise, neutral].
         """
-
+        self.model.eval()
+        self.model_cls.eval()
         with torch.no_grad():
+            # Crop the face based on the detected face box
             start_x, start_y, end_x, end_y = get_box(self.facebox[0], self.facebox[1], self.facebox[2], self.facebox[3])
             face = frame.crop([start_x, start_y, end_x, end_y])
-            if self.use_gpu:
-                face = self.transform(face).cuda()
-            else:
-                face = self.transform(face)
-            face = torch.unsqueeze(face, dim=0)
-            output = torch.squeeze(self.model(face), 0)
+
+            # Preprocess the face
+            face = self.transform(face)
+            face = face.cuda() if self.use_gpu else face
+            face = torch.unsqueeze(face, dim=0)  # Add batch dimension
+            # print('face:', face)
+            # print('face.shape:', face.shape)
+
+            # Run through forward_once
+            output = self.forward_once(face)  # Use the combined logic in forward_once
+            output = torch.squeeze(output, 0)  # Remove batch dimension
 
             return output
 
@@ -172,6 +207,7 @@ def intensityNet_analysis(img, target_emotion, facebox=None, is_save_csv=True):
 
     assert facebox is not None, "facebox is None"
     model = IntensityNet_type1(model_path, facebox)
+    model.eval()
 
     # use model to detect emo
     detection_res = model.detect_emo(Image.open(img))

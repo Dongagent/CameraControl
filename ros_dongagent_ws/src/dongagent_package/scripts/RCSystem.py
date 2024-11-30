@@ -755,25 +755,25 @@ def py_feat_analysis(img, target_emotion, is_save_csv=True):
     # method 2: use old pyfeat to get output
     # global detector
 
-    # image_prediction = detector.detect_image(img)
-    # df = image_prediction.head()
-    # if FEAT_VERSION == 0:
-    #     emo_df = df.iloc[-1:,-8:] # feat 0.3.7
-    # elif FEAT_VERSION == 1:
-    #     emo_df = df.iloc[-1:,-9:-1] # feat 0.5.0
-    # else:
-    #     raise Exception("FEAT_VERSION is not correct")
+    image_prediction = detector.detect_image(img)
+    df = image_prediction.head()
+    if FEAT_VERSION == 0:
+        emo_df = df.iloc[-1:,-8:] # feat 0.3.7
+    elif FEAT_VERSION == 1:
+        emo_df = df.iloc[-1:,-9:-1] # feat 0.5.0
+    else:
+        raise Exception("FEAT_VERSION is not correct")
 
-    # if is_save_csv:
-    #     csv_name = img[:-4]+".csv"
-    #     csv_emotion_name = img[:-4]+"_emotion.csv"
-    #     df.to_csv(csv_name)
-    #     emo_df.to_csv(csv_emotion_name)
-    # targetID = get_target(target_emotion)
-    # if DEBUG > 0:
-    #     print("[INFO]py_feat_analysis: {}".format(list(df[target_emotion])[0]))
+    if is_save_csv:
+        csv_name = img[:-4]+".csv"
+        csv_emotion_name = img[:-4]+"_emotion.csv"
+        df.to_csv(csv_name)
+        emo_df.to_csv(csv_emotion_name)
+    targetID = get_target(target_emotion)
+    if DEBUG > 0:
+        print("[INFO]py_feat_analysis: {}".format(list(df[target_emotion])[0]))
     # # return emo_df.iloc[0,targetID]
-    # # return list(df[target_emotion])[0]
+    output = list(df[target_emotion])[0]
 
     return output
 
@@ -800,7 +800,8 @@ def setIntensityModel(target_emotion, facebox):
 
     assert facebox, "facebox is empty"
     intensityModel = IntensityNet_type1(model_path, facebox)
-
+    intensityModel.eval()
+    
     return 1
 
 
@@ -1166,14 +1167,18 @@ def bayesian_optimization(baseline, target_emotion, robot, is_add_probe=False):
                 # disgust constrain
                 if i in [29]:                   
                     pbounds_dic['x{}'.format(i)] = (130, 255)
-                if i in [15, 16]:
-                    pbounds_dic['x{}'.format(i)] = (0, 50)
+                if i in [16]:
+                    pbounds_dic['x{}'.format(i)] = (0, 10)
+                # if i in [15]:
+                #     pbounds_dic['x{}'.format(i)] = (0, 150)
+                if i in [1]:
+                    pbounds_dic['x{}'.format(i)] = (0, 110)
             if target_emotion == 'fear':
                 # fear constrain
-                if i in [0, 1]:
+                if i in [1]:
                     pbounds_dic['x{}'.format(i)] = (0, 86)
-                if i in [4, 5]:
-                    pbounds_dic['x{}'.format(i)] = (0, 128)
+                # if i in [2]:
+                #     pbounds_dic['x{}'.format(i)] = (0, 128)
 
 
                 
@@ -1272,18 +1277,23 @@ def bayesian_optimization(baseline, target_emotion, robot, is_add_probe=False):
     # ------------------- INFO  ----------------------------
     # x2 = x1, use one axis for eyes upper lid
     # x7 = x6, use one axis for eyes lower lid
+    # x12 = x8
     # x13 = x9
+    # x14  = x10
+    # x15 = x11
     # x17 = x16
     # x22 = x18
-    # x14  = x10
     # x23 = x19
-    # x12 = x8
     # x24 = x20
+    
     
     # --------------------------------------
     # DO initialization !!
     # all_axes_for_emotions = [1, 6, 8, 10, 11, 16, 18, 20, 28, 29, 30, 32]
     # new version, let's set one score p for [8, 12, 18, 22]. If p > 0, we do nothing. If p < 0, [8, 12, 18, 22] = 0, [9, 13, 19, 23] = -p
+    
+
+    # prototype verified on 11.29
     
     emo_probe_param = {}
     emo_probe_param['anger'] = [
@@ -1296,7 +1306,7 @@ def bayesian_optimization(baseline, target_emotion, robot, is_add_probe=False):
         {'x1':0, 'x6': 140, 'x8': 83, 'x10': 0, 'x11': 255, 'x16': 255, 'x18': 0, 'x20': 185, 'x28': 170, 'x29': 1, 'x30':255, 'x32': 100}, # An469
         {'x1':0, 'x6': 140, 'x8': 0, 'x10': 83, 'x11': 255, 'x16': 255, 'x18': 0, 'x20': 255, 'x28': 120, 'x29': 255, 'x30':255, 'x32': 100}, # An499
         {'x1':0, 'x6': 140, 'x8': -121, 'x10': 0, 'x11': 255, 'x16': 255, 'x18': 0, 'x20': 255, 'x28': 152, 'x29': 118, 'x30':255, 'x32': 100}, # An489
-        {'x1':0, 'x6': 140, 'x8': -55, 'x10': 0, 'x11': 255, 'x16': 255, 'x18': 61, 'x20': 175, 'x28': 180, 'x29': 181, 'x30':159, 'x32': 100} # An484
+        {'x1':0, 'x6': 140, 'x8': -55, 'x10': 0 , 'x11': 255, 'x16': 255, 'x18': 61, 'x20': 175, 'x28': 180, 'x29': 181, 'x30':159, 'x32': 100} # An484
     ]
 
     emo_probe_param['disgust'] = [
@@ -1327,7 +1337,7 @@ def bayesian_optimization(baseline, target_emotion, robot, is_add_probe=False):
     ]
 
     emo_probe_param['happiness'] = [
-        {'x1':86, 'x6':255, 'x8':0, 'x10':0, 'x11':0, 'x16':255, 'x18':255, 'x20':0, 'x28':0, 'x29':0, 'x30':0, 'x32':0}, # prototype
+        {'x1':86, 'x6':255, 'x8':-255, 'x10':0, 'x11':0, 'x16':255, 'x18':255, 'x20':0, 'x28':0, 'x29':0, 'x30':0, 'x32':0}, # prototype
         {'x1':0, 'x6': 0, 'x8': 0, 'x10': 163, 'x11': 0, 'x16': 255, 'x18': 255, 'x20': 255, 'x28': 255, 'x29': 255, 'x30': 255, 'x32':0}, # Ha428
         {'x1':0, 'x6': 0, 'x8': 0, 'x10': 255, 'x11': 0, 'x16': 255, 'x18': 255, 'x20': 255, 'x28': 0, 'x29': 0, 'x30': 0, 'x32':0}, # Ha393
         {'x1':62, 'x6': 140, 'x8': 0, 'x10': 255, 'x11': 0, 'x16': 255, 'x18': 0, 'x20': 0, 'x28': 255, 'x29': 159, 'x30': 0, 'x32': 0}, # Ha407
@@ -1341,7 +1351,7 @@ def bayesian_optimization(baseline, target_emotion, robot, is_add_probe=False):
     ]
 
     emo_probe_param['sadness'] = [
-        {'x1':86, 'x6':0, 'x8':0, 'x10':255, 'x11':255, 'x16':0, 'x18':0,  'x20':0, 'x28':0, 'x29':0, 'x30':0, 'x32':0}, # prototype
+        {'x1':86, 'x6':0, 'x8':0, 'x10':255, 'x11':255, 'x16':0, 'x18':-255, 'x20':0, 'x28':0, 'x29':0, 'x30':0, 'x32':0}, # prototype
         {'x1':255, 'x6':0, 'x8':255, 'x10': 255, 'x11': 255, 'x16': 255, 'x18': -99,  'x20': 0, 'x28': 0, 'x29': 0, 'x30': 255, 'x32':100}, # Sa313
         {'x1':255, 'x6':140, 'x8':100, 'x10': 255, 'x11': 255, 'x16': 21, 'x18': 255, 'x20': 255, 'x28': 0, 'x29': 255, 'x30': 0, 'x32':100}, # Sa496
         {'x1':255, 'x6':140, 'x8':255, 'x10': 0, 'x11': 255, 'x16': 0, 'x18': 255, 'x20': 255, 'x28': 0, 'x29': 0, 'x30': 255, 'x32':100}, # Sa286
@@ -1399,7 +1409,7 @@ def bayesian_optimization(baseline, target_emotion, robot, is_add_probe=False):
 
     def check_suggestion(suggestion):
         # x1 and x6
-        if suggestion['x1'] + suggestion['x6'] > 380:
+        if suggestion['x1'] + suggestion['x6'] > 300:
             # if the upper lid and lower lid are too close to each other, we should not return 0
             print("[INFO]Eye closing Constraints, search another point")
             return 0
@@ -1438,13 +1448,14 @@ def bayesian_optimization(baseline, target_emotion, robot, is_add_probe=False):
     # on the training observations.
 
     # save mixed res csv
-    if COUNTER == n_iter + init_points + 10:
-        mixed_res_df = pd.DataFrame(mixed_res, columns=['mixed_res'])
-        mixed_res_name = f"image_analysis/{target_emotion}/mixed_res.csv"
-        mixed_res_df.to_csv(mixed_res_name, index=False, sep=',')
-    else:
-        print(COUNTER)
-        raise ValueError("COUNTER != n_iter + init_points + 10")
+    if is_add_probe:
+        if COUNTER == n_iter + init_points + 10:
+            mixed_res_df = pd.DataFrame(mixed_res, columns=['mixed_res'])
+            mixed_res_name = f"image_analysis/{target_emotion}/mixed_res.csv"
+            mixed_res_df.to_csv(mixed_res_name, index=False, sep=',')
+        else:
+            print(COUNTER)
+            raise ValueError("COUNTER != n_iter + init_points + 10")
     print(target_emotion, "Max result:", optimizer.max)
     return optimizer
 
@@ -1760,8 +1771,8 @@ def main():
     global n_iter
     global MYSTEPS
     init_points = 20
-    # n_iter = 70
-    n_iter = 300
+    n_iter = 70
+    # n_iter = 300
     # n_iter = 170
 
     # set headYaw_fix_flag
@@ -1778,7 +1789,7 @@ def main():
     global kappa
     # Higher kappa values mean more exploration and less exploitation 
     # and vice versa for low values.
-    kappa = 7.576
+    kappa = 0.576
 
     rb.return_to_stable_state()
     
@@ -1802,10 +1813,11 @@ def main():
     # exp 26-2 BORFEO using mixed model
     # exp 27 BORFEO new Baseline
     # exp 27-1 BORFEO using intensitynet
+    # exp 32 BORFEO Baseline adjust
     # -------------------------------------
     # for target_emotion in ['anger', 'disgust', 'fear', 'happiness', 'sadness', 'surprise']:
-    # for target_emotion in ['anger']:
-    for target_emotion in ['disgust', 'fear', 'happiness', 'sadness', 'surprise']:
+    for target_emotion in ['fear']:
+    # for target_emotion in ['disgust', 'fear', 'happiness', 'sadness', 'surprise']:
         check_folder(target_emotion)
         COUNTER = 0
         print(target_emotion)
@@ -1828,7 +1840,7 @@ def main():
         facebox = detector.detect_faces(cv2.imread(rb.readablefileName))[0]
         print("[Notice] facebox is: ", facebox)
         facebox = facebox[:4]
-        facebox[1] = 270
+        # facebox[1] = 270
 
         # save the list facebox to a dataframe, columns are start_x, start_y, end_x, end_y
         facebox_csv = pd.DataFrame([facebox], columns=['start_x', 'start_y', 'end_x', 'end_y'])
