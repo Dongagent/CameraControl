@@ -755,25 +755,25 @@ def py_feat_analysis(img, target_emotion, is_save_csv=True):
     # method 2: use old pyfeat to get output
     # global detector
 
-    image_prediction = detector.detect_image(img)
-    df = image_prediction.head()
-    if FEAT_VERSION == 0:
-        emo_df = df.iloc[-1:,-8:] # feat 0.3.7
-    elif FEAT_VERSION == 1:
-        emo_df = df.iloc[-1:,-9:-1] # feat 0.5.0
-    else:
-        raise Exception("FEAT_VERSION is not correct")
+    # image_prediction = detector.detect_image(img)
+    # df = image_prediction.head()
+    # if FEAT_VERSION == 0:
+    #     emo_df = df.iloc[-1:,-8:] # feat 0.3.7
+    # elif FEAT_VERSION == 1:
+    #     emo_df = df.iloc[-1:,-9:-1] # feat 0.5.0
+    # else:
+    #     raise Exception("FEAT_VERSION is not correct")
 
-    if is_save_csv:
-        csv_name = img[:-4]+".csv"
-        csv_emotion_name = img[:-4]+"_emotion.csv"
-        df.to_csv(csv_name)
-        emo_df.to_csv(csv_emotion_name)
-    targetID = get_target(target_emotion)
-    if DEBUG > 0:
-        print("[INFO]py_feat_analysis: {}".format(list(df[target_emotion])[0]))
-    # # return emo_df.iloc[0,targetID]
-    output = list(df[target_emotion])[0]
+    # if is_save_csv:
+    #     csv_name = img[:-4]+".csv"
+    #     csv_emotion_name = img[:-4]+"_emotion.csv"
+    #     df.to_csv(csv_name)
+    #     emo_df.to_csv(csv_emotion_name)
+    # targetID = get_target(target_emotion)
+    # if DEBUG > 0:
+    #     print("[INFO]py_feat_analysis: {}".format(list(df[target_emotion])[0]))
+    # # # return emo_df.iloc[0,targetID]
+    # output = list(df[target_emotion])[0]
 
     return output
 
@@ -1176,9 +1176,14 @@ def bayesian_optimization(baseline, target_emotion, robot, is_add_probe=False):
             if target_emotion == 'fear':
                 # fear constrain
                 if i in [1]:
+                    pbounds_dic['x{}'.format(i)] = (30, 86)
+
+                if i in [6]:
+                    pbounds_dic['x{}'.format(i)] = (110, 256)
+                
+            if target_emotion == 'anger':
+                if i in [1]:
                     pbounds_dic['x{}'.format(i)] = (0, 86)
-                # if i in [2]:
-                #     pbounds_dic['x{}'.format(i)] = (0, 128)
 
 
                 
@@ -1771,7 +1776,7 @@ def main():
     global n_iter
     global MYSTEPS
     init_points = 20
-    n_iter = 70
+    n_iter = 170
     # n_iter = 300
     # n_iter = 170
 
@@ -1789,7 +1794,7 @@ def main():
     global kappa
     # Higher kappa values mean more exploration and less exploitation 
     # and vice versa for low values.
-    kappa = 0.576
+    kappa = 7.576
 
     rb.return_to_stable_state()
     
@@ -1816,7 +1821,7 @@ def main():
     # exp 32 BORFEO Baseline adjust
     # -------------------------------------
     # for target_emotion in ['anger', 'disgust', 'fear', 'happiness', 'sadness', 'surprise']:
-    for target_emotion in ['fear']:
+    for target_emotion in ['happiness']:
     # for target_emotion in ['disgust', 'fear', 'happiness', 'sadness', 'surprise']:
         check_folder(target_emotion)
         COUNTER = 0
@@ -1859,8 +1864,6 @@ def main():
             is_add_probe=True
             )
 
-
-
         print('\n')
         # print("Current target emotion is: ", target_emotion, optimizer.res)
         print('\n')
@@ -1885,6 +1888,9 @@ def main():
         print(e)
     
     
+
+
+
     # rb.transfer_robotParams_to_states(rb.lastParams, [x for x in range(36)])
     # Anger, Disgust, Fear, Happiness, Sadness, Surprise
     # anger, disgust, fear, happiness, sadness, surprise
@@ -1900,6 +1906,23 @@ def main():
     # ---------------------
     # exp 23-1 prototype
     # ---------------------
+    # test photo
+    # check_folder('prototype')
+    # rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format('prototype', 'test'), folder='prototype')
+    
+    # # set face box and intensity model
+    # global facebox
+    # facebox = detector.detect_faces(cv2.imread(rb.readablefileName))[0]
+    # print("[Notice] facebox is: ", facebox)
+    # facebox = facebox[:4]
+    # # facebox[1] = 270
+
+    # # save the list facebox to a dataframe, columns are start_x, start_y, end_x, end_y
+    # facebox_csv = pd.DataFrame([facebox], columns=['start_x', 'start_y', 'end_x', 'end_y'])
+    # facebox_csv.to_csv(f'image_analysis/prototype/facebox.csv', index=False)
+    # global rmn_model
+    # rmn_model = ResMaskNet()
+
     # global intensityModel
     # for k,v in defaultPose.prototypeFacialExpressions.items():
     #     if k == 'neutral':
@@ -1911,9 +1934,12 @@ def main():
     #     time.sleep(2)
     #     rb.take_picture_cv(isUsingCounter=False, appendix='{}_{}'.format(k, 'test'), folder='prototype')
     #     time.sleep(1)
-    #     setIntensityModel(k)
+    #     rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
+    #     rb.connect_ros(True, False)
+    #     time.sleep(2)
+    #     # setIntensityModel(k)
     #     print("py_feat_analysis result is: ", py_feat_analysis(rb.fileName, k))
-    #     print("IntensityNet result is: ", intensityNet_analysis(rb.fileName, k))
+    #     # print("IntensityNet result is: ", intensityNet_analysis(rb.fileName, k))
 
     # rb.switch_to_customizedPose(rb.AUPose['StandardPose'])
     # rb.connect_ros(True, False)
