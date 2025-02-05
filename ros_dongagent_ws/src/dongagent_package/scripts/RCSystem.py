@@ -20,11 +20,12 @@ from typing import Counter
 from datetime import datetime
 import defaultPose, mimicryExpParams
 from collections import deque as deque
+from deprecated import deprecated
 
 # import socket
 import threading
 from threading import Thread
-# import serial, itertools
+# import serial, itertools # used for Project 2, psychology experiment
 import cv2, time, copy, sys, math, logging
 import os, subprocess
 import platform
@@ -117,12 +118,10 @@ class WebcamStreamWidget(object):
         self.vthread = Thread(target=self.update, args=())
         self.vthread.daemon = True # daemon threads run in background 
         print("[INFO]WebcamStreamWidget initialized.")
-
     # start vthread 
     def start(self):
         self.stopped = False
         self.vthread.start()
-
     # the target method passed to vthread for reading the next available frame  
     def update(self):
         while True :
@@ -135,20 +134,16 @@ class WebcamStreamWidget(object):
                 self.stopped = True
                 break 
         self.vcap.release()
-
     def read(self):
         return self.frame
-
     # stop reading frames
     def stop(self):
-        self.stopped = True
-        
+        self.stopped = True 
     def save_frame(self, path):
         if not self.stopped:
             cv2.imwrite(path, self.read())
         else:
             raise AttributeError('frame not found')
-
     # Video recording methods
     def start_video_recording(self, path, codec='XVID', fps=60.0):
         self.video_path = path
@@ -159,7 +154,6 @@ class WebcamStreamWidget(object):
         self.video_thread = Thread(target=self._record_video)
         self.video_thread.daemon = True
         self.video_thread.start()
-
     def _record_video(self):
         fourcc = cv2.VideoWriter_fourcc(*self.video_codec)
         out = cv2.VideoWriter(self.video_path, fourcc, self.video_fps, (self.frame.shape[1], self.frame.shape[0]))
@@ -171,7 +165,6 @@ class WebcamStreamWidget(object):
 
         out.release()
         print(f'Video saved to {self.video_path}')
-
     def stop_video_recording(self):
         self.video_stopped = True
         if self.video_thread.is_alive():
@@ -179,8 +172,8 @@ class WebcamStreamWidget(object):
 
 
 class robot:
+    # initialization of robot
     def __init__(self, duration=3, webcam=True, fps=60):
-        # initialization of robot
         print("[INFO]robot initializing...")
         # Return to normal state first
         # Example: robotParams = {'1': 64, '2': 64, '3': 128, ...}
@@ -240,7 +233,7 @@ class robot:
             print("[INFO]test img saved.")
         else:
             print("[INFO]robot initialized.")
-
+    @deprecated(version='1.0', reason="FFmpeg will delay the program.")
     def take_picture(self, isUsingCounter=True, appendix='', folder=''):
         # we don't need this
         # Allright, we need this 
@@ -300,7 +293,7 @@ class robot:
         elif "Windows" in platform.platform():
             # Windows
             return subprocess.Popen(["pwsh", "-Command", command], stdout=subprocess.PIPE)
-
+    # Save pic from WebcamStreamWidget
     def take_picture_cv(self, isUsingCounter=True, appendix='', folder=''):
         self.counter += 1
         if isUsingCounter:
@@ -339,8 +332,7 @@ class robot:
             print('[INFO]frame captured.')
         else:
             raise ValueError('[ValueError] self.readablefileName is {}.'.format(self.readablefileName))
-
-    # use webcam_stream_widget to take video
+    # use WebcamStreamWidget to take video
     def start_taking_video(self, isUsingCounter=True, appendix='', folder=''):
         self.counter += 1
         if isUsingCounter:
@@ -387,27 +379,16 @@ class robot:
             raise ValueError('[ValueError] self.readablefileName is {}.'.format(self.readablefileName))
         
         return 404
-
     # stop video recording
     def stop_taking_video(self):
         self.webcam_stream_widget.stop_video_recording()
         print('[INFO]video recording stopped.')
-
     def initialize_robotParams(self):
         # initialize robotParams like {"x1":0, "x2":0, ... , "x35": 0}
         print("initialize_robotParams")
         for i in range(1, 36):
             codeNum = "x{}".format(i)
             self.robotParams[codeNum] = 0
-    def randomize_robotParams(self):
-        # ALERT!!
-        # DO NOT USE IT UNLESS YOU KNOW WHAT YOU ARE DOING
-        pass
-        """
-        for j,k in self.robotParams.items():
-            self.robotParams[j] = random.randint(0, 10)
-        self.__check_robotParams()
-        """
     def return_to_stable_state(self):
         # set all params in robotParams to 0
         stableState = [
@@ -465,9 +446,6 @@ class robot:
         for i in range(1, 36):
             self.robotParams["x{}".format(i)] = params[i - 1]
         self.__check_robotParams()
-
-
-
     def sigmoid_smooth_execution_mode(self, steps = 20, total_time = 2, useScaledSigmoid=True, sigmoid_factor=10, debugmode=False):
         if self.robotParams:
             stepNum = steps
@@ -499,7 +477,6 @@ class robot:
                 #     time.sleep(time_interval)
                 # else:
                 time.sleep(smoothSleepTime)
-
     def smooth_execution_mode(self, steps = 20, debugmode=False):
         # steps: the middle steps between two robot expressions, default value is 5
         if self.robotParams:
@@ -523,12 +500,10 @@ class robot:
                 # MODIFY HERE if you want to setup the duration of emotion
                 global smoothSleepTime
                 time.sleep(smoothSleepTime)
-
     # @deprecated
     def normal_execution_mode(self):
         # self.__sendExecutionCode() # Use socket
         self.ros_talker()# Use ROS
-
     def ros_talker(self):
         rospy.init_node('rcpublisher', anonymous=True, disable_signals=True)
         pub = rospy.Publisher('rc/command', String, queue_size=10)
@@ -551,20 +526,6 @@ class robot:
             # if rospy.Message:
             #     print(rospy.Message)
             # r.sleep()
-        
-    # Now use ROS instead
-    # @deprecated
-    # def __sendExecutionCode(self):
-    #     # This function cannot be called outside
-    #     assert "move" in self.executionCode
-    #     msg = self.executionCode # message
-
-    #     self.client.send(msg.encode('utf-8')) # send a message to server, python3 only receive byte data
-    #     data = self.client.recv(1024) # receive a message, the maximum length is 1024 bytes
-    #     # print('recv:', data.decode()) # print the data I received
-    #     if "OK" not in data.decode():
-    #         raise Exception("ERROR! Did NOT receive 'OK'")
-
     def sub_callback(self, data):
         recv_dict = json.loads(data.data)
         if recv_dict['Message'] == "PotentioValsBase64":
@@ -582,7 +543,7 @@ class robot:
             potaxisstr = recv_dict['Axes'].split(',')
             axiswithpotentio = map((lambda x: int(x)), potaxisstr)
             print(axiswithpotentio)
-
+    # Send command to the robot
     def connect_ros(self, isSmoothly=True, isRecording=False, appendix="", steps=20, timeIntervalBeforeExp=1, isUsingSigmoid=False, 
         sigmoid_factor=10, useScaledSigmoid=False, debugmode=False):
 
@@ -666,13 +627,12 @@ class robot:
         openfacePath = ""
         figurePath = ""
         return openfacePath
-
-    # def analysis(self, target_emotion_name):
-    #     assert target_emotion_name in ["Anger", "Disgust", "Fear", "Happiness", "Sadness", "Surprise"], "You are not using the predefine name"
-    #     py_feat_analysis(self.readablefileName, target_emotion_name)
-
+    def analysis(self, target_emotion_name):
+        assert target_emotion_name in ["Anger", "Disgust", "Fear", "Happiness", "Sadness", "Surprise"], "You are not using the predefine name"
+        py_feat_analysis(self.readablefileName, target_emotion_name)
     def feedback(self):
         pass
+
 def list2string(data):
     strtmp = ""
     for val in data:
@@ -1481,9 +1441,8 @@ def get_param_from_csv(csv_name):
         if "x" in k:
             fixedrobotcode[int(k[1:])-1] = round(v[0])
     fixedrobotcode = fix_robot_param(fixedrobotcode)
-
     return fixedrobotcode
-            
+
 def recover_param_from_csv(csv_name, steps=15):
     # move robot to the csv state
     df = pd.read_csv(csv_name)
@@ -1495,9 +1454,7 @@ def recover_param_from_csv(csv_name, steps=15):
     #     print('k,v', k,v)
         if "x" in k:
             fixedrobotcode[int(k[1:])-1] = round(v[0])
-    
     fixedrobotcode = fix_robot_param(fixedrobotcode)
-
     # control robot
     rb.switch_to_customizedPose(fixedrobotcode)
     global smoothSleepTime
@@ -1511,7 +1468,6 @@ def eyeblink(rb, stop_event):
         while not stop_event.is_set():
             global smoothSleepTime
             smoothSleepTime = 0.025
-            
 
             itvl = round(random.uniform(0.5, 3), 3)
             time.sleep(itvl) # interval
